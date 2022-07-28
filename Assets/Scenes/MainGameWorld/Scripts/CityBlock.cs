@@ -36,22 +36,31 @@ namespace Scenes.MainGameWorld.Scripts
                 if (tile.X == 0)
                 {
                     Tile below = Tiles.FirstOrDefault(t => t.X == tile.X + 1 && t.Y == tile.Y);
-                    Link link = new Link { ConnectedTile = below, Cost = 1};
+                    int cost = 1;
+                    if (tile.Y == 0 || tile.Y == BlockDimension - 1)
+                        cost = 2;
+                    Link link = new Link { ConnectedTile = below, Cost = cost};
                     tile.Connections.Add(link);
                 }
                 else if (tile.X == BlockDimension - 1)
                 {
                     Tile above = Tiles.FirstOrDefault(t => t.X == tile.X - 1 && t.Y == tile.Y);
-                    Link link = new Link { ConnectedTile = above, Cost = 1};
+                    int cost = 1;
+                    if (tile.Y == 0 || tile.Y == BlockDimension - 1)
+                        cost = 2;
+                    Link link = new Link { ConnectedTile = above, Cost = cost};
                     tile.Connections.Add(link);
                 }
                 else
                 {
+                    int cost = 1;
+                    if (tile.Y == 0 || tile.Y == BlockDimension - 1)
+                        cost = 2;
                     Tile below = Tiles.FirstOrDefault(t => t.X == tile.X + 1 && t.Y == tile.Y);
-                    Link link = new Link { ConnectedTile = below, Cost = 1};
+                    Link link = new Link { ConnectedTile = below, Cost = cost};
                     tile.Connections.Add(link);
                     Tile above = Tiles.FirstOrDefault(t => t.X == tile.X - 1 && t.Y == tile.Y);
-                    link = new Link { ConnectedTile = above, Cost = 1};
+                    link = new Link { ConnectedTile = above, Cost = cost};
                     tile.Connections.Add(link);
                 }
 
@@ -59,22 +68,31 @@ namespace Scenes.MainGameWorld.Scripts
                 if (tile.Y == 0)
                 {
                     Tile right = Tiles.FirstOrDefault(t => t.X == tile.X && t.Y == tile.Y + 1);
-                    Link link = new Link { ConnectedTile = right, Cost = 1};
+                    int cost = 1;
+                    if (tile.X == 0 || tile.X == BlockDimension - 1)
+                        cost = 2;
+                    Link link = new Link { ConnectedTile = right, Cost = cost};
                     tile.Connections.Add(link);
                 }
                 else if (tile.Y == BlockDimension - 1)
                 {
                     Tile left = Tiles.FirstOrDefault(t => t.X == tile.X && t.Y == tile.Y - 1);
-                    Link link = new Link { ConnectedTile = left, Cost = 1};
+                    int cost = 1;
+                    if (tile.X == 0 || tile.X == BlockDimension - 1)
+                        cost = 2;
+                    Link link = new Link { ConnectedTile = left, Cost = cost};
                     tile.Connections.Add(link);
                 }
                 else
                 {
+                    int cost = 1;
+                    if (tile.X == 0 || tile.X == BlockDimension - 1)
+                        cost = 2;
                     Tile right = Tiles.FirstOrDefault(t => t.X == tile.X && t.Y == tile.Y + 1);
-                    Link link = new Link { ConnectedTile = right, Cost = 1};
+                    Link link = new Link { ConnectedTile = right, Cost = cost};
                     tile.Connections.Add(link);
                     Tile left = Tiles.FirstOrDefault(t => t.X == tile.X && t.Y == tile.Y - 1);
-                    link = new Link { ConnectedTile = left, Cost = 1};
+                    link = new Link { ConnectedTile = left, Cost = cost};
                     tile.Connections.Add(link);
                 }
             }
