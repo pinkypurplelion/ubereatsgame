@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace Scenes.MainGameWorld.Scripts
 {
@@ -23,7 +25,7 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 for (var j = 0; j < BlockDimension; j++)
                 {
-                    Tiles.Add(new Tile {X = i, Y = j, Type = 0});
+                    Tiles.Add(new Tile {X = i, Y = j, Type = 1});
                 }
             }
 
@@ -89,8 +91,22 @@ namespace Scenes.MainGameWorld.Scripts
             ShortestPaths.Add(GetShortestPathDijkstra(EdgeConnections.FirstOrDefault(t => t.X == 2 && t.Y == 0), EdgeConnections.LastOrDefault(t => t.X == 0 && t.Y == 2)));
             ShortestPaths.Add(GetShortestPathDijkstra(EdgeConnections.FirstOrDefault(t => t.X == 2 && t.Y == 0), EdgeConnections.LastOrDefault(t => t.X == BlockDimension - 1 && t.Y == 1)));
             
+            ParsePaths();
+            
             Debug.Log(Tiles.Count);
             
+        }
+
+
+        void ParsePaths()
+        {
+            foreach (var path in ShortestPaths)
+            {
+                foreach (var tile in path)
+                {
+                    tile.Type = 0;
+                }
+            }
         }
 
         public List<Tile> GetShortestPathDijkstra(Tile start, Tile end)

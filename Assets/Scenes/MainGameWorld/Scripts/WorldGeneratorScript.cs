@@ -19,7 +19,7 @@ public class WorldGeneratorScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        CityBlock block = new CityBlock();
+        CityBlock block = new CityBlock {BlockDimension = 8};
         block.CreateMap();
 
         foreach (var tile in block.Tiles)
@@ -27,6 +27,10 @@ public class WorldGeneratorScript : MonoBehaviour
             if (tile.Type == 0)
             {
                 Instantiate(demoRoadTile, new Vector3(0 + (tile.X*tileSize), 2, 0 + (tile.Y*tileSize)), Quaternion.identity);
+            }
+            if (tile.Type == 1)
+            {
+                Instantiate(demoBuilding, new Vector3(0 + (tile.X*tileSize), 2, 0 + (tile.Y*tileSize)), Quaternion.identity);
             }
         }
         
