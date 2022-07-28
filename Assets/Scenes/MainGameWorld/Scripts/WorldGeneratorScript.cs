@@ -19,7 +19,7 @@ public class WorldGeneratorScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        CityBlock block = new CityBlock {BlockDimension = 8};
+        CityBlock block = new CityBlock {BlockDimension = 8, Connections = new []{2, 6, 4, 3}};
         block.CreateMap();
 
         foreach (var tile in block.Tiles)

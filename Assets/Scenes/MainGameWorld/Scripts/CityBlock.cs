@@ -14,6 +14,8 @@ namespace Scenes.MainGameWorld.Scripts
         public List<Tile> Tiles { get; set; } = new List<Tile>();
 
         public int BlockDimension { get; set; } = 4;
+
+        public int[] Connections { get; set; } = { 1, 2, 1, 2};
         
         public List<Tile> EdgeConnections { get; set; } = new List<Tile>();
         
@@ -97,17 +99,21 @@ namespace Scenes.MainGameWorld.Scripts
                 }
             }
             
+            Debug.Log(BlockDimension);
+            EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == Connections[0] && t.Y == 0));
+            EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == Connections[1] && t.Y == BlockDimension - 1));
+            EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == 0 && t.Y == Connections[2]));
+            EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == BlockDimension - 1 && t.Y == Connections[3]));
             
-            // TODO: Make these connections random/given by constructor
-            EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == 2 && t.Y == 0));
-            EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == 1 && t.Y == BlockDimension - 1));
-            EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == 0 && t.Y == 2));
-            EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == BlockDimension - 1 && t.Y == 1));
-            
-            // TODO: Make these paths dynamic based on above changes
-            ShortestPaths.Add(GetShortestPathDijkstra(EdgeConnections.FirstOrDefault(t => t.X == 2 && t.Y == 0), EdgeConnections.LastOrDefault(t => t.X == 1 && t.Y == BlockDimension - 1)));
-            ShortestPaths.Add(GetShortestPathDijkstra(EdgeConnections.FirstOrDefault(t => t.X == 2 && t.Y == 0), EdgeConnections.LastOrDefault(t => t.X == 0 && t.Y == 2)));
-            ShortestPaths.Add(GetShortestPathDijkstra(EdgeConnections.FirstOrDefault(t => t.X == 2 && t.Y == 0), EdgeConnections.LastOrDefault(t => t.X == BlockDimension - 1 && t.Y == 1)));
+            ShortestPaths.Add(GetShortestPathDijkstra(
+                EdgeConnections.FirstOrDefault(t => t.X == Connections[0] && t.Y == 0), 
+                EdgeConnections.LastOrDefault(t => t.X == Connections[1] && t.Y == BlockDimension - 1)));
+            ShortestPaths.Add(GetShortestPathDijkstra(
+                EdgeConnections.FirstOrDefault(t => t.X == Connections[0] && t.Y == 0), 
+                EdgeConnections.LastOrDefault(t => t.X == 0 && t.Y == Connections[2])));
+            ShortestPaths.Add(GetShortestPathDijkstra(
+                EdgeConnections.FirstOrDefault(t => t.X == Connections[0] && t.Y == 0), 
+                EdgeConnections.LastOrDefault(t => t.X == BlockDimension - 1 && t.Y == Connections[3])));
             
             ParsePaths();
             
