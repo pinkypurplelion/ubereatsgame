@@ -5,6 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Random = System.Random;
 
 namespace Scenes.MainGameWorld.Scripts
 {
@@ -14,7 +15,10 @@ namespace Scenes.MainGameWorld.Scripts
         public List<Tile> Tiles { get; set; } = new List<Tile>();
 
         public int BlockDimension { get; set; } = 4;
-
+        
+        public int BlockX { get; set; } = 0;
+        public int BlockY { get; set; } = 0;        
+        
         public int[] Connections { get; set; } = { 1, 2, 1, 2};
         
         public List<Tile> EdgeConnections { get; set; } = new List<Tile>();
@@ -23,6 +27,8 @@ namespace Scenes.MainGameWorld.Scripts
 
         public void CreateMap()
         {
+            Random random = new Random();
+            
             for (var i = 0; i < BlockDimension; i++)
             {
                 for (var j = 0; j < BlockDimension; j++)
@@ -34,11 +40,13 @@ namespace Scenes.MainGameWorld.Scripts
             foreach (var tile in Tiles)
                 //TODO: Add variation in Cost for links
             {
+                double cost = random.NextDouble();
+                Debug.Log(cost);
                 // Deals with vertical edges
                 if (tile.X == 0)
                 {
                     Tile below = Tiles.FirstOrDefault(t => t.X == tile.X + 1 && t.Y == tile.Y);
-                    int cost = 1;
+                    
                     if (tile.Y == 0 || tile.Y == BlockDimension - 1)
                         cost = 2;
                     Link link = new Link { ConnectedTile = below, Cost = cost};
@@ -47,7 +55,6 @@ namespace Scenes.MainGameWorld.Scripts
                 else if (tile.X == BlockDimension - 1)
                 {
                     Tile above = Tiles.FirstOrDefault(t => t.X == tile.X - 1 && t.Y == tile.Y);
-                    int cost = 1;
                     if (tile.Y == 0 || tile.Y == BlockDimension - 1)
                         cost = 2;
                     Link link = new Link { ConnectedTile = above, Cost = cost};
@@ -55,7 +62,6 @@ namespace Scenes.MainGameWorld.Scripts
                 }
                 else
                 {
-                    int cost = 1;
                     if (tile.Y == 0 || tile.Y == BlockDimension - 1)
                         cost = 2;
                     Tile below = Tiles.FirstOrDefault(t => t.X == tile.X + 1 && t.Y == tile.Y);
@@ -70,7 +76,6 @@ namespace Scenes.MainGameWorld.Scripts
                 if (tile.Y == 0)
                 {
                     Tile right = Tiles.FirstOrDefault(t => t.X == tile.X && t.Y == tile.Y + 1);
-                    int cost = 1;
                     if (tile.X == 0 || tile.X == BlockDimension - 1)
                         cost = 2;
                     Link link = new Link { ConnectedTile = right, Cost = cost};
@@ -79,7 +84,6 @@ namespace Scenes.MainGameWorld.Scripts
                 else if (tile.Y == BlockDimension - 1)
                 {
                     Tile left = Tiles.FirstOrDefault(t => t.X == tile.X && t.Y == tile.Y - 1);
-                    int cost = 1;
                     if (tile.X == 0 || tile.X == BlockDimension - 1)
                         cost = 2;
                     Link link = new Link { ConnectedTile = left, Cost = cost};
@@ -87,7 +91,6 @@ namespace Scenes.MainGameWorld.Scripts
                 }
                 else
                 {
-                    int cost = 1;
                     if (tile.X == 0 || tile.X == BlockDimension - 1)
                         cost = 2;
                     Tile right = Tiles.FirstOrDefault(t => t.X == tile.X && t.Y == tile.Y + 1);
