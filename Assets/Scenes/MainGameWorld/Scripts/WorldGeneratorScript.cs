@@ -13,8 +13,8 @@ public class WorldGeneratorScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        int WorldDimension = 14;
-        int BlockDimension = 8;
+        int WorldDimension = 20;
+        int BlockDimension = 6;
         
         // Generates the World based on the WorldDimension and BlockDimension
         WorldMap map = new WorldMap {WorldDimension = WorldDimension, BlockDimension = BlockDimension};
