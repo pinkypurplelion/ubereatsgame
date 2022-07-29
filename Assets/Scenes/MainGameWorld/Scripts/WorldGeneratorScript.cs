@@ -20,7 +20,7 @@ public class WorldGeneratorScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        int WorldDimension = 8;
+        int WorldDimension = 2;
         int BlockDimension = 8;
         
         WorldMap map = new WorldMap {WorldDimension = WorldDimension, BlockDimension = BlockDimension};
@@ -32,11 +32,24 @@ public class WorldGeneratorScript : MonoBehaviour
             {
                 if (tile.Type == 0)
                 {
-                    Instantiate(demoRoadTile, new Vector3(block.BlockX * WorldDimension * tileSize + (tile.X*tileSize), 2, block.BlockY * WorldDimension * tileSize + (tile.Y*tileSize)), Quaternion.identity);
+                    Instantiate(demoRoadTile, new Vector3(
+                        block.BlockX * BlockDimension * tileSize + (tile.X*tileSize), 
+                        2, 
+                        block.BlockY * BlockDimension * tileSize + (tile.Y*tileSize)), Quaternion.identity);
                 }
                 if (tile.Type == 1)
                 {
-                    Instantiate(demoBuilding, new Vector3(block.BlockX * WorldDimension * tileSize + (tile.X*tileSize), 2, block.BlockY * WorldDimension * tileSize + (tile.Y*tileSize)), Quaternion.identity);
+                    Instantiate(demoBuilding, new Vector3(
+                        block.BlockX * BlockDimension * tileSize + (tile.X*tileSize), 
+                        2, 
+                        block.BlockY * BlockDimension * tileSize + (tile.Y*tileSize)), Quaternion.identity);
+                }
+                if (tile.Type == 2)
+                {
+                    Instantiate(demoHouse, new Vector3(
+                        block.BlockX * BlockDimension * tileSize + (tile.X*tileSize), 
+                        2, 
+                        block.BlockY * BlockDimension * tileSize + (tile.Y*tileSize)), Quaternion.identity);
                 }
             }
         }

@@ -16,8 +16,8 @@ namespace Scenes.MainGameWorld.Scripts
 
         public int BlockDimension { get; set; } = 4;
         
-        public int BlockX { get; set; } = 0;
-        public int BlockY { get; set; } = 0;        
+        public int BlockX { get; set; }
+        public int BlockY { get; set; }        
         
         // public int[] Connections { get; set; } = { 1, 2, 1, 2}; // TOP, BOTTOM, LEFT, RIGHT
         public Dictionary<string, int> ConnectionDirections { get; set; } = new(){ 
@@ -26,9 +26,9 @@ namespace Scenes.MainGameWorld.Scripts
         };
 
 
-        public List<Tile> EdgeConnections { get; set; } = new List<Tile>();
+        public List<Tile> EdgeConnections { get; set; } = new();
         
-        public List<List<Tile>> ShortestPaths { get; set; } = new List<List<Tile>>();
+        public List<List<Tile>> ShortestPaths { get; set; } = new();
 
         public void CreateMap()
         {
@@ -43,10 +43,9 @@ namespace Scenes.MainGameWorld.Scripts
             }
 
             foreach (var tile in Tiles)
-                //TODO: Add variation in Cost for links
             {
                 double cost = random.NextDouble();
-                Debug.Log(cost);
+
                 // Deals with vertical edges
                 if (tile.X == 0)
                 {
@@ -107,11 +106,12 @@ namespace Scenes.MainGameWorld.Scripts
                 }
             }
             
-            Debug.Log(BlockDimension);
             EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == ConnectionDirections["top"] && t.Y == 0));
             EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == ConnectionDirections["bottom"] && t.Y == BlockDimension - 1));
             EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == 0 && t.Y == ConnectionDirections["left"]));
             EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == BlockDimension - 1 && t.Y == ConnectionDirections["right"]));
+
+
             
             ShortestPaths.Add(GetShortestPathDijkstra(
                 EdgeConnections.FirstOrDefault(t => t.X == ConnectionDirections["top"] && t.Y == 0), 
@@ -125,12 +125,15 @@ namespace Scenes.MainGameWorld.Scripts
             
             ParsePaths();
             
-            Debug.Log(Tiles.Count);
-            
+            // foreach (var tile in EdgeConnections)
+            // {
+            //     tile.Type = 2;
+            // }
         }
 
 
         void ParsePaths()
+        //TODO: identify & fix BUG with ParsePaths()
         {
             foreach (var path in ShortestPaths)
             {
