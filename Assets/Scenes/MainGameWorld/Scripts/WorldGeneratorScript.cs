@@ -20,7 +20,7 @@ public class WorldGeneratorScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        int WorldDimension = 8;
+        int WorldDimension = 14;
         int BlockDimension = 8;
         
         WorldMap map = new WorldMap {WorldDimension = WorldDimension, BlockDimension = BlockDimension};
@@ -37,16 +37,9 @@ public class WorldGeneratorScript : MonoBehaviour
                         2, 
                         block.BlockY * BlockDimension * tileSize + (tile.Y*tileSize)), Quaternion.identity);
                 }
-                if (tile.Type == 1)
+                if (tile.Type == 1 && tile.nextToRoad)
                 {
                     Instantiate(demoBuilding, new Vector3(
-                        block.BlockX * BlockDimension * tileSize + (tile.X*tileSize), 
-                        2, 
-                        block.BlockY * BlockDimension * tileSize + (tile.Y*tileSize)), Quaternion.identity);
-                }
-                if (tile.Type == 2)
-                {
-                    Instantiate(demoHouse, new Vector3(
                         block.BlockX * BlockDimension * tileSize + (tile.X*tileSize), 
                         2, 
                         block.BlockY * BlockDimension * tileSize + (tile.Y*tileSize)), Quaternion.identity);

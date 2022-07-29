@@ -15,6 +15,8 @@ namespace Scenes.MainGameWorld.Scripts
         public double? MinCostToStart { get; set; }
         public Tile NearestToStart { get; set; }
         public bool Visited { get; set; }
+
+        public bool nextToRoad { get; set; } = false;
     }
     
     public class Link

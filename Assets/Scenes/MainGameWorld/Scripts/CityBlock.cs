@@ -121,6 +121,15 @@ namespace Scenes.MainGameWorld.Scripts
                 EdgeConnections.FirstOrDefault(t => t.X == BlockDimension - 1 && t.Y == ConnectionDirections["right"])));
             
             ParsePaths();
+
+            foreach (var tile in Tiles)
+            {
+                foreach (var link in tile.Connections)
+                {
+                    if (link.ConnectedTile.Type == 0)
+                        tile.nextToRoad = true;
+                }
+            }
         }
 
 
