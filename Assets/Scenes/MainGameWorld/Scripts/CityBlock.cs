@@ -19,8 +19,13 @@ namespace Scenes.MainGameWorld.Scripts
         public int BlockX { get; set; } = 0;
         public int BlockY { get; set; } = 0;        
         
-        public int[] Connections { get; set; } = { 1, 2, 1, 2};
-        
+        // public int[] Connections { get; set; } = { 1, 2, 1, 2}; // TOP, BOTTOM, LEFT, RIGHT
+        public Dictionary<string, int> ConnectionDirections { get; set; } = new(){ 
+            { "top", 1 }, { "bottom", 2 },
+            { "left", 3 }, { "right", 4 } 
+        };
+
+
         public List<Tile> EdgeConnections { get; set; } = new List<Tile>();
         
         public List<List<Tile>> ShortestPaths { get; set; } = new List<List<Tile>>();
@@ -103,20 +108,20 @@ namespace Scenes.MainGameWorld.Scripts
             }
             
             Debug.Log(BlockDimension);
-            EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == Connections[0] && t.Y == 0));
-            EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == Connections[1] && t.Y == BlockDimension - 1));
-            EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == 0 && t.Y == Connections[2]));
-            EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == BlockDimension - 1 && t.Y == Connections[3]));
+            EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == ConnectionDirections["top"] && t.Y == 0));
+            EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == ConnectionDirections["bottom"] && t.Y == BlockDimension - 1));
+            EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == 0 && t.Y == ConnectionDirections["left"]));
+            EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == BlockDimension - 1 && t.Y == ConnectionDirections["right"]));
             
             ShortestPaths.Add(GetShortestPathDijkstra(
-                EdgeConnections.FirstOrDefault(t => t.X == Connections[0] && t.Y == 0), 
-                EdgeConnections.LastOrDefault(t => t.X == Connections[1] && t.Y == BlockDimension - 1)));
+                EdgeConnections.FirstOrDefault(t => t.X == ConnectionDirections["top"] && t.Y == 0), 
+                EdgeConnections.LastOrDefault(t => t.X == ConnectionDirections["bottom"]  && t.Y == BlockDimension - 1)));
             ShortestPaths.Add(GetShortestPathDijkstra(
-                EdgeConnections.FirstOrDefault(t => t.X == Connections[0] && t.Y == 0), 
-                EdgeConnections.LastOrDefault(t => t.X == 0 && t.Y == Connections[2])));
+                EdgeConnections.FirstOrDefault(t => t.X == ConnectionDirections["top"] && t.Y == 0), 
+                EdgeConnections.LastOrDefault(t => t.X == 0 && t.Y == ConnectionDirections["left"])));
             ShortestPaths.Add(GetShortestPathDijkstra(
-                EdgeConnections.FirstOrDefault(t => t.X == Connections[0] && t.Y == 0), 
-                EdgeConnections.LastOrDefault(t => t.X == BlockDimension - 1 && t.Y == Connections[3])));
+                EdgeConnections.FirstOrDefault(t => t.X == ConnectionDirections["top"] && t.Y == 0), 
+                EdgeConnections.LastOrDefault(t => t.X == BlockDimension - 1 && t.Y == ConnectionDirections["right"])));
             
             ParsePaths();
             
