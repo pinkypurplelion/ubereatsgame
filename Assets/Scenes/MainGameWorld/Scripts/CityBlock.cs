@@ -38,7 +38,7 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 for (var j = 0; j < BlockDimension; j++)
                 {
-                    Tiles.Add(new Tile {X = i, Y = j, Type = 1});
+                    Tiles.Add(new Tile {X = i, Y = j, Type = TileType.Building});
                 }
             }
             
@@ -134,7 +134,7 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 foreach (var link in tile.Connections)
                 {
-                    if (link.ConnectedTile.Type == 0)
+                    if (link.ConnectedTile.Type == TileType.Road)
                         tile.NextToRoad = true;
                 }
             }
@@ -149,7 +149,7 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 foreach (var tile in path)
                 {
-                    tile.Type = 0;
+                    tile.Type = TileType.Road;
                 }
             }
         }

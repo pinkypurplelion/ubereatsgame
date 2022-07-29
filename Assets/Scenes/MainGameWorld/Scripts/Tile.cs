@@ -7,7 +7,7 @@ namespace Scenes.MainGameWorld.Scripts
         public int X { get; set; }
         public int Y { get; set; }
         
-        public int Type { get; set; }
+        public TileType Type { get; set; }
         
         public List<Link> Connections { get; } = new();
 
@@ -22,5 +22,13 @@ namespace Scenes.MainGameWorld.Scripts
     {
         public double Cost { get; set; }
         public Tile ConnectedTile { get; set; }
+    }
+
+    public enum TileType
+    {
+        Road,
+        Building,
+        House,
+        Shop
     }
 }
