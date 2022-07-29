@@ -20,7 +20,7 @@ public class WorldGeneratorScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        int WorldDimension = 2;
+        int WorldDimension = 8;
         int BlockDimension = 8;
         
         WorldMap map = new WorldMap {WorldDimension = WorldDimension, BlockDimension = BlockDimension};
@@ -53,12 +53,6 @@ public class WorldGeneratorScript : MonoBehaviour
                 }
             }
         }
-        
-        
-        // CityBlock block = new CityBlock {BlockDimension = 8, Connections = new []{2, 6, 3, 5}};
-        // block.CreateMap();
-
-
     }
 
     

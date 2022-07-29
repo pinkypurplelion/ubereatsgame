@@ -19,14 +19,15 @@ namespace Scenes.MainGameWorld.Scripts
 
         public void GenerateWorld()
         {
+            Random random = new Random();
             CityBlock originBlock = new CityBlock
             {
                 BlockDimension = BlockDimension,
                 ConnectionDirections = new(){ 
-                    { "top", 4 }, 
-                    { "bottom", 2 },
-                    { "left", 6 }, 
-                    { "right", 5 } 
+                    { "top", random.Next(1, BlockDimension - 1) }, 
+                    { "bottom", random.Next(1, BlockDimension - 1) },
+                    { "left", random.Next(1, BlockDimension - 1) }, 
+                    { "right", random.Next(1, BlockDimension - 1) } 
                 }
             };
             originBlock.CreateMap();
@@ -35,17 +36,6 @@ namespace Scenes.MainGameWorld.Scripts
             CityBlockCoords.Add(new[] {0, 0});
             
             RecursiveGeneration(originBlock, 0);
-            
-            // for (int i = WorldDimension/-2; i < WorldDimension/2; i++)
-            // {
-            //     for (int j = WorldDimension/-2; j < WorldDimension/2; j++)
-            //     {
-            //         if (!(i == 0 && j == 0))
-            //         {
-            //             BlockGenerator(i, j);
-            //         }
-            //     }
-            // }
         }
 
         void RecursiveGeneration(CityBlock block, int width)
@@ -71,32 +61,24 @@ namespace Scenes.MainGameWorld.Scripts
 
                 try 
                 {
-                    upBlock = CityBlocks.First(b => b.BlockX == block.BlockX && b.BlockY == block.BlockY + 1);
-                } catch (InvalidOperationException e)
-                {
-                    RecursiveGeneration(BlockGenerator(block.BlockX, block.BlockY + 1), width + 1);
-                }
-                
-                try 
-                {
-                    downBlock = CityBlocks.First(b => b.BlockX == block.BlockX && b.BlockY == block.BlockY - 1);
+                    upBlock = CityBlocks.First(b => b.BlockX == block.BlockX && b.BlockY == block.BlockY - 1);
                 } catch (InvalidOperationException e)
                 {
                     RecursiveGeneration(BlockGenerator(block.BlockX, block.BlockY - 1), width + 1);
                 }
+                
+                try 
+                {
+                    downBlock = CityBlocks.First(b => b.BlockX == block.BlockX && b.BlockY == block.BlockY + 1);
+                } catch (InvalidOperationException e)
+                {
+                    RecursiveGeneration(BlockGenerator(block.BlockX, block.BlockY + 1), width + 1);
+                }
             }
-
-            
-            
-            
-               
-            
         }
 
         CityBlock BlockGenerator(int x, int y)
         {
-            Debug.Log($"Generating block at {x}, {y}");
-            Debug.Log(CityBlockCoords.Count);
             Random random = new Random();
 
             int leftConn, rightConn, upConn, downConn;
@@ -119,7 +101,7 @@ namespace Scenes.MainGameWorld.Scripts
             
             try 
             {
-                upConn = CityBlocks.First(b => b.BlockX == x && b.BlockY == y + 1).ConnectionDirections["bottom"];
+                upConn = CityBlocks.First(b => b.BlockX == x && b.BlockY == y - 1).ConnectionDirections["bottom"];
             } catch (InvalidOperationException e)
             {
                 upConn = random.Next(1, BlockDimension - 1);
@@ -127,7 +109,7 @@ namespace Scenes.MainGameWorld.Scripts
             
             try 
             {
-                downConn = CityBlocks.First(b => b.BlockX == x && b.BlockY == y - 1).ConnectionDirections["top"];
+                downConn = CityBlocks.First(b => b.BlockX == x && b.BlockY == y + 1).ConnectionDirections["top"];
             } catch (InvalidOperationException e)
             {
                 downConn = random.Next(1, BlockDimension - 1);

@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using UnityEditor;
-using UnityEngine;
-using UnityEngine.Tilemaps;
 using Random = System.Random;
 
 namespace Scenes.MainGameWorld.Scripts
 {
     public class CityBlock
     {
-
         public List<Tile> Tiles { get; set; } = new List<Tile>();
 
         public int BlockDimension { get; set; } = 4;
@@ -19,10 +13,11 @@ namespace Scenes.MainGameWorld.Scripts
         public int BlockX { get; set; }
         public int BlockY { get; set; }        
         
-        // public int[] Connections { get; set; } = { 1, 2, 1, 2}; // TOP, BOTTOM, LEFT, RIGHT
         public Dictionary<string, int> ConnectionDirections { get; set; } = new(){ 
-            { "top", 1 }, { "bottom", 2 },
-            { "left", 3 }, { "right", 4 } 
+            { "top", 2 }, 
+            { "bottom", 2 },
+            { "left", 2 }, 
+            { "right", 2 } 
         };
 
 
@@ -45,14 +40,15 @@ namespace Scenes.MainGameWorld.Scripts
             foreach (var tile in Tiles)
             {
                 double cost = random.NextDouble();
-
+                double cost_edge = 10;
+                
                 // Deals with vertical edges
                 if (tile.X == 0)
                 {
                     Tile below = Tiles.FirstOrDefault(t => t.X == tile.X + 1 && t.Y == tile.Y);
                     
                     if (tile.Y == 0 || tile.Y == BlockDimension - 1)
-                        cost = 2;
+                        cost = cost_edge;
                     Link link = new Link { ConnectedTile = below, Cost = cost};
                     tile.Connections.Add(link);
                 }
@@ -60,14 +56,14 @@ namespace Scenes.MainGameWorld.Scripts
                 {
                     Tile above = Tiles.FirstOrDefault(t => t.X == tile.X - 1 && t.Y == tile.Y);
                     if (tile.Y == 0 || tile.Y == BlockDimension - 1)
-                        cost = 2;
+                        cost = cost_edge;
                     Link link = new Link { ConnectedTile = above, Cost = cost};
                     tile.Connections.Add(link);
                 }
                 else
                 {
                     if (tile.Y == 0 || tile.Y == BlockDimension - 1)
-                        cost = 2;
+                        cost = cost_edge;
                     Tile below = Tiles.FirstOrDefault(t => t.X == tile.X + 1 && t.Y == tile.Y);
                     Link link = new Link { ConnectedTile = below, Cost = cost};
                     tile.Connections.Add(link);
@@ -81,7 +77,7 @@ namespace Scenes.MainGameWorld.Scripts
                 {
                     Tile right = Tiles.FirstOrDefault(t => t.X == tile.X && t.Y == tile.Y + 1);
                     if (tile.X == 0 || tile.X == BlockDimension - 1)
-                        cost = 2;
+                        cost = cost_edge;
                     Link link = new Link { ConnectedTile = right, Cost = cost};
                     tile.Connections.Add(link);
                 }
@@ -89,14 +85,14 @@ namespace Scenes.MainGameWorld.Scripts
                 {
                     Tile left = Tiles.FirstOrDefault(t => t.X == tile.X && t.Y == tile.Y - 1);
                     if (tile.X == 0 || tile.X == BlockDimension - 1)
-                        cost = 2;
+                        cost = cost_edge;
                     Link link = new Link { ConnectedTile = left, Cost = cost};
                     tile.Connections.Add(link);
                 }
                 else
                 {
                     if (tile.X == 0 || tile.X == BlockDimension - 1)
-                        cost = 2;
+                        cost = cost_edge;
                     Tile right = Tiles.FirstOrDefault(t => t.X == tile.X && t.Y == tile.Y + 1);
                     Link link = new Link { ConnectedTile = right, Cost = cost};
                     tile.Connections.Add(link);
@@ -110,25 +106,21 @@ namespace Scenes.MainGameWorld.Scripts
             EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == ConnectionDirections["bottom"] && t.Y == BlockDimension - 1));
             EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == 0 && t.Y == ConnectionDirections["left"]));
             EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == BlockDimension - 1 && t.Y == ConnectionDirections["right"]));
-
-
+            
             
             ShortestPaths.Add(GetShortestPathDijkstra(
                 EdgeConnections.FirstOrDefault(t => t.X == ConnectionDirections["top"] && t.Y == 0), 
-                EdgeConnections.LastOrDefault(t => t.X == ConnectionDirections["bottom"]  && t.Y == BlockDimension - 1)));
+                EdgeConnections.FirstOrDefault(t => t.X == ConnectionDirections["bottom"]  && t.Y == BlockDimension - 1)));
+            
             ShortestPaths.Add(GetShortestPathDijkstra(
-                EdgeConnections.FirstOrDefault(t => t.X == ConnectionDirections["top"] && t.Y == 0), 
-                EdgeConnections.LastOrDefault(t => t.X == 0 && t.Y == ConnectionDirections["left"])));
+                EdgeConnections.FirstOrDefault(t => t.X == ConnectionDirections["bottom"]  && t.Y == BlockDimension - 1), 
+                EdgeConnections.FirstOrDefault(t => t.X == 0 && t.Y == ConnectionDirections["left"])));
+            
             ShortestPaths.Add(GetShortestPathDijkstra(
-                EdgeConnections.FirstOrDefault(t => t.X == ConnectionDirections["top"] && t.Y == 0), 
-                EdgeConnections.LastOrDefault(t => t.X == BlockDimension - 1 && t.Y == ConnectionDirections["right"])));
+                EdgeConnections.FirstOrDefault(t => t.X == 0 && t.Y == ConnectionDirections["left"]), 
+                EdgeConnections.FirstOrDefault(t => t.X == BlockDimension - 1 && t.Y == ConnectionDirections["right"])));
             
             ParsePaths();
-            
-            // foreach (var tile in EdgeConnections)
-            // {
-            //     tile.Type = 2;
-            // }
         }
 
 
@@ -151,6 +143,14 @@ namespace Scenes.MainGameWorld.Scripts
             shortestPath.Add(end);
             BuildShortestPath(shortestPath, end);
             shortestPath.Reverse();
+            
+            // Resets the pathfinding variables to their original shape
+            foreach (var tile in Tiles)
+            {
+                tile.Visited = false;
+                tile.MinCostToStart = null;
+                tile.NearestToStart = null;
+            }
             return shortestPath;
         }
     
@@ -189,38 +189,6 @@ namespace Scenes.MainGameWorld.Scripts
                 if (node == end)
                     return;
             } while (prioQueue.Any());
-        }
-        
-        
-        
-        
-    }
-    
-    public class Tile
-    {
-        public Guid ID { get; set; }
-        public string Name { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
-        
-        public int Type { get; set; }
-        
-        public List<Link> Connections { get; set; } = new List<Link>();
-
-        public double? MinCostToStart { get; set; }
-        public Tile NearestToStart { get; set; }
-        public bool Visited { get; set; }
-        public double StraightLineDistanceToEnd { get; set; }
-    }
-    
-    public class Link
-    {
-        public double Cost { get; set; }
-        public Tile ConnectedTile { get; set; }
-
-        public override string ToString()
-        {
-            return "-> " + ConnectedTile.ToString();
         }
     }
 }
