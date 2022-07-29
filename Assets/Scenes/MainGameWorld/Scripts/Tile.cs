@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Scenes.MainGameWorld.Scripts
 {
@@ -10,13 +9,13 @@ namespace Scenes.MainGameWorld.Scripts
         
         public int Type { get; set; }
         
-        public List<Link> Connections { get; set; } = new List<Link>();
+        public List<Link> Connections { get; } = new();
 
         public double? MinCostToStart { get; set; }
         public Tile NearestToStart { get; set; }
         public bool Visited { get; set; }
 
-        public bool nextToRoad { get; set; } = false;
+        public bool NextToRoad { get; set; }
     }
     
     public class Link

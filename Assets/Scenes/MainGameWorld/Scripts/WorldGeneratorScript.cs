@@ -1,12 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using Scenes.MainGameWorld.Scripts;
-using UnityEditor;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using Random = System.Random;
 
 public class WorldGeneratorScript : MonoBehaviour
 {
@@ -23,21 +16,23 @@ public class WorldGeneratorScript : MonoBehaviour
         int WorldDimension = 14;
         int BlockDimension = 8;
         
+        // Generates the World based on the WorldDimension and BlockDimension
         WorldMap map = new WorldMap {WorldDimension = WorldDimension, BlockDimension = BlockDimension};
         map.GenerateWorld();
 
+        // Draws the World based on the WorldMap graph.
         foreach (var block in map.CityBlocks)
         {
             foreach (var tile in block.Tiles)
             {
-                if (tile.Type == 0)
+                if (tile.Type == 0) // Tile type == 0 => road tile
                 {
                     Instantiate(demoRoadTile, new Vector3(
                         block.BlockX * BlockDimension * tileSize + (tile.X*tileSize), 
                         2, 
                         block.BlockY * BlockDimension * tileSize + (tile.Y*tileSize)), Quaternion.identity);
                 }
-                if (tile.Type == 1 && tile.nextToRoad)
+                if (tile.Type == 1 && tile.NextToRoad) // Tile types == 1 => building tile
                 {
                     Instantiate(demoBuilding, new Vector3(
                         block.BlockX * BlockDimension * tileSize + (tile.X*tileSize), 
@@ -47,8 +42,6 @@ public class WorldGeneratorScript : MonoBehaviour
             }
         }
     }
-
-    
     
     // Update is called once per frame
     void Update()

@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Random = System.Random;
 
 namespace Scenes.MainGameWorld.Scripts
 {
     public class WorldMap
     {
-        public List<CityBlock> CityBlocks { get; set; } = new List<CityBlock>();
-        public List<int[]> CityBlockCoords { get; set; } = new List<int[]>();
-        public int WorldDimension { get; set; } = 8;
-        
-        public int BlockDimension { get; set; } = 8;
+        public List<CityBlock> CityBlocks { get; } = new();
+        public int WorldDimension { get; set; } = 8; // How many recursive steps to generate the world map.
+        public int BlockDimension { get; set; } = 8; // The width of the city blocks
 
-
-        private int CurrentWidth = 0;
-
+        /**
+         * Generates a game world (city) by recursively generating city blocks.
+         */
         public void GenerateWorld()
         {
             Random random = new Random();
@@ -33,15 +30,18 @@ namespace Scenes.MainGameWorld.Scripts
             originBlock.CreateMap();
             
             CityBlocks.Add(originBlock);
-            CityBlockCoords.Add(new[] {0, 0});
-            
+
             RecursiveGeneration(originBlock, 0);
         }
 
+        /**
+         * Recursively generates the world map.
+         */
         void RecursiveGeneration(CityBlock block, int width)
         {
-            if (width < WorldDimension)
+            if (width < WorldDimension) // Recursive final case
             {
+                // Try statements used because of the implementation of List.First in C#
                 CityBlock leftBlock, rightBlock, upBlock, downBlock;
                 try
                 {
@@ -76,13 +76,19 @@ namespace Scenes.MainGameWorld.Scripts
                 }
             }
         }
-
+        
+         /**
+          * Generates a new block at the given coordinates.
+          * 
+          * Will pull the edge connections from existing blocks to ensure the world map is connected.
+          */
         CityBlock BlockGenerator(int x, int y)
         {
             Random random = new Random();
 
             int leftConn, rightConn, upConn, downConn;
-
+            
+            // Try-Catch required due to implementation of List.First in C#
             try
             {
                 leftConn = CityBlocks.First(b => b.BlockX == x - 1 && b.BlockY == y).ConnectionDirections["right"];
@@ -114,7 +120,7 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 downConn = random.Next(1, BlockDimension - 1);
             }
-
+            
             CityBlock block = new CityBlock
             {
                 BlockDimension = BlockDimension,
@@ -130,7 +136,6 @@ namespace Scenes.MainGameWorld.Scripts
             block.CreateMap();
             
             CityBlocks.Add(block);
-            CityBlockCoords.Add(new[] {x, y});
 
             return block;
         }

@@ -6,29 +6,34 @@ namespace Scenes.MainGameWorld.Scripts
 {
     public class CityBlock
     {
-        public List<Tile> Tiles { get; set; } = new List<Tile>();
-
-        public int BlockDimension { get; set; } = 4;
+        public List<Tile> Tiles { get; } = new ();
         
-        public int BlockX { get; set; }
-        public int BlockY { get; set; }        
+        public int BlockDimension { get; set; } = 4; // The side length of the block
+        public int BlockX { get; set; } // The X coordinate of the block in the world 
+        public int BlockY { get; set; } // The Y coordinate of the block in the world
         
         public Dictionary<string, int> ConnectionDirections { get; set; } = new(){ 
             { "top", 2 }, 
             { "bottom", 2 },
             { "left", 2 }, 
             { "right", 2 } 
-        };
+        }; // The locations of the connections to other blocks
 
+        private List<Tile> EdgeConnections { get; } = new();
+        private List<List<Tile>> ShortestPaths { get; } = new();
 
-        public List<Tile> EdgeConnections { get; set; } = new();
-        
-        public List<List<Tile>> ShortestPaths { get; set; } = new();
-
+        /**
+         * Generates a new city block with the given dimensions, and finds the paths between the edge connections.
+         *
+         * The city block is represented as a graph with Nodes representing the tiles and Edges representing
+         * neighbouring tiles, eg. if two nodes are connected then they are next to each other on the grid.
+         *
+         */
         public void CreateMap()
         {
             Random random = new Random();
             
+            // Generates the base graph of tiles (grids)
             for (var i = 0; i < BlockDimension; i++)
             {
                 for (var j = 0; j < BlockDimension; j++)
@@ -36,7 +41,8 @@ namespace Scenes.MainGameWorld.Scripts
                     Tiles.Add(new Tile {X = i, Y = j, Type = 1});
                 }
             }
-
+            
+            // Connects the nodes in the graph together based on their coordinate position. The edges are weighted.
             foreach (var tile in Tiles)
             {
                 double cost = random.NextDouble();
@@ -102,12 +108,13 @@ namespace Scenes.MainGameWorld.Scripts
                 }
             }
             
+            // Adds the edge connection nodes to a separate list.
             EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == ConnectionDirections["top"] && t.Y == 0));
             EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == ConnectionDirections["bottom"] && t.Y == BlockDimension - 1));
             EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == 0 && t.Y == ConnectionDirections["left"]));
             EdgeConnections.Add(Tiles.FirstOrDefault(t => t.X == BlockDimension - 1 && t.Y == ConnectionDirections["right"]));
             
-            
+            // Finds the shortest paths between the edge connections.
             ShortestPaths.Add(GetShortestPathDijkstra(
                 EdgeConnections.FirstOrDefault(t => t.X == ConnectionDirections["top"] && t.Y == 0), 
                 EdgeConnections.FirstOrDefault(t => t.X == ConnectionDirections["bottom"]  && t.Y == BlockDimension - 1)));
@@ -122,19 +129,21 @@ namespace Scenes.MainGameWorld.Scripts
             
             ParsePaths();
 
+            // Enables only drawing tiles that are next to roads.
             foreach (var tile in Tiles)
             {
                 foreach (var link in tile.Connections)
                 {
                     if (link.ConnectedTile.Type == 0)
-                        tile.nextToRoad = true;
+                        tile.NextToRoad = true;
                 }
             }
         }
 
-
+        /**
+         * Changes the block type of the tile to paths instead of buildings.
+         */
         void ParsePaths()
-        //TODO: identify & fix BUG with ParsePaths()
         {
             foreach (var path in ShortestPaths)
             {
@@ -145,24 +154,30 @@ namespace Scenes.MainGameWorld.Scripts
             }
         }
 
-        public List<Tile> GetShortestPathDijkstra(Tile start, Tile end)
+        /**
+         * Returns the shortest path between two tiles using Dijkstra's algorithm.
+         */
+        private List<Tile> GetShortestPathDijkstra(Tile start, Tile end)
         {
             DijkstraSearch(start, end);
-            var shortestPath = new List<Tile>();
-            shortestPath.Add(end);
+            List<Tile> shortestPath = new List<Tile> { end };
             BuildShortestPath(shortestPath, end);
             shortestPath.Reverse();
             
-            // Resets the pathfinding variables to their original shape
+            // Resets the pathfinding variables to their original value for the next pathfinding.
             foreach (var tile in Tiles)
             {
                 tile.Visited = false;
                 tile.MinCostToStart = null;
                 tile.NearestToStart = null;
             }
+            
             return shortestPath;
         }
     
+        /**
+         * Builds the shortest path from the end tile to the start tile.
+         */
         private void BuildShortestPath(List<Tile> list, Tile node)
         {
             if (node.NearestToStart == null)
@@ -171,18 +186,22 @@ namespace Scenes.MainGameWorld.Scripts
             BuildShortestPath(list, node.NearestToStart);
         }
     
+        /**
+         * Performs the Dijkstra search algorithm on the graph between the start and end tiles.
+         *
+         * Implemented from this source: https://gist.github.com/DotNetCoreTutorials/08b0210616769e81034f53a6a420a6d9
+         */
         private void DijkstraSearch(Tile start, Tile end)
         {
             start.MinCostToStart = 0;
-            var prioQueue = new List<Tile>();
-            prioQueue.Add(start);
+            List<Tile> priorityQueue = new List<Tile> { start };
             do {
-                prioQueue = prioQueue.OrderBy(x => x.MinCostToStart).ToList();
-                var node = prioQueue.First();
-                prioQueue.Remove(node);
-                foreach (var cnn in node.Connections.OrderBy(x => x.Cost))
+                priorityQueue = priorityQueue.OrderBy(x => x.MinCostToStart).ToList();
+                Tile node = priorityQueue.First();
+                priorityQueue.Remove(node);
+                foreach (Link cnn in node.Connections.OrderBy(x => x.Cost))
                 {
-                    var childNode = cnn.ConnectedTile;
+                    Tile childNode = cnn.ConnectedTile;
                     if (childNode.Visited)
                         continue;
                     if (childNode.MinCostToStart == null ||
@@ -190,14 +209,14 @@ namespace Scenes.MainGameWorld.Scripts
                     {
                         childNode.MinCostToStart = node.MinCostToStart + cnn.Cost;
                         childNode.NearestToStart = node;
-                        if (!prioQueue.Contains(childNode))
-                            prioQueue.Add(childNode);
+                        if (!priorityQueue.Contains(childNode))
+                            priorityQueue.Add(childNode);
                     }
                 }
                 node.Visited = true;
                 if (node == end)
                     return;
-            } while (prioQueue.Any());
+            } while (priorityQueue.Any());
         }
     }
 }
