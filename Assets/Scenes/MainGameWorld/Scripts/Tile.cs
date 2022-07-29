@@ -29,6 +29,7 @@ namespace Scenes.MainGameWorld.Scripts
         Road,
         Building,
         House,
-        Shop
+        Shop,
+        Landscape
     }
 }

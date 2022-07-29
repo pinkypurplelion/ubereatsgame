@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Random = System.Random;
 
@@ -128,14 +128,19 @@ namespace Scenes.MainGameWorld.Scripts
                 EdgeConnections.FirstOrDefault(t => t.X == BlockDimension - 1 && t.Y == ConnectionDirections["right"])));
             
             ParsePaths();
-
             // Enables only drawing tiles that are next to roads.
             foreach (var tile in Tiles)
             {
                 foreach (var link in tile.Connections)
                 {
                     if (link.ConnectedTile.Type == TileType.Road)
+                    {
                         tile.NextToRoad = true;
+                        if (random.NextDouble() < 0.05 && tile.Type == TileType.Building)
+                            tile.Type = TileType.Shop;
+                        if (random.NextDouble() > 0.95 && tile.Type == TileType.Building)
+                            tile.Type = TileType.House;
+                    }
                 }
             }
         }
