@@ -4,6 +4,11 @@ using UnityEngine;
 
 namespace Scenes.MainGameWorld.Scripts
 {
+    /**
+     * Holds the information about the Tile. This class is referenced as the Node in the WorldMap graph.
+     *
+     * Attached to the instantiated GameObjects at runtime.
+     */
     public class Tile
     {
         public int X { get; set; }
