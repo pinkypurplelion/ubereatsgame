@@ -8,13 +8,15 @@ public class WorldGeneratorScript : MonoBehaviour
     public GameObject demoShop;
     public GameObject demoHouse;
 
+    public GameObject TilePrefab;
+
     private int tileSize = 1;
     
     // Start is called before the first frame update
     void Start()
     {
-        int WorldDimension = 20;
-        int BlockDimension = 5;
+        int WorldDimension = 1;
+        int BlockDimension = 8;
         
         // Generates the World based on the WorldDimension and BlockDimension
         WorldMap map = new WorldMap {WorldDimension = WorldDimension, BlockDimension = BlockDimension};
@@ -25,34 +27,40 @@ public class WorldGeneratorScript : MonoBehaviour
         {
             foreach (var tile in block.Tiles)
             {
-                if (tile.Type == TileType.Road) // Tile type == 0 => road tile
-                {
-                    Instantiate(demoRoadTile, new Vector3(
-                        block.BlockX * BlockDimension * tileSize + (tile.X*tileSize), 
-                        2, 
-                        block.BlockY * BlockDimension * tileSize + (tile.Y*tileSize)), Quaternion.identity);
-                }
-                if (tile.Type == TileType.Building && tile.NextToRoad) // Tile types == 1 => building tile
-                {
-                    Instantiate(demoBuilding, new Vector3(
-                        block.BlockX * BlockDimension * tileSize + (tile.X*tileSize), 
-                        2, 
-                        block.BlockY * BlockDimension * tileSize + (tile.Y*tileSize)), Quaternion.identity);
-                }
-                if (tile.Type == TileType.Shop) // Tile types == 1 => building tile
-                {
-                    Instantiate(demoShop, new Vector3(
-                        block.BlockX * BlockDimension * tileSize + (tile.X*tileSize), 
-                        2, 
-                        block.BlockY * BlockDimension * tileSize + (tile.Y*tileSize)), Quaternion.identity);
-                }
-                if (tile.Type == TileType.House) // Tile types == 1 => building tile
-                {
-                    Instantiate(demoHouse, new Vector3(
-                        block.BlockX * BlockDimension * tileSize + (tile.X*tileSize), 
-                        2, 
-                        block.BlockY * BlockDimension * tileSize + (tile.Y*tileSize)), Quaternion.identity);
-                }
+                GameObject t = Instantiate(TilePrefab, new Vector3(
+                    block.BlockX * BlockDimension * tileSize + (tile.X*tileSize), 
+                    2, 
+                    block.BlockY * BlockDimension * tileSize + (tile.Y*tileSize)), Quaternion.identity);
+                t.GetComponent<TileObject>().Tile = tile;
+                
+                // if (tile.Type == TileType.Road) // Tile type == 0 => road tile
+                // {
+                //     Instantiate(demoRoadTile, new Vector3(
+                //         block.BlockX * BlockDimension * tileSize + (tile.X*tileSize), 
+                //         2, 
+                //         block.BlockY * BlockDimension * tileSize + (tile.Y*tileSize)), Quaternion.identity);
+                // }
+                // if (tile.Type == TileType.Building && tile.NextToRoad) // Tile types == 1 => building tile
+                // {
+                //     Instantiate(demoBuilding, new Vector3(
+                //         block.BlockX * BlockDimension * tileSize + (tile.X*tileSize), 
+                //         2, 
+                //         block.BlockY * BlockDimension * tileSize + (tile.Y*tileSize)), Quaternion.identity);
+                // }
+                // if (tile.Type == TileType.Shop) // Tile types == 1 => building tile
+                // {
+                //     Instantiate(demoShop, new Vector3(
+                //         block.BlockX * BlockDimension * tileSize + (tile.X*tileSize), 
+                //         2, 
+                //         block.BlockY * BlockDimension * tileSize + (tile.Y*tileSize)), Quaternion.identity);
+                // }
+                // if (tile.Type == TileType.House) // Tile types == 1 => building tile
+                // {
+                //     Instantiate(demoHouse, new Vector3(
+                //         block.BlockX * BlockDimension * tileSize + (tile.X*tileSize), 
+                //         2, 
+                //         block.BlockY * BlockDimension * tileSize + (tile.Y*tileSize)), Quaternion.identity);
+                // }
             }
         }
     }
