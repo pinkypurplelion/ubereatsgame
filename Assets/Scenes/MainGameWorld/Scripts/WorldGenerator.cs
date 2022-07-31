@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = System.Random;
 
 namespace Scenes.MainGameWorld.Scripts
@@ -12,17 +13,20 @@ namespace Scenes.MainGameWorld.Scripts
         public List<Order> orders;
         public List<ShopTile> shops;
 
-        private Random random = new();
-        private int tileSize = 1;
-        
+        private readonly Random _random = new();
+        private const int TileSize = 1;
+
+        // How many recursions when generating the world.
+        public int worldDimension = 1;
+
+        // The width of the CityBlocks.
+        public int blockDimension = 8;
+
         // Start is called before the first frame update
         void Start()
         {
-            int WorldDimension = 1;
-            int BlockDimension = 8;
-        
             // Generates the World based on the WorldDimension and BlockDimension
-            WorldMap map = new WorldMap {WorldDimension = WorldDimension, BlockDimension = BlockDimension};
+            WorldMap map = new WorldMap { WorldDimension = worldDimension, BlockDimension = blockDimension };
             map.GenerateWorld();
 
             // Draws the World based on the WorldMap graph.
@@ -30,32 +34,31 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 foreach (var tile in block.Tiles)
                 {
-                    GameObject t = Instantiate(tilePrefab, new Vector3(
-                        block.BlockX * BlockDimension * tileSize + tile.X*tileSize, 
-                        2, 
-                        block.BlockY * BlockDimension * tileSize + tile.Y*tileSize), Quaternion.identity);
-                    t.GetComponent<TileObject>().Tile = tile;
+                    GameObject tileObject = Instantiate(tilePrefab, new Vector3(
+                        block.BlockX * blockDimension * TileSize + tile.X * TileSize,
+                        2,
+                        block.BlockY * blockDimension * TileSize + tile.Y * TileSize), Quaternion.identity);
+                    tileObject.GetComponent<TileObject>().Tile = tile;
                 }
             }
-            
-        }
 
-        private void FixedUpdate()
-        {
-            // Happens every 10 seconds
-            if (Time.fixedTime % 10f == 0)
+            void FixedUpdate()
             {
-                // A quarter of the time.
-                if (random.NextDouble() < 0.25)
+                // Happens every 10 seconds
+                if (Time.fixedTime % 10f == 0)
                 {
-                    Order order = new Order();
-                    orders.Add(order);
+                    // A quarter of the time.
+                    if (_random.NextDouble() < 0.25)
+                    {
+                        Order order = new Order();
+                        orders.Add(order);
+                    }
                 }
             }
-        }
 
-        void Update()
-        {
+            void Update()
+            {
+            }
         }
     }
 }
