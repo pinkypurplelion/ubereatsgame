@@ -14,9 +14,12 @@ namespace Scenes.MainGameWorld.Scripts
     public class TileObject : MonoBehaviour
     {
         public Tile Tile;
+        public TileType TileType;
 
         void Start()
         {
+            TileType = Tile.Type;
+            
             switch (Tile.Type)
             {
                 case TileType.Road:

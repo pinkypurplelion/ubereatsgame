@@ -128,6 +128,7 @@ namespace Scenes.MainGameWorld.Scripts
                 EdgeConnections.FirstOrDefault(t => t.X == BlockDimension - 1 && t.Y == ConnectionDirections["right"])));
             
             ParsePaths();
+            
             // Enables only drawing tiles that are next to roads.
             foreach (var tile in Tiles)
             {
@@ -141,6 +142,10 @@ namespace Scenes.MainGameWorld.Scripts
                         if (random.NextDouble() > 0.95 && tile.Type == TileType.Building)
                             tile.Type = TileType.House;
                     }
+                }
+                if (!tile.NextToRoad)
+                {
+                    tile.Type = TileType.Landscape;
                 }
             }
         }
