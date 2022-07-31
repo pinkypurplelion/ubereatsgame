@@ -62,5 +62,8 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
-
+# All JetBrains files
 .idea/
+
+# MacOS files
+.DS_Store

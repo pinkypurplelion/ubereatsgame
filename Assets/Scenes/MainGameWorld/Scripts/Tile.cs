@@ -11,6 +11,7 @@ namespace Scenes.MainGameWorld.Scripts
      */
     public class Tile
     {
+        public Guid TileID = Guid.NewGuid();
         public int X { get; set; }
         public int Y { get; set; }
         

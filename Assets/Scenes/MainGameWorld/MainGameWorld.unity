@@ -243,3 +243,60 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilePrefab: {fileID: 6058678328186663578, guid: d93c451c7afae1444af1ec0da887b895, type: 3}
+--- !u!1001 &7822238683313575181
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 227635900788496235, guid: afa90f3f01dcacb469c58622efdbc18f, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 227635900788496235, guid: afa90f3f01dcacb469c58622efdbc18f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.2932887
+      objectReference: {fileID: 0}
+    - target: {fileID: 227635900788496235, guid: afa90f3f01dcacb469c58622efdbc18f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -5.412405
+      objectReference: {fileID: 0}
+    - target: {fileID: 227635900788496235, guid: afa90f3f01dcacb469c58622efdbc18f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 4.897377
+      objectReference: {fileID: 0}
+    - target: {fileID: 227635900788496235, guid: afa90f3f01dcacb469c58622efdbc18f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 227635900788496235, guid: afa90f3f01dcacb469c58622efdbc18f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 227635900788496235, guid: afa90f3f01dcacb469c58622efdbc18f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 227635900788496235, guid: afa90f3f01dcacb469c58622efdbc18f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 227635900788496235, guid: afa90f3f01dcacb469c58622efdbc18f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 227635900788496235, guid: afa90f3f01dcacb469c58622efdbc18f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 227635900788496235, guid: afa90f3f01dcacb469c58622efdbc18f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3217130463610107680, guid: afa90f3f01dcacb469c58622efdbc18f, type: 3}
+      propertyPath: m_Name
+      value: ShopTile
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: afa90f3f01dcacb469c58622efdbc18f, type: 3}
