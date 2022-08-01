@@ -10,8 +10,10 @@ namespace Scenes.MainGameWorld.Scripts
     {
         public GameObject tilePrefab;
 
-        public List<Order> orders;
+        public List<Order> Orders = new();
+        
         public List<ShopTile> shops;
+        public List<HouseTile> houses;
 
         private readonly Random _random = new();
         private const int TileSize = 1;
@@ -21,6 +23,10 @@ namespace Scenes.MainGameWorld.Scripts
 
         // The width of the CityBlocks.
         public int blockDimension = 8;
+
+        // How often orders are generated (in seconds)
+        public float orderGenerationTime = 5f;
+        
 
         // Start is called before the first frame update
         void Start()
@@ -39,26 +45,49 @@ namespace Scenes.MainGameWorld.Scripts
                         2,
                         block.BlockY * blockDimension * TileSize + tile.Y * TileSize), Quaternion.identity);
                     tileObject.GetComponent<TileObject>().Tile = tile;
+                    
+                    if (tile.Type == TileType.Shop)
+                    {
+                        shops.Add(tileObject.transform.Find("shop").GetComponent<ShopTile>());
+                        // Debug.Log(tileObject.transform.Find("shop").GetComponent<ShopTile>().ShopID);
+                    }
+                    else if (tile.Type == TileType.House)
+                    {
+                        houses.Add(tileObject.transform.Find("house").GetComponent<HouseTile>());
+                        // Debug.Log(tileObject.transform.Find("house").GetComponent<HouseTile>().HouseID);
+                    }
                 }
             }
+
+            Debug.Log("number of shops: " + shops.Count);
+            Debug.Log("number of houses: " + houses.Count);
         }
         
         void FixedUpdate()
         {
-            // Happens every 10 seconds
-            if (Time.fixedTime % 10f == 0)
+            if (Time.fixedTime % orderGenerationTime == 0)
             {
-                // A quarter of the time.
-                if (_random.NextDouble() < 0.25)
-                {
-                    Order order = new Order();
-                    orders.Add(order);
-                }
+                GenerateOrder();
             }
         }
 
         void Update()
         {
         }
+
+        void GenerateOrder()
+        {
+            ShopTile shop = shops[_random.Next(shops.Count)];
+            HouseTile house = houses[_random.Next(houses.Count)];
+            Order order = new Order
+            {
+                ShopID = shop.ShopID,
+                HouseID = house.HouseID
+            };
+            Orders.Add(order);
+            shop.Orders.Add(order.OrderID);
+        }
     }
+        
 }
+

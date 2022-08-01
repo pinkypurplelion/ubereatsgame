@@ -8,8 +8,6 @@ namespace Scenes.MainGameWorld.Scripts
     public class WorldMap
     {
         public List<CityBlock> CityBlocks { get; } = new();
-        
-        public List<Tile> Shops { get; } = new();
         public int WorldDimension { get; set; } = 8; // How many recursive steps to generate the world map.
         public int BlockDimension { get; set; } = 8; // The width of the city blocks
 

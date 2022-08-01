@@ -9,7 +9,7 @@ namespace Scenes.MainGameWorld.Scripts
     {
         public string Name { get; set; }
         public Guid ShopID = Guid.NewGuid();
-        public List<Order> Orders = new();
+        public List<Guid> Orders { get; set; } = new();
 
         private TMP_Text _priceText;
 
