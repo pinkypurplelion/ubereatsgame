@@ -244,6 +244,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tilePrefab: {fileID: 6058678328186663578, guid: d93c451c7afae1444af1ec0da887b895, type: 3}
   shops: []
+  worldDimension: 1
+  blockDimension: 8
 --- !u!1001 &7822238683313575181
 PrefabInstance:
   m_ObjectHideFlags: 0
