@@ -6,7 +6,7 @@ using Random = System.Random;
 
 namespace Scenes.MainGameWorld.Scripts
 {
-    public class WorldGenerator : MonoBehaviour
+    public class WorldEventManager : MonoBehaviour
     {
         public GameObject tilePrefab;
 
@@ -41,24 +41,24 @@ namespace Scenes.MainGameWorld.Scripts
                     tileObject.GetComponent<TileObject>().Tile = tile;
                 }
             }
-
-            void FixedUpdate()
+        }
+        
+        void FixedUpdate()
+        {
+            // Happens every 10 seconds
+            if (Time.fixedTime % 10f == 0)
             {
-                // Happens every 10 seconds
-                if (Time.fixedTime % 10f == 0)
+                // A quarter of the time.
+                if (_random.NextDouble() < 0.25)
                 {
-                    // A quarter of the time.
-                    if (_random.NextDouble() < 0.25)
-                    {
-                        Order order = new Order();
-                        orders.Add(order);
-                    }
+                    Order order = new Order();
+                    orders.Add(order);
                 }
             }
+        }
 
-            void Update()
-            {
-            }
+        void Update()
+        {
         }
     }
 }
