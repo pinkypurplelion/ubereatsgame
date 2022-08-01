@@ -3,7 +3,12 @@ guid: 14ef0825e22f5ae49818baf7dc7494a4
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: road_intersectionMat
+    second: {fileID: 2100000, guid: 0c35c82215d21428d975a66651fceb50, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
