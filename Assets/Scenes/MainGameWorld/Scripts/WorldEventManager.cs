@@ -34,7 +34,6 @@ namespace Scenes.MainGameWorld.Scripts
             // Generates the World based on the WorldDimension and BlockDimension
             WorldMap map = new WorldMap { WorldDimension = worldDimension, BlockDimension = blockDimension };
             map.GenerateWorld();
-
             // Draws the World based on the WorldMap graph.
             foreach (var block in map.CityBlocks)
             {
@@ -88,6 +87,7 @@ namespace Scenes.MainGameWorld.Scripts
             shop.Orders.Add(order.OrderID);
         }
     }
+    
         
 }
 

@@ -41,7 +41,7 @@ namespace Scenes.MainGameWorld.Scripts
 
         
         // Update is called once per frame
-        void Update()
+        void FixedUpdate()
         {
             Vector3 tempVect = new Vector3(moveVal.x, 0, moveVal.y);
             tempVect = tempVect.normalized * (speed * Time.deltaTime);
