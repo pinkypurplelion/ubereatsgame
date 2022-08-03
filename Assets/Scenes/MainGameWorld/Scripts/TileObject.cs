@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -9,7 +9,7 @@ namespace Scenes.MainGameWorld.Scripts
      * The script attached to the TileObject prefab. This currently only manages the models but will manage all
      * game functionality of the prefab in relation to the information provided by the attached Tile script.
      *
-     * Tile script attached at runtime by the WorldGenerator script.
+     * Tile script attached at runtime by the WorldEventManager script.
      */
     public class TileObject : MonoBehaviour
     {
