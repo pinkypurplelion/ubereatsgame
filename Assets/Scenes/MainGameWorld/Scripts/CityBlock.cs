@@ -137,6 +137,8 @@ namespace Scenes.MainGameWorld.Scripts
                     if (link.ConnectedTile.Type == TileType.Road)
                     {
                         tile.NextToRoad = true;
+                        
+                        // Creates shops & houses on the tiles next to roads.
                         if (random.NextDouble() < 0.05 && tile.Type == TileType.Building)
                             tile.Type = TileType.Shop;
                         if (random.NextDouble() > 0.95 && tile.Type == TileType.Building)
