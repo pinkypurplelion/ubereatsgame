@@ -2,17 +2,47 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RoadTile : MonoBehaviour
+namespace Scenes.MainGameWorld.Scripts
 {
-    // Start is called before the first frame update
-    void Start()
+    public class RoadTile : MonoBehaviour
     {
-        
-    }
+        /**
+         * This script determines the orientation of the road based of its location
+         * As well as the type of road piece to use
+        **/
+        public Tile Tile;
+        public TileType TileType;
+        public List<Tile> Tiles { get; } = new();
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // Start is called before the first frame update
+        void Start()
+        {
+
+            foreach (var tile in Tiles)
+            {
+                if (tile.Type == TileType.Road)
+                {
+                    int[,] directions = new int[4, 2];
+                    int count = 0;
+                    foreach (var link in tile.Connections)
+                    {
+
+
+                        if (link.ConnectedTile.Type == TileType.Road)
+                        {
+
+                            directions[count, 0] = link.ConnectedTile.X;
+                            directions[count, 1] = link.ConnectedTile.Y;
+
+                        }
+                    }
+                }
+
+
+            }
+
+        }
+
+
     }
 }
