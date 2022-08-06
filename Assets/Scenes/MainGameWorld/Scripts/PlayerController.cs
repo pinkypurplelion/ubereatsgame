@@ -140,14 +140,21 @@ namespace Scenes.MainGameWorld.Scripts
         private void SelectOrderFromShop(ClickEvent evt)
         {
             Button button = evt.currentTarget as Button;
-            Orders.Add(Guid.Parse(button.name));
-            _orderPlayerCountLabel.text = $"Orders: {Orders.Count}";
-            
-            // Removes order from shop
-            // TODO: is there a more efficient way of doing this?
-            foreach (var shopCollision in CurrentShopCollisions)
+            if (Orders.Count == 0) // TODO implement multi order collection
             {
-                shopCollision.transform.GetComponent<ShopTile>().Orders.Remove(Guid.Parse(button.name));
+                Orders.Add(Guid.Parse(button.name));
+                _orderPlayerCountLabel.text = $"Orders: {Orders.Count}";
+            
+                // Removes order from shop
+                // TODO: is there a more efficient way of doing this?
+                foreach (var shopCollision in CurrentShopCollisions)
+                {
+                    shopCollision.transform.GetComponent<ShopTile>().Orders.Remove(Guid.Parse(button.name));
+                }
+            }
+            else
+            {
+                Debug.Log("Can only collect one order at a time");
             }
         }
         
