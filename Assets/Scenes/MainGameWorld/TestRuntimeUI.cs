@@ -27,6 +27,11 @@ public class TestRuntimeUI : MonoBehaviour
         _button.UnregisterCallback<ClickEvent>(PrintClickMessage);
     }
 
+    public void CreateGUI()
+    {
+        Debug.Log("CreateGUI");
+    }
+    
     private void PrintClickMessage(ClickEvent evt)
     {
         ++_clickCount;

@@ -1,4 +1,10 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <ui:Label text="Label" display-tooltip-when-elided="true" name="TestLabel" />
-    <ui:Button text="Button" display-tooltip-when-elided="true" name="TestButton" />
+    <ui:GroupBox name="OrderSelection">
+        <ui:GroupBox name="DemoOrder">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="CustomerName" />
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="OrderPrice" />
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="OrderLocation" />
+            <ui:Button text="Button" display-tooltip-when-elided="true" name="PickUpOrder" />
+        </ui:GroupBox>
+    </ui:GroupBox>
 </ui:UXML>
