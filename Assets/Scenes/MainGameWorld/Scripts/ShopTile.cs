@@ -23,7 +23,10 @@ namespace Scenes.MainGameWorld.Scripts
 
         void Start()
         {
-
+            // purely for testing
+            Orders.Add(Guid.NewGuid());
+            Orders.Add(Guid.NewGuid());
+            Orders.Add(Guid.NewGuid());
         }
 
         private void FixedUpdate()
@@ -31,7 +34,7 @@ namespace Scenes.MainGameWorld.Scripts
             // Update every second
             if (Time.fixedTime % 1f == 0)
             {
-                _priceText.text = Orders.Count.ToString();
+                _priceText.text = $"Current Orders: {Orders.Count.ToString()}";
             }
         }
 
