@@ -11,7 +11,8 @@ namespace Scenes.MainGameWorld.Scripts
         public int BlockDimension { get; set; } = 4; // The side length of the block
         public int BlockX { get; set; } // The X coordinate of the block in the world 
         public int BlockY { get; set; } // The Y coordinate of the block in the world
-        
+
+        public Dictionary<string, bool> directions = new Dictionary<string, bool>(); // The directions of road pieces 
         public Dictionary<string, int> ConnectionDirections { get; set; } = new(){ 
             { "top", 2 }, 
             { "bottom", 2 },
@@ -136,6 +137,7 @@ namespace Scenes.MainGameWorld.Scripts
                 {
                     if (link.ConnectedTile.Type == TileType.Road)
                     {
+                        
                         tile.NextToRoad = true;
                         
                         // Creates shops & houses on the tiles next to roads.

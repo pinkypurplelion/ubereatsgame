@@ -15,6 +15,7 @@ namespace Scenes.MainGameWorld.Scripts
     {
         public Tile Tile;
         public TileType TileType;
+        private GameObject _road;
 
         void Start()
         {
@@ -24,6 +25,11 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 case TileType.Road:
                     transform.Find("road").gameObject.SetActive(true);
+                    _road = transform.Find("road").gameObject;
+                    _road.SetActive(true);
+                    _road.GetComponent<RoadTile>().Tile = Tile;
+
+
                     break;
                 case TileType.Building:
                     transform.Find("building").gameObject.SetActive(true);
