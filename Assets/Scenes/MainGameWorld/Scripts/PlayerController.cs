@@ -41,6 +41,7 @@ namespace Scenes.MainGameWorld.Scripts
         // Used to configure things that depend on other components
         void Start()
         {
+            gameObject.tag = "Player";
             _rootVisualElement = _uiDocument.rootVisualElement;
             _orderPlayerCountLabel = _rootVisualElement.Q<Label>("PlayerOrderCount");
         }
