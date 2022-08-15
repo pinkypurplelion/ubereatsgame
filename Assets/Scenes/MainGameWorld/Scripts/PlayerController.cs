@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
@@ -19,6 +20,7 @@ namespace Scenes.MainGameWorld.Scripts
 
         public float speed;
 
+        // Player Components
         private Rigidbody _rigidbody;
         private BoxCollider _collider;
         
@@ -30,12 +32,18 @@ namespace Scenes.MainGameWorld.Scripts
         
         private Label _orderPlayerCountLabel;
 
+        // Global Components
+        private GameObject _worldEventManagerGameObject;
+        private WorldEventManager _worldEventManager;
+        
         // Used to setup the current component
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody>();
             _collider = GetComponent<BoxCollider>();
             _uiDocument = transform.Find("PlayerUI").GetComponent<UIDocument>();
+            _worldEventManagerGameObject = GameObject.Find("WorldEventManager");
+            _worldEventManager = _worldEventManagerGameObject.GetComponent<WorldEventManager>();
         }
 
         // Used to configure things that depend on other components
@@ -218,13 +226,28 @@ namespace Scenes.MainGameWorld.Scripts
         /**
          * This is called when the player is in range of a house and presses the interact button.
          */
-        void DeliverOrder(HouseTile tile, Guid order)
+        void DeliverOrder(HouseTile tile, Guid orderID)
         {
             if (Orders.Count > 0)
             {
-                Debug.Log("Delivering order");
-                tile.DeliveredOrders.Add(order);
-                Orders.RemoveAt(0); // TODO: implement choosing order to deliver (after MVP)
+                Debug.Log("Attempting to deliver order");
+                Order order = _worldEventManager.Orders.Find(o => o.OrderID == orderID);
+                if (order == null)
+                {
+                    Debug.Log("Order not found");
+                    return;
+                } 
+                if (order.HouseID == tile.HouseID) // TODO: implement choosing order to deliver (after MVP)
+                {
+                    tile.DeliveredOrders.Add(orderID);
+                    Orders.Remove(orderID);
+                    order.Delivered = true;
+                    Debug.Log("Order delivered");
+                }
+                else
+                {
+                    Debug.Log("Order not for this house");
+                }
                 _orderPlayerCountLabel.text = $"Orders: {Orders.Count}";
             }
             else

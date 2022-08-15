@@ -9,6 +9,7 @@ namespace Scenes.MainGameWorld.Scripts
     public class WorldEventManager : MonoBehaviour
     {
         public GameObject tilePrefab;
+        public GameObject playerPrefab;
 
         public List<Order> Orders = new();
         
@@ -81,7 +82,8 @@ namespace Scenes.MainGameWorld.Scripts
             Order order = new Order
             {
                 ShopID = shop.ShopID,
-                HouseID = house.HouseID
+                HouseID = house.HouseID,
+                OrderValue = _random.Next(15, 80)
             };
             Orders.Add(order);
             shop.Orders.Add(order.OrderID);
