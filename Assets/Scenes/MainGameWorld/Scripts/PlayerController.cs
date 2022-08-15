@@ -17,6 +17,10 @@ namespace Scenes.MainGameWorld.Scripts
         // TODO: implement way to select between orders/houses to drop off
         public List<Collider> CurrentHouseCollisions { get; set; } = new();
 
+        public List<AxleInfo> axleInfos;
+        public float maxMotorTorque;
+        public float maxSteeringAngle;
+
         public float speed;
 
         private Rigidbody _rigidbody;
@@ -51,7 +55,28 @@ namespace Scenes.MainGameWorld.Scripts
         // Called based on Movement action
         void OnMovement(InputValue value)
         {
+            Debug.Log(1.1);
             moveVal = value.Get<Vector2>();
+        }
+
+        public void ApplyLocalPositionToVisuals(WheelCollider collider)
+        {
+            Debug.Log(1);
+            /*
+            if (collider.transform.childCount == 0)
+            {
+                Debug.Log(1.5);
+                return;
+            }
+            */
+            Debug.Log(2);
+            Transform visualWheel = collider.transform;
+            Vector3 position;
+            Quaternion rotation;
+            collider.GetWorldPose(out position,out rotation);
+
+            visualWheel.transform.position = position;
+            visualWheel.transform.rotation = rotation;
         }
 
         // Generates the UI to select order from a shop
@@ -162,9 +187,30 @@ namespace Scenes.MainGameWorld.Scripts
         // FixedUpdate is called once per physics update (constant time irrespective of frame rate)
         void FixedUpdate()
         {
+            /*
             Vector3 tempVect = new Vector3(moveVal.x, 0, moveVal.y);
             tempVect = tempVect.normalized * (speed * Time.deltaTime);
             _rigidbody.MovePosition(transform.position + tempVect);
+            */
+            
+            //float motor = maxMotorTorque * Input.GetAxis("Vertical");
+            //float steering = maxSteeringAngle * Input.GetAxis("Horizontal");
+            float motor = maxMotorTorque * moveVal.y;
+            float steering = maxSteeringAngle * moveVal.x;
+     
+            foreach (AxleInfo axleInfo in axleInfos) {
+                if (axleInfo.steering) {
+                    axleInfo.leftWheel.steerAngle = steering;
+                    axleInfo.rightWheel.steerAngle = steering;
+                }
+                if (axleInfo.motor) {
+                    axleInfo.leftWheel.motorTorque = motor;
+                    axleInfo.rightWheel.motorTorque = motor;
+                }
+                ApplyLocalPositionToVisuals(axleInfo.leftWheel);
+                ApplyLocalPositionToVisuals(axleInfo.rightWheel);
+            }
+            
         }
 
         void OnTriggerEnter(Collider other)
@@ -235,5 +281,14 @@ namespace Scenes.MainGameWorld.Scripts
 
 
 
+    }
+
+    [System.Serializable]
+    public class AxleInfo
+    {
+        public WheelCollider leftWheel;
+        public WheelCollider rightWheel;
+        public bool motor;
+        public bool steering;
     }
 }
