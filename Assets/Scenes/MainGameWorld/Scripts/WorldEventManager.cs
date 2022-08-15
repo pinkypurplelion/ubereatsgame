@@ -26,8 +26,8 @@ namespace Scenes.MainGameWorld.Scripts
         public int blockDimension = 8;
 
         // How often orders are generated (in seconds)
-        public float orderGenerationTime = 5f;
-        
+        public float orderGenerationTime = 20f;
+
 
         // Start is called before the first frame update
         void Start()
