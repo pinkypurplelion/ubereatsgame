@@ -19,6 +19,9 @@ namespace Scenes.MainGameWorld.Scripts
         public List<Collider> CurrentHouseCollisions { get; set; } = new();
 
         public float speed;
+        
+        // Player Money System
+        public float Money { get; set; }
 
         // Player Components
         private Rigidbody _rigidbody;
@@ -31,6 +34,7 @@ namespace Scenes.MainGameWorld.Scripts
         private Box _houseBox;
         
         private Label _orderPlayerCountLabel;
+        private Label _playerMoneyLabel;
 
         // Global Components
         private GameObject _worldEventManagerGameObject;
@@ -52,6 +56,9 @@ namespace Scenes.MainGameWorld.Scripts
             gameObject.tag = "Player";
             _rootVisualElement = _uiDocument.rootVisualElement;
             _orderPlayerCountLabel = _rootVisualElement.Q<Label>("PlayerOrderCount");
+            _playerMoneyLabel = _rootVisualElement.Q<Label>("PlayerBankBalance");
+            _orderPlayerCountLabel.text = $"Orders: {Orders.Count}";
+            _playerMoneyLabel.text = $"Player Balance: {Money}";
         }
 
         public Vector2 moveVal;
@@ -242,6 +249,7 @@ namespace Scenes.MainGameWorld.Scripts
                     tile.DeliveredOrders.Add(orderID);
                     Orders.Remove(orderID);
                     order.Delivered = true;
+                    Money += order.OrderValue;
                     Debug.Log("Order delivered");
                 }
                 else
@@ -249,6 +257,7 @@ namespace Scenes.MainGameWorld.Scripts
                     Debug.Log("Order not for this house");
                 }
                 _orderPlayerCountLabel.text = $"Orders: {Orders.Count}";
+                _playerMoneyLabel.text = $"Player Balance: {Money}";
             }
             else
             {
