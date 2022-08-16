@@ -11,10 +11,13 @@ namespace Scenes.MainGameWorld.Scripts
         public GameObject tilePrefab;
         public GameObject playerPrefab;
 
+        public WorldMap map;
+
         public List<Order> Orders = new();
         
         public List<ShopTile> shops;
         public List<HouseTile> houses;
+        public List<RoadTile> roads;
 
         private readonly Random _random = new();
         private const int TileSize = 1;
@@ -29,12 +32,16 @@ namespace Scenes.MainGameWorld.Scripts
         public float orderGenerationTime = 20f;
 
 
+        private void Awake()
+        {
+            // Generates the World based on the WorldDimension and BlockDimension
+            map = new WorldMap { WorldDimension = worldDimension, BlockDimension = blockDimension };
+            map.GenerateWorld();
+        }
+
         // Start is called before the first frame update
         void Start()
         {
-            // Generates the World based on the WorldDimension and BlockDimension
-            WorldMap map = new WorldMap { WorldDimension = worldDimension, BlockDimension = blockDimension };
-            map.GenerateWorld();
             // Draws the World based on the WorldMap graph.
             foreach (var block in map.CityBlocks)
             {
@@ -49,15 +56,20 @@ namespace Scenes.MainGameWorld.Scripts
                     if (tile.Type == TileType.Shop)
                     {
                         shops.Add(tileObject.transform.Find("shop").GetComponent<ShopTile>());
-                        // Debug.Log(tileObject.transform.Find("shop").GetComponent<ShopTile>().ShopID);
                     }
                     else if (tile.Type == TileType.House)
                     {
                         houses.Add(tileObject.transform.Find("house").GetComponent<HouseTile>());
-                        // Debug.Log(tileObject.transform.Find("house").GetComponent<HouseTile>().HouseID);
+                    } else if (tile.Type == TileType.Road)
+                    {
+                        roads.Add(tileObject.transform.Find("road").GetComponent<RoadTile>());
                     }
                 }
             }
+            
+            // Spawns player at a random road
+            Vector3 randomRoad = roads[_random.Next(roads.Count)].transform.position;
+            Instantiate(playerPrefab, new Vector3(randomRoad.x, 5, randomRoad.z), Quaternion.identity);
 
             Debug.Log("number of shops: " + shops.Count);
             Debug.Log("number of houses: " + houses.Count);
@@ -75,6 +87,7 @@ namespace Scenes.MainGameWorld.Scripts
         {
         }
 
+        // Used to generate a order, randomly choosing a shop and a house.
         void GenerateOrder()
         {
             ShopTile shop = shops[_random.Next(shops.Count)];

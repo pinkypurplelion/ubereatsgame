@@ -158,9 +158,23 @@ namespace Scenes.MainGameWorld.Scripts
             Button button = evt.currentTarget as Button;
             if (Orders.Count == 0) // TODO implement multi order collection
             {
-                Orders.Add(Guid.Parse(button.name));
+                // Adds order to player
+                Guid orderID = Guid.Parse(button.name);
+                Orders.Add(orderID);
                 _orderPlayerCountLabel.text = $"Orders: {Orders.Count}";
             
+                // Highlights house that order must be delivered to
+                Order order = _worldEventManager.Orders.Find(o => o.OrderID == orderID);
+                if (order != null)
+                {
+                    HouseTile house = _worldEventManager.houses.Find(h => h.HouseID == order.HouseID);
+                    house.IsDelivering = true;
+                }
+                else
+                {
+                    Debug.Log("Order not found");
+                }
+                
                 // Removes order from shop
                 // TODO: is there a more efficient way of doing this?
                 foreach (var shopCollision in CurrentShopCollisions)
