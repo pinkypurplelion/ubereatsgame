@@ -32,6 +32,7 @@ namespace Scenes.MainGameWorld.Scripts
         private VisualElement _rootVisualElement;
         private Box _shopBox;
         private Box _houseBox;
+        private Box _inventoryBox;
         
         private Label _orderPlayerCountLabel;
         private Label _playerMoneyLabel;
@@ -212,6 +213,7 @@ namespace Scenes.MainGameWorld.Scripts
             //Check collider for specific properties (Such as tag=item or has component=item)
         }
 
+        // Called when the player presses the pick up drop off button defined by the input system
         void OnPickUpDropOff(InputValue value)
         {
             if (_shopBox == null && CurrentShopCollisions.Count > 0)
@@ -223,6 +225,36 @@ namespace Scenes.MainGameWorld.Scripts
             
             _orderPlayerCountLabel.text = $"Orders: {Orders.Count}";
             Debug.Log("Pick up/drop off action");
+        }
+
+        // Called when the player presses the interact key defined by the input system
+        void OnPlayerInteract(InputValue value)
+        {
+            Debug.Log("Interact action");
+            if (_inventoryBox == null)
+            {
+                GeneratePlayerInventory();
+            }
+            else
+            {
+                _rootVisualElement.Remove(_inventoryBox);
+                _inventoryBox = null;
+            }
+        }
+
+        private void GeneratePlayerInventory()
+        {
+            _inventoryBox = new Box();
+            Label playerName = new Label();
+            playerName.text = "Player Name Here";
+            _inventoryBox.Add(playerName);
+
+            foreach (var order in Orders)
+            {
+                _inventoryBox.Add(GenerateOrderUI(order.ToString(), "0"));
+            }
+
+            _rootVisualElement.Add(_inventoryBox);
         }
         
         private void OnTriggerExit(Collider other)
