@@ -40,7 +40,10 @@ namespace Scenes.MainGameWorld.Scripts
         // Global Components
         private GameObject _worldEventManagerGameObject;
         private WorldEventManager _worldEventManager;
-        
+
+        // Used to move the player
+        public Vector2 moveVal;
+
         // Used to setup the current component
         private void Awake()
         {
@@ -62,12 +65,84 @@ namespace Scenes.MainGameWorld.Scripts
             _playerMoneyLabel.text = $"Player Balance: {Money}";
         }
 
-        public Vector2 moveVal;
-
         // Called based on Movement action
         void OnMovement(InputValue value)
         {
             moveVal = value.Get<Vector2>();
+        }
+        
+        // Called when the player presses the pick up drop off button defined by the input system
+        void OnPickUpDropOff(InputValue value)
+        {
+            if (_shopBox == null && CurrentShopCollisions.Count > 0)
+                GenerateShopUI();
+            
+            // TODO: update to UI
+            if (_houseBox == null && CurrentHouseCollisions.Count > 0)
+                GenerateHouseUI();
+            
+            _orderPlayerCountLabel.text = $"Orders: {Orders.Count}";
+            Debug.Log("Pick up/drop off action");
+        }
+
+        // Called when the player presses the interact key defined by the input system
+        void OnPlayerInteract(InputValue value)
+        {
+            Debug.Log("Interact action");
+            if (_inventoryBox == null)
+            {
+                GeneratePlayerInventory();
+            }
+            else
+            {
+                _rootVisualElement.Remove(_inventoryBox);
+                _inventoryBox = null;
+            }
+        }
+        
+                
+        // FixedUpdate is called once per physics update (constant time irrespective of frame rate)
+        void FixedUpdate()
+        {
+            Vector3 tempVect = new Vector3(moveVal.x, 0, moveVal.y);
+            tempVect = tempVect.normalized * (speed * Time.deltaTime);
+            _rigidbody.MovePosition(transform.position + tempVect);
+        }
+        
+        // Called when the player enters the collider of another object
+        void OnTriggerEnter(Collider other)
+        {
+            Debug.Log("Collided with " + other.name);
+            if (other.CompareTag("Shop") && !CurrentShopCollisions.Contains(other))
+            {
+                CurrentShopCollisions.Add(other);
+            }
+            else if (other.CompareTag("House") && !CurrentHouseCollisions.Contains(other))
+            {
+                CurrentHouseCollisions.Add(other);
+            }
+            Debug.Log("CurrentShopCollisions: " + CurrentShopCollisions.Count);
+            Debug.Log("CurrentHouseCollisions: " + CurrentHouseCollisions.Count);
+            //Check collider for specific properties (Such as tag=item or has component=item)
+        }
+        
+        // Called when the player leaves the collider of another object
+        private void OnTriggerExit(Collider other)
+        {
+            Debug.Log("Left collider with " + other.name);
+            CurrentShopCollisions.Remove(other);
+            CurrentHouseCollisions.Remove(other);
+            if (CurrentShopCollisions.Count == 0 && _shopBox != null)
+            {
+                _rootVisualElement.Remove(_shopBox);
+                _shopBox = null;
+            }
+            if (CurrentHouseCollisions.Count == 0 && _houseBox != null)
+            {
+                _rootVisualElement.Remove(_houseBox);
+                _houseBox = null;
+            }
+            Debug.Log("CurrentShopCollisions: " + CurrentShopCollisions.Count);
         }
 
         // Generates the UI to select order from a shop
@@ -82,7 +157,7 @@ namespace Scenes.MainGameWorld.Scripts
             
             foreach (var order in availableOrders)
             {
-                _shopBox.Add(GenerateOrderUI(order.ToString(), "0"));
+                _shopBox.Add(GenerateOrderBoxUI(order.ToString(), "0"));
             }
             
             _rootVisualElement.Add(_shopBox);
@@ -91,13 +166,14 @@ namespace Scenes.MainGameWorld.Scripts
             buttons.ForEach(button => button.RegisterCallback<ClickEvent>(SelectOrderFromShop));
         }
 
+        // Generate the UI to select which house to deliver to
         private void GenerateHouseUI()
         {
             _houseBox = new Box();
 
             foreach (var houseCollision in CurrentHouseCollisions)
             {
-                _houseBox.Add(GenerateHouseUI(houseCollision.transform.GetComponent<HouseTile>().HouseID.ToString()));
+                _houseBox.Add(GenerateHouseBoxUI(houseCollision.transform.GetComponent<HouseTile>().HouseID.ToString()));
             }
 
             _rootVisualElement.Add(_houseBox);
@@ -105,9 +181,25 @@ namespace Scenes.MainGameWorld.Scripts
             var buttons = _rootVisualElement.Query<Button>();
             buttons.ForEach(button => button.RegisterCallback<ClickEvent>(SelectHouseToDeliver));
         }
+        
+        // Generate the UI for the players 'inventory'
+        private void GeneratePlayerInventory()
+        {
+            _inventoryBox = new Box();
+            Label playerName = new Label();
+            playerName.text = "Player Name Here";
+            _inventoryBox.Add(playerName);
+
+            foreach (var order in Orders)
+            {
+                _inventoryBox.Add(GenerateOrderBoxUI(order.ToString(), "0"));
+            }
+
+            _rootVisualElement.Add(_inventoryBox);
+        }
 
         // Generates a UI element for a house
-        private Box GenerateHouseUI(string customerName)
+        private Box GenerateHouseBoxUI(string customerName)
         {
             Box houseBox = new Box();
             Label customerNameLabel = new Label();
@@ -121,7 +213,7 @@ namespace Scenes.MainGameWorld.Scripts
         }
         
         // Generates a UI element for an order
-        private Box GenerateOrderUI(string customerName, string orderPrice)
+        private Box GenerateOrderBoxUI(string customerName, string orderPrice)
         {
             Box orderBox = new Box();
             Label customerNameLabel = new Label();
@@ -189,93 +281,6 @@ namespace Scenes.MainGameWorld.Scripts
             }
         }
         
-        // FixedUpdate is called once per physics update (constant time irrespective of frame rate)
-        void FixedUpdate()
-        {
-            Vector3 tempVect = new Vector3(moveVal.x, 0, moveVal.y);
-            tempVect = tempVect.normalized * (speed * Time.deltaTime);
-            _rigidbody.MovePosition(transform.position + tempVect);
-        }
-
-        void OnTriggerEnter(Collider other)
-        {
-            Debug.Log("Collided with " + other.name);
-            if (other.CompareTag("Shop") && !CurrentShopCollisions.Contains(other))
-            {
-                CurrentShopCollisions.Add(other);
-            }
-            else if (other.CompareTag("House") && !CurrentHouseCollisions.Contains(other))
-            {
-                CurrentHouseCollisions.Add(other);
-            }
-            Debug.Log("CurrentShopCollisions: " + CurrentShopCollisions.Count);
-            Debug.Log("CurrentHouseCollisions: " + CurrentHouseCollisions.Count);
-            //Check collider for specific properties (Such as tag=item or has component=item)
-        }
-
-        // Called when the player presses the pick up drop off button defined by the input system
-        void OnPickUpDropOff(InputValue value)
-        {
-            if (_shopBox == null && CurrentShopCollisions.Count > 0)
-                GenerateShopUI();
-            
-            // TODO: update to UI
-            if (_houseBox == null && CurrentHouseCollisions.Count > 0)
-                GenerateHouseUI();
-            
-            _orderPlayerCountLabel.text = $"Orders: {Orders.Count}";
-            Debug.Log("Pick up/drop off action");
-        }
-
-        // Called when the player presses the interact key defined by the input system
-        void OnPlayerInteract(InputValue value)
-        {
-            Debug.Log("Interact action");
-            if (_inventoryBox == null)
-            {
-                GeneratePlayerInventory();
-            }
-            else
-            {
-                _rootVisualElement.Remove(_inventoryBox);
-                _inventoryBox = null;
-            }
-        }
-
-        private void GeneratePlayerInventory()
-        {
-            _inventoryBox = new Box();
-            Label playerName = new Label();
-            playerName.text = "Player Name Here";
-            _inventoryBox.Add(playerName);
-
-            foreach (var order in Orders)
-            {
-                _inventoryBox.Add(GenerateOrderUI(order.ToString(), "0"));
-            }
-
-            _rootVisualElement.Add(_inventoryBox);
-        }
-        
-        private void OnTriggerExit(Collider other)
-        {
-            Debug.Log("Left collider with " + other.name);
-            CurrentShopCollisions.Remove(other);
-            CurrentHouseCollisions.Remove(other);
-            if (CurrentShopCollisions.Count == 0 && _shopBox != null)
-            {
-                _rootVisualElement.Remove(_shopBox);
-                _shopBox = null;
-            }
-            if (CurrentHouseCollisions.Count == 0 && _houseBox != null)
-            {
-                _rootVisualElement.Remove(_houseBox);
-                _houseBox = null;
-            }
-            Debug.Log("CurrentShopCollisions: " + CurrentShopCollisions.Count);
-        }
-
-
         /**
          * This is called when the player is in range of a house and presses the interact button.
          */
@@ -310,8 +315,5 @@ namespace Scenes.MainGameWorld.Scripts
                 Debug.Log("No orders to deliver");
             }
         }
-
-
-
     }
 }
