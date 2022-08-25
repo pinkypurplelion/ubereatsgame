@@ -45,6 +45,12 @@ namespace Scenes.MainGameWorld.Scripts
             _collider = GetComponent<BoxCollider>();
             
             _playerUI = transform.Find("PlayerUI").GetComponent<PlayerUIManager>();
+            _playerUI.CurrentHouseCollisions = CurrentHouseCollisions;
+            _playerUI.CurrentShopCollisions = CurrentShopCollisions;
+            _playerUI.Orders = Orders;
+            _playerUI.ShopEventCallback = SelectOrderFromShop;
+            _playerUI.HouseEventCallback = SelectHouseToDeliver;
+            _playerUI.InventoryEventCallback = InvEventPOC;
             
             _worldEventManagerGameObject = GameObject.Find("WorldEventManager");
             _worldEventManager = _worldEventManagerGameObject.GetComponent<WorldEventManager>();
@@ -76,29 +82,9 @@ namespace Scenes.MainGameWorld.Scripts
         void OnPlayerInteract(InputValue value)
         {
             Debug.Log("Player Interaction Action");
-            _playerUI.InteractUI();
-            GenerateShopUI();
-            GenerateHouseUI();
+            _playerUI.ToggleInteractUI(); //TODO: stop player movement when inventory is open
         }
         
-        // Generates the UI to select order from a shop
-        private void GenerateShopUI()
-        {
-            List<Guid> availableOrders = new();
-            foreach (var shopCollision in CurrentShopCollisions)
-            {
-                availableOrders.AddRange(shopCollision.transform.GetComponent<ShopTile>().Orders);
-            }
-            
-            _playerUI.ShopUI(availableOrders, SelectOrderFromShop);
-        }
-
-        // Generate the UI to select which house to deliver to
-        private void GenerateHouseUI()
-        {
-            _playerUI.HouseUI(CurrentHouseCollisions, SelectHouseToDeliver);
-        }
-                
         // FixedUpdate is called once per physics update (constant time irrespective of frame rate)
         void FixedUpdate()
         {
@@ -126,6 +112,8 @@ namespace Scenes.MainGameWorld.Scripts
             Debug.Log("CurrentShopCollisions: " + CurrentShopCollisions.Count);
             Debug.Log("CurrentHouseCollisions: " + CurrentHouseCollisions.Count);
             //Check collider for specific properties (Such as tag=item or has component=item)
+            
+            _playerUI.UpdateInteractUI();
         }
         
         // Called when the player leaves the collider of another object
@@ -135,6 +123,8 @@ namespace Scenes.MainGameWorld.Scripts
             CurrentShopCollisions.Remove(other);
             CurrentHouseCollisions.Remove(other);
             Debug.Log("CurrentShopCollisions: " + CurrentShopCollisions.Count);
+            
+            _playerUI.UpdateInteractUI();
         }
         
         private void SelectHouseToDeliver(ClickEvent evt)
@@ -152,6 +142,16 @@ namespace Scenes.MainGameWorld.Scripts
                     }
                 }
             }
+            _playerUI.UpdateInteractUI();
+        }
+        
+        // Inventory button event proof of concept (POC)
+        private void InvEventPOC(ClickEvent evt)
+        {
+            Button button = evt.currentTarget as Button;
+            Orders.Remove(Guid.Parse(button.name));
+            _playerUI.UpdateInteractUI();
+            Debug.Log("Simulates order being thrown out of the window.");
         }
         
         private void SelectOrderFromShop(ClickEvent evt)
@@ -187,6 +187,7 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 Debug.Log("Can only collect one order at a time");
             }
+            _playerUI.UpdateInteractUI();
         }
         
         /**
