@@ -9,8 +9,14 @@ public class PlayerUIManager : MonoBehaviour
     // Base UI Elements
     private UIDocument _uiDocument;
     private VisualElement _rootVisualElement;
+    
+    // player interact ui screen
     public GroupBox PlayerInteractUI { get; set; }
+    
+    // pages in player interact ui screen
     public GroupBox ShopPageUI { get; set; }
+    public GroupBox HousePageUI {get; set;}
+    public GroupBox InventoryPageUI { get; set; }
 
     // Standard UI Components
     public Label PlayerOrdersLabel { get; set; }
@@ -28,6 +34,8 @@ public class PlayerUIManager : MonoBehaviour
         PlayerInteractUI.style.display = DisplayStyle.None;
 
         ShopPageUI = _rootVisualElement.Q<GroupBox>("ShopPage");
+        HousePageUI = _rootVisualElement.Q<GroupBox>("HousePage");
+        InventoryPageUI = _rootVisualElement.Q<GroupBox>("InventoryPage");
         
         // Set Standard UI Components
         PlayerOrdersLabel = _rootVisualElement.Q<Label>("PlayerOrderCount");
@@ -35,7 +43,7 @@ public class PlayerUIManager : MonoBehaviour
         
         // Enable the page selector buttons in the UI
         var buttons = PlayerInteractUI.Q<GroupBox>("SelectionButtons").Query<Button>();
-        buttons.ForEach(button => button.RegisterCallback<ClickEvent>(InteractUIPageSelectorsEvent));
+        buttons.ForEach(button => button.RegisterCallback<ClickEvent>(PageSelectorsEvent));
     }
 
     // Used to manage the player InteractUI
@@ -43,6 +51,9 @@ public class PlayerUIManager : MonoBehaviour
     {
         // Toggles the Interact UI
         PlayerInteractUI.style.display = PlayerInteractUI.style.display == DisplayStyle.None ? DisplayStyle.Flex : DisplayStyle.None;
+        ShopPageUI.Clear();
+        HousePageUI.Clear();
+        InventoryPageUI.Clear();
     }
     
     public void ShopUI(List<Guid> availableOrders, EventCallback<ClickEvent> eventCallback)
@@ -50,7 +61,7 @@ public class PlayerUIManager : MonoBehaviour
         // add the order elements to the list
         foreach (var order in availableOrders)
         {
-            ShopPageUI.Add(GenerateOrderBoxUI(order.ToString(), "0"));
+            ShopPageUI.Add(GenOrderElement(order.ToString(), "0"));
         }
         
         // makes the buttons clickable and work
@@ -58,30 +69,44 @@ public class PlayerUIManager : MonoBehaviour
         buttons.ForEach(button => button.RegisterCallback(eventCallback));
     }
 
-    public void HouseUI()
+    public void HouseUI(List<Collider> currentHouseCollisions, EventCallback<ClickEvent> eventCallback)
     {
+        // add the house elements to the list
+        foreach (var houseCollision in currentHouseCollisions)
+        {
+            HousePageUI.Add(GenHouseElement(houseCollision.transform.GetComponent<HouseTile>().HouseID.ToString()));
+        }
         
+        // makes the buttons clickable and work
+        var buttons = HousePageUI.Query<Button>();
+        buttons.ForEach(button => button.RegisterCallback(eventCallback));
     }
     
-    private void InteractUIPageSelectorsEvent(ClickEvent evt)
+    private void PageSelectorsEvent(ClickEvent evt)
     {
         Button button = evt.currentTarget as Button;
         switch (button.name)
         {
             case "SelectShop":
                 ShopPageUI.style.display = DisplayStyle.Flex;
+                HousePageUI.style.display = DisplayStyle.None;
+                InventoryPageUI.style.display = DisplayStyle.None;
                 break;
             case "SelectHouse":
                 ShopPageUI.style.display = DisplayStyle.None;
+                HousePageUI.style.display = DisplayStyle.Flex;
+                InventoryPageUI.style.display = DisplayStyle.None;
                 break;
             case "SelectInventory":
                 ShopPageUI.style.display = DisplayStyle.None;
+                HousePageUI.style.display = DisplayStyle.None;
+                InventoryPageUI.style.display = DisplayStyle.Flex;
                 break;
         }
     }
     
     // Generates the house components used in the house GUI (each house element in the list)
-    public Box GenerateHouseBoxUI(string customerName)
+    private Box GenHouseElement(string customerName)
     {
         Box houseBox = new Box();
         Label customerNameLabel = new Label();
@@ -95,7 +120,7 @@ public class PlayerUIManager : MonoBehaviour
     }
     
     // Generates the order components used in the shop GUI (each order element in the list)
-    public Box GenerateOrderBoxUI(string customerName, string orderPrice)
+    private Box GenOrderElement(string customerName, string orderPrice)
     {
         Box orderBox = new Box();
         Label customerNameLabel = new Label();
