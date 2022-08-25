@@ -28,14 +28,13 @@ namespace Scenes.MainGameWorld.Scripts
         private BoxCollider _collider;
         
         // UI Elements
+        private PlayerUIManager _playerUI;
+        
         private UIDocument _uiDocument;
         private VisualElement _rootVisualElement;
         private Box _shopBox;
         private Box _houseBox;
         private Box _inventoryBox;
-        
-        private Label _orderPlayerCountLabel;
-        private Label _playerMoneyLabel;
 
         // Global Components
         private GameObject _worldEventManagerGameObject;
@@ -49,7 +48,10 @@ namespace Scenes.MainGameWorld.Scripts
         {
             _rigidbody = GetComponent<Rigidbody>();
             _collider = GetComponent<BoxCollider>();
+            
             _uiDocument = transform.Find("PlayerUI").GetComponent<UIDocument>();
+            _playerUI = transform.Find("PlayerUI").GetComponent<PlayerUIManager>();
+            
             _worldEventManagerGameObject = GameObject.Find("WorldEventManager");
             _worldEventManager = _worldEventManagerGameObject.GetComponent<WorldEventManager>();
         }
@@ -59,10 +61,10 @@ namespace Scenes.MainGameWorld.Scripts
         {
             gameObject.tag = "Player";
             _rootVisualElement = _uiDocument.rootVisualElement;
-            _orderPlayerCountLabel = _rootVisualElement.Q<Label>("PlayerOrderCount");
-            _playerMoneyLabel = _rootVisualElement.Q<Label>("PlayerBankBalance");
-            _orderPlayerCountLabel.text = $"Orders: {Orders.Count}";
-            _playerMoneyLabel.text = $"Player Balance: {Money}";
+
+            // Updates the labels in the UI to the correct values.
+            _playerUI.PlayerMoneyLabel.text = $"Player Balance: {Money}";
+            _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
         }
 
         // Called based on Movement action
@@ -81,25 +83,24 @@ namespace Scenes.MainGameWorld.Scripts
             if (_houseBox == null && CurrentHouseCollisions.Count > 0)
                 GenerateHouseUI();
             
-            _orderPlayerCountLabel.text = $"Orders: {Orders.Count}";
+            _playerUI.PlayerMoneyLabel.text = $"Player Balance: {Money}";
             Debug.Log("Pick up/drop off action");
         }
 
         // Called when the player presses the interact key defined by the input system
         void OnPlayerInteract(InputValue value)
         {
-            Debug.Log("Interact action");
-            if (_inventoryBox == null)
-            {
-                GeneratePlayerInventory();
-            }
-            else
-            {
-                _rootVisualElement.Remove(_inventoryBox);
-                _inventoryBox = null;
-            }
+            _playerUI.InteractUI();
+            GenerateShopUI();
         }
         
+        // test to see if button events can be registered
+        // private void EventTest(ClickEvent evt)
+        // {
+        //     Button button = evt.currentTarget as Button;
+        //     Debug.Log($"{button.text} was clicked");
+        // }
+        //
                 
         // FixedUpdate is called once per physics update (constant time irrespective of frame rate)
         void FixedUpdate()
@@ -148,22 +149,24 @@ namespace Scenes.MainGameWorld.Scripts
         // Generates the UI to select order from a shop
         private void GenerateShopUI()
         {
-            _shopBox = new Box();
+            // _shopBox = new Box();
             List<Guid> availableOrders = new();
             foreach (var shopCollision in CurrentShopCollisions)
             {
                 availableOrders.AddRange(shopCollision.transform.GetComponent<ShopTile>().Orders);
             }
             
-            foreach (var order in availableOrders)
-            {
-                _shopBox.Add(GenerateOrderBoxUI(order.ToString(), "0"));
-            }
+            _playerUI.ShopUI(availableOrders, SelectOrderFromShop);
             
-            _rootVisualElement.Add(_shopBox);
-            
-            var buttons = _rootVisualElement.Query<Button>();
-            buttons.ForEach(button => button.RegisterCallback<ClickEvent>(SelectOrderFromShop));
+            // foreach (var order in availableOrders)
+            // {
+            //     _shopBox.Add(_playerUI.GenerateOrderBoxUI(order.ToString(), "0"));
+            // }
+            //
+            // _rootVisualElement.Add(_shopBox);
+            //
+            // var buttons = _shopBox.Query<Button>();
+            // buttons.ForEach(button => button.RegisterCallback<ClickEvent>(SelectOrderFromShop));
         }
 
         // Generate the UI to select which house to deliver to
@@ -173,7 +176,7 @@ namespace Scenes.MainGameWorld.Scripts
 
             foreach (var houseCollision in CurrentHouseCollisions)
             {
-                _houseBox.Add(GenerateHouseBoxUI(houseCollision.transform.GetComponent<HouseTile>().HouseID.ToString()));
+                _houseBox.Add(_playerUI.GenerateHouseBoxUI(houseCollision.transform.GetComponent<HouseTile>().HouseID.ToString()));
             }
 
             _rootVisualElement.Add(_houseBox);
@@ -182,52 +185,21 @@ namespace Scenes.MainGameWorld.Scripts
             buttons.ForEach(button => button.RegisterCallback<ClickEvent>(SelectHouseToDeliver));
         }
         
-        // Generate the UI for the players 'inventory'
-        private void GeneratePlayerInventory()
-        {
-            _inventoryBox = new Box();
-            Label playerName = new Label();
-            playerName.text = "Player Name Here";
-            _inventoryBox.Add(playerName);
-
-            foreach (var order in Orders)
-            {
-                _inventoryBox.Add(GenerateOrderBoxUI(order.ToString(), "0"));
-            }
-
-            _rootVisualElement.Add(_inventoryBox);
-        }
-
-        // Generates a UI element for a house
-        private Box GenerateHouseBoxUI(string customerName)
-        {
-            Box houseBox = new Box();
-            Label customerNameLabel = new Label();
-            Button selectHouseButton = new Button();
-            customerNameLabel.text = customerName;
-            selectHouseButton.name = customerName;
-            selectHouseButton.text = "Select House";
-            houseBox.Add(customerNameLabel);
-            houseBox.Add(selectHouseButton);
-            return houseBox;
-        }
-        
-        // Generates a UI element for an order
-        private Box GenerateOrderBoxUI(string customerName, string orderPrice)
-        {
-            Box orderBox = new Box();
-            Label customerNameLabel = new Label();
-            Label orderPriceLabel = new Label();
-            Button selectOrderButton = new Button();
-            customerNameLabel.text = customerName;
-            orderPriceLabel.text = orderPrice;
-            selectOrderButton.name = customerName;
-            selectOrderButton.text = "Select Order";
-            orderBox.Add(customerNameLabel);
-            orderBox.Add(orderPriceLabel);
-            orderBox.Add(selectOrderButton);
-            return orderBox;
-        }
+        // // Generate the UI for the players 'inventory'
+        // private void GeneratePlayerInventory()
+        // {
+        //     _inventoryBox = new Box();
+        //     Label playerName = new Label();
+        //     playerName.text = "Player Name Here";
+        //     _inventoryBox.Add(playerName);
+        //
+        //     foreach (var order in Orders)
+        //     {
+        //         _inventoryBox.Add(_playerUI.GenerateOrderBoxUI(order.ToString(), "0"));
+        //     }
+        //
+        //     _rootVisualElement.Add(_inventoryBox);
+        // }
 
         private void SelectHouseToDeliver(ClickEvent evt)
         {
@@ -254,7 +226,7 @@ namespace Scenes.MainGameWorld.Scripts
                 // Adds order to player
                 Guid orderID = Guid.Parse(button.name);
                 Orders.Add(orderID);
-                _orderPlayerCountLabel.text = $"Orders: {Orders.Count}";
+                _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
             
                 // Highlights house that order must be delivered to
                 Order order = _worldEventManager.Orders.Find(o => o.OrderID == orderID);
@@ -307,8 +279,8 @@ namespace Scenes.MainGameWorld.Scripts
                 {
                     Debug.Log("Order not for this house");
                 }
-                _orderPlayerCountLabel.text = $"Orders: {Orders.Count}";
-                _playerMoneyLabel.text = $"Player Balance: {Money}";
+                _playerUI.PlayerMoneyLabel.text = $"Player Balance: {Money}";
+                _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
             }
             else
             {
