@@ -9,7 +9,7 @@ public class HouseTile : MonoBehaviour
     public Guid HouseID = Guid.NewGuid();
     
     public List<Guid> DeliveredOrders = new List<Guid>();
-    public bool IsDelivering = false;
+    public bool isDelivering = false;
     
     private TMP_Text _orderText;
 
@@ -28,12 +28,12 @@ public class HouseTile : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Time.fixedTime % 1f == 0 && !IsDelivering)
+        if (Time.fixedTime % 1f == 0 && !isDelivering)
         {
             _orderText.text = $"Delivered Orders: {DeliveredOrders.Count.ToString()}";
         }
 
-        if (IsDelivering)
+        if (isDelivering)
         {
             _orderText.text = "DELIVERING ORDER";
         }

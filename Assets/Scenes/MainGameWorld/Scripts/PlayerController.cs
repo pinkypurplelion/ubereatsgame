@@ -41,20 +41,25 @@ namespace Scenes.MainGameWorld.Scripts
         // Used to setup the current component
         private void Awake()
         {
+            _worldEventManagerGameObject = GameObject.Find("WorldEventManager");
+            _worldEventManager = _worldEventManagerGameObject.GetComponent<WorldEventManager>();
+
+            
             _rigidbody = GetComponent<Rigidbody>();
             _collider = GetComponent<BoxCollider>();
             
             _playerUI = transform.Find("PlayerUI").GetComponent<PlayerUIManager>();
+            
+            // Passes the objects in PlayerController through to the uiController to enable simple UI updates
             _playerUI.CurrentHouseCollisions = CurrentHouseCollisions;
             _playerUI.CurrentShopCollisions = CurrentShopCollisions;
             _playerUI.Orders = Orders;
+            _playerUI.WorldEventManager = _worldEventManager;
             _playerUI.ShopEventCallback = SelectOrderFromShop;
             _playerUI.HouseEventCallback = SelectHouseToDeliver;
             _playerUI.InventoryEventCallback = InvEventPOC;
             
-            _worldEventManagerGameObject = GameObject.Find("WorldEventManager");
-            _worldEventManager = _worldEventManagerGameObject.GetComponent<WorldEventManager>();
-        }
+ }
 
         // Used to configure things that depend on other components
         void Start()
@@ -169,7 +174,7 @@ namespace Scenes.MainGameWorld.Scripts
                 if (order != null)
                 {
                     HouseTile house = _worldEventManager.houses.Find(h => h.HouseID == order.HouseID);
-                    house.IsDelivering = true;
+                    house.isDelivering = true;
                 }
                 else
                 {
