@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -23,16 +24,14 @@ namespace Scenes.MainGameWorld.Scripts
         public Label PlayerOrdersLabel { get; set; }
         public Label PlayerMoneyLabel {get; set;}
 
-        // Objects test
+        // PlayerController objects used for UI drawing
         public EventCallback<ClickEvent> ShopEventCallback {get; set;}
         public EventCallback<ClickEvent> HouseEventCallback {get; set;}
         public EventCallback<ClickEvent> InventoryEventCallback {get; set;}
         public List<Collider> CurrentShopCollisions { get; set; }
-        
-        // List to future proof in case two houses next to each other.
-        // TODO: implement way to select between orders/houses to drop off
         public List<Collider> CurrentHouseCollisions { get; set; }
         public List<Guid> Orders {get; set;}
+        public WorldEventManager WorldEventManager {get; set;}
         
 
         // Used to setup the current component
@@ -88,7 +87,8 @@ namespace Scenes.MainGameWorld.Scripts
             // add the order elements to the list
             foreach (var order in availableOrders)
             {
-                ShopPageUI.Add(GenOrderElement(order.ToString(), "0"));
+                Order o = WorldEventManager.Orders.Find(o => o.OrderID == order);
+                ShopPageUI.Add(GenOrderElement(o.CustomerName, o.OrderValue.ToString(CultureInfo.InvariantCulture), order.ToString()));
             }
         
             // makes the buttons clickable and work
@@ -120,7 +120,8 @@ namespace Scenes.MainGameWorld.Scripts
             // add the order elements to the list
             foreach (var order in Orders)
             {
-                InventoryPageUI.Add(GenOrderElement(order.ToString(), "0"));
+                Order o = WorldEventManager.Orders.Find(o => o.OrderID == order);
+                InventoryPageUI.Add(GenOrderElement(o.CustomerName, o.OrderValue.ToString(CultureInfo.InvariantCulture), order.ToString()));
             }
         
             // makes the buttons clickable and work
@@ -167,15 +168,18 @@ namespace Scenes.MainGameWorld.Scripts
         }
     
         // Generates the order components used in the shop GUI (each order element in the list)
-        private Box GenOrderElement(string customerName, string orderPrice)
+        private Box GenOrderElement(string customerName, string orderPrice, string orderID)
         {
             Box orderBox = new Box();
             Label customerNameLabel = new Label();
             Label orderPriceLabel = new Label();
             Button selectOrderButton = new Button();
-            customerNameLabel.text = customerName;
-            orderPriceLabel.text = orderPrice;
-            selectOrderButton.name = customerName;
+            
+            customerNameLabel.text = $"Customer: {customerName}";
+            orderPriceLabel.text = $"Delivery Price: ${orderPrice}";
+            
+            // sets hidden name element to orderID so that we can select the order.
+            selectOrderButton.name = orderID;
             selectOrderButton.text = "Select Order";
             orderBox.Add(customerNameLabel);
             orderBox.Add(orderPriceLabel);

@@ -9,6 +9,10 @@ namespace Scenes.MainGameWorld.Scripts
         public Guid OrderID = Guid.NewGuid();
         public float CreationTime = Time.fixedTime;
         public bool Delivered = false;
+
+        public Customer Customer;
+        
+        public String CustomerName = "CUSTOMER NAME";
         
         public float OrderValue {get; set;}
         
