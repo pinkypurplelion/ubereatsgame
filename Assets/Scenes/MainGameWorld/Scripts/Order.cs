@@ -11,9 +11,7 @@ namespace Scenes.MainGameWorld.Scripts
         public bool Delivered = false;
 
         public Customer Customer;
-        
-        public String CustomerName = "CUSTOMER NAME";
-        
+
         public float OrderValue {get; set;}
         
         public Guid HouseID {get; set;}

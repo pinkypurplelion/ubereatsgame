@@ -18,6 +18,7 @@ namespace Scenes.MainGameWorld.Scripts
         public List<ShopTile> shops;
         public List<HouseTile> houses;
         public List<RoadTile> roads;
+        public List<Customer> customers;
 
         private readonly Random _random = new();
         private const int TileSize = 1;
@@ -59,7 +60,14 @@ namespace Scenes.MainGameWorld.Scripts
                     }
                     else if (tile.Type == TileType.House)
                     {
-                        houses.Add(tileObject.transform.Find("house").GetComponent<HouseTile>());
+                        HouseTile h = tileObject.transform.Find("house").GetComponent<HouseTile>();
+                        for (int i = 0; i < _random.Next(1,3); i++)
+                        {
+                            Customer c = new Customer(TempGenerateName(), h);
+                            customers.Add(c);
+                            h.Customers.Add(c);
+                        }
+                        houses.Add(h);
                     } else if (tile.Type == TileType.Road)
                     {
                         roads.Add(tileObject.transform.Find("road").GetComponent<RoadTile>());
@@ -96,10 +104,17 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 ShopID = shop.ShopID,
                 HouseID = house.HouseID,
-                OrderValue = _random.Next(15, 80)
+                OrderValue = _random.Next(15, 80),
+                Customer = house.Customers[_random.Next(house.Customers.Count)]
             };
             Orders.Add(order);
             shop.Orders.Add(order.OrderID);
+        }
+        
+        String TempGenerateName()
+        {
+            List<String> names = new() { "bob", "judy", "jane", "sarah", "adam", "spike", "erandi"};
+            return names[_random.Next(names.Count)];
         }
     }
     

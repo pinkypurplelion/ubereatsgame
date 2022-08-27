@@ -88,7 +88,7 @@ namespace Scenes.MainGameWorld.Scripts
             foreach (var order in availableOrders)
             {
                 Order o = WorldEventManager.Orders.Find(o => o.OrderID == order);
-                ShopPageUI.Add(GenOrderElement(o.CustomerName, o.OrderValue.ToString(CultureInfo.InvariantCulture), order.ToString()));
+                ShopPageUI.Add(GenOrderElement(o.Customer.getName(), o.OrderValue.ToString(CultureInfo.InvariantCulture), order.ToString()));
             }
         
             // makes the buttons clickable and work
@@ -121,7 +121,7 @@ namespace Scenes.MainGameWorld.Scripts
             foreach (var order in Orders)
             {
                 Order o = WorldEventManager.Orders.Find(o => o.OrderID == order);
-                InventoryPageUI.Add(GenOrderElement(o.CustomerName, o.OrderValue.ToString(CultureInfo.InvariantCulture), order.ToString()));
+                InventoryPageUI.Add(GenOrderElement(o.Customer.getName(), o.OrderValue.ToString(CultureInfo.InvariantCulture), order.ToString()));
             }
         
             // makes the buttons clickable and work

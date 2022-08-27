@@ -12,5 +12,10 @@ namespace Scenes.MainGameWorld.Scripts
             this.name = name;
             this.residence = residence;
         }
+        
+        public String getName()
+        {
+            return name;
+        }
     }
 }
