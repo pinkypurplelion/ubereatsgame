@@ -203,7 +203,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7098737753818908378}
-  - {fileID: 1479674481844905814}
+  - {fileID: 4681216913292593663}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -232,7 +232,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1.5, z: 1}
   m_Center: {x: 0, y: 0.75, z: 0}
---- !u!1001 &1369768731863810237
+--- !u!1001 &5151480834639162900
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -285,12 +285,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 06d2120ec4b4c0a41b7e25b688ca138c, type: 3}
       propertyPath: m_Name
-      value: building_1
+      value: shop1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 06d2120ec4b4c0a41b7e25b688ca138c, type: 3}
---- !u!4 &1479674481844905814 stripped
+--- !u!4 &4681216913292593663 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 06d2120ec4b4c0a41b7e25b688ca138c, type: 3}
-  m_PrefabInstance: {fileID: 1369768731863810237}
+  m_PrefabInstance: {fileID: 5151480834639162900}
   m_PrefabAsset: {fileID: 0}
