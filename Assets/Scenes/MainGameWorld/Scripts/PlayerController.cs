@@ -90,6 +90,12 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.ToggleInteractUI(); //TODO: stop player movement when inventory is open
         }
         
+        void OnMenu()
+        {
+            Debug.Log("Menu");
+            _worldEventManager.PlayPause();
+        }
+        
         // FixedUpdate is called once per physics update (constant time irrespective of frame rate)
         void FixedUpdate()
         {

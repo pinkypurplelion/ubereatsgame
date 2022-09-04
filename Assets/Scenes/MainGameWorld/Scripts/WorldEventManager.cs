@@ -95,6 +95,12 @@ namespace Scenes.MainGameWorld.Scripts
         {
         }
 
+        // Will pause/resume the game
+        public void PlayPause()
+        {
+            Time.timeScale = Time.timeScale == 0 ? 1 : 0;
+        }
+
         // Used to generate a order, randomly choosing a shop and a house.
         void GenerateOrder()
         {
@@ -117,7 +123,5 @@ namespace Scenes.MainGameWorld.Scripts
             return names[_random.Next(names.Count)];
         }
     }
-    
-        
 }
 
