@@ -17,5 +17,10 @@ namespace Scenes.MainGameWorld.Scripts
         {
             return name;
         }
+        
+        public HouseTile getResidence()
+        {
+            return residence;
+        }
     }
 }

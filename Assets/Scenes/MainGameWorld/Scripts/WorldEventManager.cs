@@ -15,10 +15,10 @@ namespace Scenes.MainGameWorld.Scripts
 
         public List<Order> Orders = new();
         
-        public List<ShopTile> shops;
-        public List<HouseTile> houses;
-        public List<RoadTile> roads;
-        public List<Customer> customers;
+        public List<ShopTile> shops = new();
+        public List<HouseTile> houses = new();
+        public List<RoadTile> roads = new();
+        public List<Customer> customers = new();
 
         private readonly Random _random = new();
         private const int TileSize = 1;
