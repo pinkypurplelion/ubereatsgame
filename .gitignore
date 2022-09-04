@@ -67,3 +67,4 @@ crashlytics-build.properties
 
 # MacOS files
 .DS_Store
+Assets/InstantOC/
