@@ -6,6 +6,7 @@
             <ui:Button text="START GAME" display-tooltip-when-elided="true" name="StartBtn" class="button-style" style="height: 39px; width: 173px; background-color: rgb(214, 146, 84); border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; border-top-left-radius: 15px; border-bottom-left-radius: 15px; border-top-right-radius: 15px; border-bottom-right-radius: 15px;" />
             <ui:Button text="RULES" display-tooltip-when-elided="true" name="RulesBtn" class="button-style" style="height: 39px; width: 173px; background-color: rgb(214, 146, 84); border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; border-top-left-radius: 15px; border-bottom-left-radius: 15px; border-top-right-radius: 15px; border-bottom-right-radius: 15px;" />
             <ui:Button text="SETTINGS" display-tooltip-when-elided="true" name="SettingsBtn" class="button-style" style="height: 39px; width: 173px; background-color: rgb(214, 146, 84); border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; border-top-left-radius: 15px; border-bottom-left-radius: 15px; border-top-right-radius: 15px; border-bottom-right-radius: 15px;" />
+            <ui:Button text="QUIT" display-tooltip-when-elided="true" enable-rich-text="true" name="QuitBtn" class="button-style" />
         </ui:VisualElement>
     </ui:VisualElement>
     <ui:VisualElement name="Rules" class="rules-container">

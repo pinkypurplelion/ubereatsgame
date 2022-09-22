@@ -9,6 +9,7 @@ public class StartScreenUIController : MonoBehaviour
 
     public Button startButton;
     public Button rulesButton;
+    public Button quitButton;
     public Button SettingsbackButton;
     public Button RulebackButton;
     public Button settingsButton;
@@ -29,6 +30,7 @@ public class StartScreenUIController : MonoBehaviour
         // Assign buttons from UI Builder to script
         startButton = root.Q<Button>("StartBtn");
         rulesButton = root.Q<Button>("RulesBtn");
+        quitButton = root.Q<Button>("QuitBtn");
         // RulebackButton = root.Q<Button>("RulebackBtn");
         SettingsbackButton = root.Q<Button>("SettingsbackBtn");
         settingsButton = root.Q<Button>("SettingsBtn");
@@ -41,7 +43,14 @@ public class StartScreenUIController : MonoBehaviour
         startButton.clicked += StrtBtnPressed;
         settingsButton.clicked += SttingBtnPressed;
         rulesButton.clicked += RlsBtnPressed;
+        quitButton.clicked += Exit;
        
+    }
+
+    void Exit()
+    {
+        Application.Quit();
+         Debug.Log("Game is exiting");
     }
 
     void StrtBtnPressed()
