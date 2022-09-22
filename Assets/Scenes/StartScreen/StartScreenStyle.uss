@@ -1,0 +1,92 @@
+.button-style {
+    height: 39px;
+    width: 173px;
+    background-color: rgb(214, 146, 84);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.button-style:hover {
+    height: 39px;
+    width: 173px;
+    background-color: rgb(205, 108, 64);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.button-style:active {
+    height: 39px;
+    width: 173px;
+    background-color: rgb(255, 122, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    color: rgb(255, 255, 255);
+}
+
+.unity-label {
+    overflow: hidden;
+}
+
+.small-button-style {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    height: 35px;
+    width: 80px;
+    background-color: rgb(214, 146, 84);
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+}
+
+.small-button-style:active {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    height: 35px;
+    width: 80px;
+    background-color: rgb(214, 146, 84);
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    color: rgba(250, 246, 246, 255);
+}
+
+.rules-container {
+    display: none;
+    background-color: rgb(255, 255, 255);
+    height: 393px;
+    width: 864px;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
