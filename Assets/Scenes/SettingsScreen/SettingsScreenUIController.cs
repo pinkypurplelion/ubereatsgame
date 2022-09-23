@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class SettingsScreenUIController : MonoBehaviour
 {
     public Button SettingsbackButton;
+    public Button quitButton;
 
     void Start()
     {
@@ -15,11 +16,20 @@ public class SettingsScreenUIController : MonoBehaviour
         
         // Assign buttons from UI Builder to script
         SettingsbackButton = root.Q<Button>("BackBtn");
-        SettingsbackButton.clicked += SBckBtnPressed;        
+        quitButton = root.Q<Button>("QuitBtn");
+
+        SettingsbackButton.clicked += SBckBtnPressed; 
+        quitButton.clicked += Exit;       
     }
 
     void SBckBtnPressed()
     {
         SceneManager.LoadScene("MainMenu");
+    }
+
+    void Exit()
+    {
+        Application.Quit();
+        Debug.Log("Game is exiting");
     }
 }
