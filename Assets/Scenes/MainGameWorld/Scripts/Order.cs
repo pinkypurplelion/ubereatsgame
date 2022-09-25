@@ -8,8 +8,11 @@ namespace Scenes.MainGameWorld.Scripts
     {
         public Guid OrderID = Guid.NewGuid();
         public float CreationTime = Time.fixedTime;
-        
-        public float OrderPrice {get; set;}
+        public bool Delivered = false;
+
+        public Customer Customer;
+
+        public float OrderValue {get; set;}
         
         public Guid HouseID {get; set;}
         public Guid ShopID {get; set;}

@@ -50,6 +50,7 @@ namespace Scenes.MainGameWorld.Scripts
                     break;
                 case 1:
                     //Return the straight block
+                    transform.Find("RoadObject").gameObject.SetActive(true);
                     transform.Find("4wayIntersection").gameObject.SetActive(false);
                     transform.Find("3wayIntersection").gameObject.SetActive(false);
                     transform.Find("curvedRoad2").gameObject.SetActive(false);

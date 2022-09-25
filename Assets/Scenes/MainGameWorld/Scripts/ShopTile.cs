@@ -23,10 +23,6 @@ namespace Scenes.MainGameWorld.Scripts
 
         void Start()
         {
-            // purely for testing
-            Orders.Add(Guid.NewGuid());
-            Orders.Add(Guid.NewGuid());
-            Orders.Add(Guid.NewGuid());
         }
 
         private void FixedUpdate()

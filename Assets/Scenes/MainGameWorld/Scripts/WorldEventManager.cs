@@ -9,11 +9,16 @@ namespace Scenes.MainGameWorld.Scripts
     public class WorldEventManager : MonoBehaviour
     {
         public GameObject tilePrefab;
+        public GameObject playerPrefab;
+
+        public WorldMap map;
 
         public List<Order> Orders = new();
         
-        public List<ShopTile> shops;
-        public List<HouseTile> houses;
+        public List<ShopTile> shops = new();
+        public List<HouseTile> houses = new();
+        public List<RoadTile> roads = new();
+        public List<Customer> customers = new();
 
         private readonly Random _random = new();
         private const int TileSize = 1;
@@ -25,15 +30,19 @@ namespace Scenes.MainGameWorld.Scripts
         public int blockDimension = 8;
 
         // How often orders are generated (in seconds)
-        public float orderGenerationTime = 5f;
-        
+        public float orderGenerationTime = 20f;
+
+
+        private void Awake()
+        {
+            // Generates the World based on the WorldDimension and BlockDimension
+            map = new WorldMap { WorldDimension = worldDimension, BlockDimension = blockDimension };
+            map.GenerateWorld();
+        }
 
         // Start is called before the first frame update
         void Start()
         {
-            // Generates the World based on the WorldDimension and BlockDimension
-            WorldMap map = new WorldMap { WorldDimension = worldDimension, BlockDimension = blockDimension };
-            map.GenerateWorld();
             // Draws the World based on the WorldMap graph.
             foreach (var block in map.CityBlocks)
             {
@@ -48,15 +57,27 @@ namespace Scenes.MainGameWorld.Scripts
                     if (tile.Type == TileType.Shop)
                     {
                         shops.Add(tileObject.transform.Find("shop").GetComponent<ShopTile>());
-                        // Debug.Log(tileObject.transform.Find("shop").GetComponent<ShopTile>().ShopID);
                     }
                     else if (tile.Type == TileType.House)
                     {
-                        houses.Add(tileObject.transform.Find("house").GetComponent<HouseTile>());
-                        // Debug.Log(tileObject.transform.Find("house").GetComponent<HouseTile>().HouseID);
+                        HouseTile h = tileObject.transform.Find("house").GetComponent<HouseTile>();
+                        for (int i = 0; i < _random.Next(1,3); i++)
+                        {
+                            Customer c = new Customer(TempGenerateName(), h);
+                            customers.Add(c);
+                            h.Customers.Add(c);
+                        }
+                        houses.Add(h);
+                    } else if (tile.Type == TileType.Road)
+                    {
+                        roads.Add(tileObject.transform.Find("road").GetComponent<RoadTile>());
                     }
                 }
             }
+            
+            // Spawns player at a random road
+            Vector3 randomRoad = roads[_random.Next(roads.Count)].transform.position;
+            Instantiate(playerPrefab, new Vector3(randomRoad.x, 5, randomRoad.z), Quaternion.identity);
 
             Debug.Log("number of shops: " + shops.Count);
             Debug.Log("number of houses: " + houses.Count);
@@ -74,6 +95,13 @@ namespace Scenes.MainGameWorld.Scripts
         {
         }
 
+        // Will pause/resume the game
+        public void PlayPause()
+        {
+            Time.timeScale = Time.timeScale == 0 ? 1 : 0;
+        }
+
+        // Used to generate a order, randomly choosing a shop and a house.
         void GenerateOrder()
         {
             ShopTile shop = shops[_random.Next(shops.Count)];
@@ -81,13 +109,19 @@ namespace Scenes.MainGameWorld.Scripts
             Order order = new Order
             {
                 ShopID = shop.ShopID,
-                HouseID = house.HouseID
+                HouseID = house.HouseID,
+                OrderValue = _random.Next(15, 80),
+                Customer = house.Customers[_random.Next(house.Customers.Count)]
             };
             Orders.Add(order);
             shop.Orders.Add(order.OrderID);
         }
-    }
-    
         
+        String TempGenerateName()
+        {
+            List<String> names = new() { "bob", "judy", "jane", "sarah", "adam", "spike", "erandi"};
+            return names[_random.Next(names.Count)];
+        }
+    }
 }
 
