@@ -3,10 +3,35 @@ guid: 5ae339eb6163b4023953877c7cfcb854
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cube.001_Cube.002_Material.004Mat
+    second: {fileID: -6478536213147159724, guid: 6b9efe8828e81428da9df14cce1d0a15, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cube.002_Cube.003_Material.005Mat
+    second: {fileID: -6478536213147159724, guid: 6b9efe8828e81428da9df14cce1d0a15, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cube.003_Cube.004_Material.006Mat
+    second: {fileID: -6478536213147159724, guid: 6b9efe8828e81428da9df14cce1d0a15, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cube_Cube.001_Cube_Cube.001_Material.003Mat
+    second: {fileID: -3846018093981099296, guid: 6b9efe8828e81428da9df14cce1d0a15, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cube_Cube.001_Material.001Mat
+    second: {fileID: -6478536213147159724, guid: 6b9efe8828e81428da9df14cce1d0a15, type: 3}
   materials:
     materialImportMode: 2
-    materialName: 0
+    materialName: 1
     materialSearch: 1
     materialLocation: 1
   animations:
