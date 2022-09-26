@@ -246,13 +246,7 @@ namespace Scenes.MainGameWorld.Scripts
         {
             moveVal = value.Get<Vector2>();
         }
-        
-        void OnBoost(InputValue value)
-        {
-            boosting = value.isPressed;
-            Debug.Log("Player should boost: " + boosting);
-        }
-        
+
         // Update everything
         void FixedUpdate () {
             // Mesure current speed
