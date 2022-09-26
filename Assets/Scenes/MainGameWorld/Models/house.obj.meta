@@ -3,7 +3,37 @@ guid: 33721daa690fd7f44bcfcbefdb6fb926
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: skyscraperE_ID15.001__defaultMat.001Mat
+    second: {fileID: -3963241562183589234, guid: 8a269636eacd14a2c843b9e37fd75698, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: skyscraperE_ID15.001_border.001Mat
+    second: {fileID: -2870021472586168505, guid: 8a269636eacd14a2c843b9e37fd75698, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: skyscraperE_ID15.001_door.001Mat
+    second: {fileID: 1550975326256456482, guid: 8a269636eacd14a2c843b9e37fd75698, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: skyscraperE_ID15.001_roof.001Mat
+    second: {fileID: 8457432598939410078, guid: 8a269636eacd14a2c843b9e37fd75698, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: skyscraperE_ID15.001_trim.001Mat
+    second: {fileID: 3530424337718074603, guid: 8a269636eacd14a2c843b9e37fd75698, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: skyscraperE_ID15.001_window.001Mat
+    second: {fileID: 3398073514908505954, guid: 8a269636eacd14a2c843b9e37fd75698, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -35,7 +65,7 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 0.9
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -88,7 +118,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 1
+    globalScale: 0.9
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

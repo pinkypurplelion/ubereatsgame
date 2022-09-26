@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
@@ -49,7 +48,7 @@ namespace Scenes.MainGameWorld.Scripts
             _collider = GetComponent<BoxCollider>();
             
             _playerUI = transform.Find("PlayerUI").GetComponent<PlayerUIManager>();
-            
+            Debug.Log(_playerUI);
             // Passes the objects in PlayerController through to the uiController to enable simple UI updates
             _playerUI.CurrentHouseCollisions = CurrentHouseCollisions;
             _playerUI.CurrentShopCollisions = CurrentShopCollisions;
