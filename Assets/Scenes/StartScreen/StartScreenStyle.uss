@@ -77,16 +77,17 @@
     border-right-width: 0;
     border-top-width: 0;
     border-bottom-width: 0;
-    color: rgba(250, 246, 246, 255);
+    color: rgb(250, 246, 246);
 }
 
 .rules-container {
     display: none;
     background-color: rgb(255, 255, 255);
-    height: 393px;
-    width: 864px;
+    height: auto;
+    width: auto;
     flex-grow: 1;
     justify-content: center;
     align-items: center;
     flex-direction: row;
+    flex-wrap: nowrap;
 }
