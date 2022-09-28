@@ -18,7 +18,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Cube_Cube.001_Cube_Cube.001_Material.003Mat
-    second: {fileID: -6478536213147159724, guid: 6b9efe8828e81428da9df14cce1d0a15, type: 3}
+    second: {fileID: -3846018093981099296, guid: 6b9efe8828e81428da9df14cce1d0a15, type: 3}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
