@@ -71,16 +71,10 @@ namespace Scenes.MainGameWorld.Scripts
         }
 
         // Called based on Movement action
-        void OnMovement(InputValue value)
-        {
-            moveVal = value.Get<Vector2>();
-        }
-        
-        // Called when the player presses the pick up drop off button defined by the input system
-        void OnPickUpDropOff(InputValue value)
-        {
-            // TODO: remove
-        }
+        // void OnMovement(InputValue value)
+        // {
+        //     moveVal = value.Get<Vector2>();
+        // }
 
         // Called when the player presses the interact key defined by the input system
         void OnPlayerInteract(InputValue value)
@@ -98,9 +92,9 @@ namespace Scenes.MainGameWorld.Scripts
         // FixedUpdate is called once per physics update (constant time irrespective of frame rate)
         void FixedUpdate()
         {
-            Vector3 tempVect = new Vector3(moveVal.x, 0, moveVal.y);
-            tempVect = tempVect.normalized * (speed * Time.deltaTime);
-            _rigidbody.MovePosition(transform.position + tempVect);
+            // Vector3 tempVect = new Vector3(moveVal.x, 0, moveVal.y);
+            // tempVect = tempVect.normalized * (speed * Time.deltaTime);
+            // _rigidbody.MovePosition(transform.position + tempVect);
             
             // Updates the labels in the UI to the correct values. TODO: move to better place
             _playerUI.PlayerMoneyLabel.text = $"Player Balance: {Money}";
