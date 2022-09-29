@@ -365,14 +365,5 @@ namespace Scenes.MainGameWorld.Scripts
             // Downforce
             rb.AddForce(-transform.up * speed * downforce);
         }
-
-        // Reposition the car to the start position
-        public void ResetPos() {
-            transform.position = spawnPosition;
-            transform.rotation = spawnRotation;
-
-            rb.velocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
     }
 }
