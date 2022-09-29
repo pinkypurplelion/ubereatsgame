@@ -13,15 +13,7 @@ namespace Scenes.MainGameWorld.Scripts
 
         public List<Guid> DeliveredOrders = new();
         public bool isDelivering;
-    
-        private TMP_Text _orderText;
-
-        private void Awake()
-        {
-            _orderText = transform.Find("text").GetComponent<TMP_Text>();
-            _orderText.color = Color.white;
-        }
-
+        
         // Start is called before the first frame update
         void Start()
         {
@@ -31,14 +23,9 @@ namespace Scenes.MainGameWorld.Scripts
         // Update is called once per frame
         void FixedUpdate()
         {
-            if (Time.fixedTime % 1f == 0 && !isDelivering)
-            {
-                _orderText.text = $"Delivered Orders: {DeliveredOrders.Count.ToString()}";
-            }
-
             if (isDelivering)
             {
-                _orderText.text = "DELIVERING ORDER";
+                // _orderText.text = "DELIVERING ORDER";
             }
         }
     }
