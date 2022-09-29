@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
 namespace Scenes.MainGameWorld.Scripts
 {
@@ -36,6 +37,8 @@ namespace Scenes.MainGameWorld.Scripts
 
         // Used to move the player
         public Vector2 moveVal;
+
+        public GameObject thrownObject;
 
         // Used to setup the current component
         private void Awake()
@@ -156,6 +159,8 @@ namespace Scenes.MainGameWorld.Scripts
             Orders.Remove(Guid.Parse(button.name));
             _playerUI.UpdateInteractUI();
             Debug.Log("Simulates order being thrown out of the window.");
+            GameObject to = Instantiate(thrownObject, transform.position, transform.rotation);
+            to.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(Random.Range(0f, 2f), Random.Range(0f,2f), Random.Range(0f, 2f)) * 100);
         }
         
         private void SelectOrderFromShop(ClickEvent evt)
