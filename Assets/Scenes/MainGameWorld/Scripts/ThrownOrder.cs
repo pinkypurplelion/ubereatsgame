@@ -14,7 +14,7 @@ public class ThrownOrder : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Time.time - startTime > 300.0f)
+        if (Time.time - startTime > 3000.0f)
         {
             Destroy(gameObject);
         }
