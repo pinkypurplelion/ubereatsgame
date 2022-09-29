@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
+using Button = UnityEngine.UIElements.Button;
 
 namespace Scenes.MainGameWorld.Scripts
 {
@@ -23,7 +25,7 @@ namespace Scenes.MainGameWorld.Scripts
         // Standard UI Components
         public Label PlayerOrdersLabel { get; set; }
         public Label PlayerMoneyLabel {get; set;}
-
+        
         // PlayerController objects used for UI drawing
         public EventCallback<ClickEvent> ShopEventCallback {get; set;}
         public EventCallback<ClickEvent> HouseEventCallback {get; set;}
@@ -53,7 +55,7 @@ namespace Scenes.MainGameWorld.Scripts
             // Set Standard UI Components
             PlayerOrdersLabel = _rootVisualElement.Q<Label>("PlayerOrderCount");
             PlayerMoneyLabel = _rootVisualElement.Q<Label>("PlayerBankBalance");
-        
+
             // Enable the page selector buttons in the UI
             var buttons = PlayerInteractUI.Q<GroupBox>("SelectionButtons").Query<Button>();
             buttons.ForEach(button => button.RegisterCallback<ClickEvent>(PageSelectorsEvent));

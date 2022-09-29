@@ -1,4 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:IMGUIContainer name="PlayerMinimap" style="background-image: url(&apos;project://database/Assets/Scenes/MainGameWorld/MinimapRender.renderTexture?fileID=8400000&amp;guid=2b071db4a59d7d44584a153991b52f27&amp;type=2#MinimapRender&apos;); height: 256px; width: 256px;" />
     <ui:Label text="Player Order Count" display-tooltip-when-elided="true" name="PlayerOrderCount" />
     <ui:Label text="Bank Balance: $0" display-tooltip-when-elided="true" name="PlayerBankBalance" />
     <ui:GroupBox name="InteractScreen" style="visibility: visible; display: flex; align-items: stretch; flex-direction: column; justify-content: space-between; height: 411px;">
