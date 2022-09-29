@@ -4,11 +4,13 @@
  * This is distributed under the MIT Licence (see LICENSE.md for details)
  */
 
+using Scenes.MainGameWorld.Arcade_Car_Physics.Scripts;
 using UnityEngine;
 
-namespace Scenes.MainGameWorld.Arcade_Car_Physics.Scripts {
-
-    public class EngineSoundManager : MonoBehaviour {
+namespace Scenes.MainGameWorld.Scripts {
+    [RequireComponent(typeof(PlayerVehicle))]
+    [RequireComponent(typeof(AudioSource))]
+    public class PlayerSoundManager : MonoBehaviour {
 
         [Header("AudioClips")]
         public AudioClip starting;
@@ -23,11 +25,11 @@ namespace Scenes.MainGameWorld.Arcade_Car_Physics.Scripts {
         public float pitchSpeed = 0.05f;
 
         private AudioSource source;
-        private WheelVehicle vehicle;
+        private PlayerVehicle vehicle;
         
         void Start () {
             source = GetComponent<AudioSource>();
-            vehicle = GetComponent<WheelVehicle>();
+            vehicle = GetComponent<PlayerVehicle>();
         }
         
         void Update () {
