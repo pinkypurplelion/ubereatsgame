@@ -3,9 +3,15 @@
     <ui:Label text="Player Order Count" display-tooltip-when-elided="true" name="PlayerOrderCount" />
     <ui:Label text="Bank Balance: $0" display-tooltip-when-elided="true" name="PlayerBankBalance" />
     <ui:GroupBox name="InteractScreen" style="visibility: visible; display: flex; align-items: stretch; flex-direction: column; justify-content: space-between; height: 411px;">
-        <ui:GroupBox name="ShopPage" style="display: flex;" />
-        <ui:GroupBox name="HousePage" style="display: flex;" />
-        <ui:GroupBox name="InventoryPage" />
+        <ui:GroupBox name="ShopPage" style="display: flex;">
+            <ui:ScrollView />
+        </ui:GroupBox>
+        <ui:GroupBox name="HousePage" style="display: flex;">
+            <ui:ScrollView />
+        </ui:GroupBox>
+        <ui:GroupBox name="InventoryPage">
+            <ui:ScrollView />
+        </ui:GroupBox>
         <ui:GroupBox name="SelectionButtons" style="align-items: stretch; justify-content: center; flex-direction: row;">
             <ui:Button text="Shop" display-tooltip-when-elided="true" name="SelectShop" />
             <ui:Button text="House" display-tooltip-when-elided="true" name="SelectHouse" />

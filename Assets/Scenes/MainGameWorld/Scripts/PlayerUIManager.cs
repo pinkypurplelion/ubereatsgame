@@ -21,6 +21,8 @@ namespace Scenes.MainGameWorld.Scripts
         public GroupBox ShopPageUI { get; set; }
         public GroupBox HousePageUI {get; set;}
         public GroupBox InventoryPageUI { get; set; }
+        
+        public ScrollView ShopScrollView { get; set; }
 
         // Standard UI Components
         public Label PlayerOrdersLabel { get; set; }
