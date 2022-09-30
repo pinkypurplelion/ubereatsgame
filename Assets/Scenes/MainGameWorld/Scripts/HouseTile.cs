@@ -14,18 +14,32 @@ namespace Scenes.MainGameWorld.Scripts
         public List<Guid> DeliveredOrders = new();
         public bool isDelivering;
         
-        // Start is called before the first frame update
+        private TMP_Text _priceText;
+        
+        void Awake()
+        {
+            _priceText = transform.Find("Canvas").Find("text").GetComponent<TMP_Text>();
+            _priceText.color = Color.white;
+        }
+
         void Start()
         {
-        
+            // purely for testing
+
         }
+        
 
         // Update is called once per frame
         void FixedUpdate()
         {
             if (isDelivering)
             {
+                _priceText.text = "X";
                 // _orderText.text = "DELIVERING ORDER";
+            }
+            else
+            {
+                _priceText.text = "";
             }
         }
     }

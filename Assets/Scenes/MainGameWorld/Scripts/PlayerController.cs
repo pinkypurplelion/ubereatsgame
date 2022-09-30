@@ -202,35 +202,31 @@ namespace Scenes.MainGameWorld.Scripts
         /**
          * This is called when the player is in range of a house and presses the interact button.
          */
-        void DeliverOrder(HouseTile tile, Guid orderID)
+        void DeliverOrder(HouseTile tile, Guid houseID)
         {
-            if (Orders.Count > 0)
+            Debug.Log("Attempting to deliver order");
+            foreach (var orderID in Orders)
             {
-                Debug.Log("Attempting to deliver order");
                 Order order = _worldEventManager.Orders.Find(o => o.OrderID == orderID);
-                if (order == null)
+                if (order != null)
                 {
-                    Debug.Log("Order not found");
-                    return;
-                } 
-                if (order.HouseID == tile.HouseID) // TODO: implement choosing order to deliver (after MVP)
-                {
-                    tile.DeliveredOrders.Add(orderID);
-                    Orders.Remove(orderID);
-                    order.Delivered = true;
-                    Money += order.OrderValue;
-                    Debug.Log("Order delivered");
+                    if (order.HouseID == houseID)
+                    {
+                        Debug.Log("Found correct order.");
+                        tile.DeliveredOrders.Add(orderID);
+                        Orders.Remove(orderID);
+                        order.Delivered = true;
+                        Money += order.OrderValue;
+                        tile.isDelivering = false;
+                        Debug.Log("Order delivered");
+                    }
+                    else
+                    {
+                        Debug.Log("Order not for this house");
+                    }
+                    _playerUI.PlayerMoneyLabel.text = $"Player Balance: {Money}";
+                    _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
                 }
-                else
-                {
-                    Debug.Log("Order not for this house");
-                }
-                _playerUI.PlayerMoneyLabel.text = $"Player Balance: {Money}";
-                _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
-            }
-            else
-            {
-                Debug.Log("No orders to deliver");
             }
         }
     }
