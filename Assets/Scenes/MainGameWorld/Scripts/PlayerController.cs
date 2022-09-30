@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
@@ -40,6 +41,8 @@ namespace Scenes.MainGameWorld.Scripts
 
         public GameObject thrownObject;
 
+        public bool InventoryOpen = false;
+        
         // Used to setup the current component
         private void Awake()
         {
@@ -73,35 +76,30 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
         }
 
-        // Called based on Movement action
-        // void OnMovement(InputValue value)
-        // {
-        //     moveVal = value.Get<Vector2>();
-        // }
-
         // Called when the player presses the interact key defined by the input system
         void OnPlayerInteract(InputValue value)
         {
             Debug.Log("Player Interaction Action");
-            _playerUI.ToggleInteractUI(); //TODO: stop player movement when inventory is open
+            _playerUI.ToggleInteractUI();
+            InventoryOpen = !InventoryOpen;
         }
         
         void OnMenu()
         {
             Debug.Log("Menu");
-            _worldEventManager.PlayPause();
+            SceneManager.LoadScene("MainMenu");
         }
         
         // FixedUpdate is called once per physics update (constant time irrespective of frame rate)
         void FixedUpdate()
         {
-            // Vector3 tempVect = new Vector3(moveVal.x, 0, moveVal.y);
-            // tempVect = tempVect.normalized * (speed * Time.deltaTime);
-            // _rigidbody.MovePosition(transform.position + tempVect);
-            
             // Updates the labels in the UI to the correct values. TODO: move to better place
             _playerUI.PlayerMoneyLabel.text = $"Player Balance: {Money}";
             _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
+            if (_rigidbody.transform.position.y < -10)
+            {
+                SceneManager.LoadScene("MainMenu");
+            }
         }
         
         // Called when the player enters the collider of another object
@@ -156,11 +154,17 @@ namespace Scenes.MainGameWorld.Scripts
         private void InvEventPOC(ClickEvent evt)
         {
             Button button = evt.currentTarget as Button;
+            Order order = _worldEventManager.Orders.Find(o => o.OrderID == Guid.Parse(button.name));
+            if (order != null)
+            {
+                HouseTile house = _worldEventManager.houses.Find(h => h.HouseID == order.HouseID);
+                house.isDelivering = false;
+            }
             Orders.Remove(Guid.Parse(button.name));
             _playerUI.UpdateInteractUI();
             Debug.Log("Simulates order being thrown out of the window.");
             GameObject to = Instantiate(thrownObject, transform.position, transform.rotation);
-            to.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(Random.Range(0f, 2f), Random.Range(0f,2f), Random.Range(0f, 2f)) * 100);
+            to.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(Random.Range(0.1f, 2f), Random.Range(0.1f,2f), Random.Range(0.1f, 2f)) * 1000);
         }
         
         private void SelectOrderFromShop(ClickEvent evt)
@@ -202,35 +206,31 @@ namespace Scenes.MainGameWorld.Scripts
         /**
          * This is called when the player is in range of a house and presses the interact button.
          */
-        void DeliverOrder(HouseTile tile, Guid orderID)
+        void DeliverOrder(HouseTile tile, Guid houseID)
         {
-            if (Orders.Count > 0)
+            Debug.Log("Attempting to deliver order");
+            foreach (var orderID in Orders)
             {
-                Debug.Log("Attempting to deliver order");
                 Order order = _worldEventManager.Orders.Find(o => o.OrderID == orderID);
-                if (order == null)
+                if (order != null)
                 {
-                    Debug.Log("Order not found");
-                    return;
-                } 
-                if (order.HouseID == tile.HouseID) // TODO: implement choosing order to deliver (after MVP)
-                {
-                    tile.DeliveredOrders.Add(orderID);
-                    Orders.Remove(orderID);
-                    order.Delivered = true;
-                    Money += order.OrderValue;
-                    Debug.Log("Order delivered");
+                    if (order.HouseID == houseID)
+                    {
+                        Debug.Log("Found correct order.");
+                        tile.DeliveredOrders.Add(orderID);
+                        Orders.Remove(orderID);
+                        order.Delivered = true;
+                        Money += order.OrderValue;
+                        tile.isDelivering = false;
+                        Debug.Log("Order delivered");
+                    }
+                    else
+                    {
+                        Debug.Log("Order not for this house");
+                    }
+                    _playerUI.PlayerMoneyLabel.text = $"Player Balance: {Money}";
+                    _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
                 }
-                else
-                {
-                    Debug.Log("Order not for this house");
-                }
-                _playerUI.PlayerMoneyLabel.text = $"Player Balance: {Money}";
-                _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
-            }
-            else
-            {
-                Debug.Log("No orders to deliver");
             }
         }
     }

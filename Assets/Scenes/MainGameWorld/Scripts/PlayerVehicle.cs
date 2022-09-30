@@ -9,6 +9,8 @@ namespace Scenes.MainGameWorld.Scripts
 {
     public class PlayerVehicle: MonoBehaviour
     {
+        public PlayerController PlayerController;
+        
         // If isPlayer is false inputs are ignored
         [SerializeField] bool isPlayer = true;
         public bool IsPlayer { get => isPlayer;
@@ -221,6 +223,8 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 wheel.motorTorque = 0.0001f;
             }
+
+            PlayerController = GetComponent<PlayerController>();
         }
 
         // Visual feedbacks and boost regen
@@ -253,7 +257,7 @@ namespace Scenes.MainGameWorld.Scripts
             speed = transform.InverseTransformDirection(rb.velocity).z * 3.6f;
 
             // Get all the inputs!
-            if (isPlayer) {
+            if (isPlayer && !PlayerController.InventoryOpen) {
                 throttle = moveVal.y;
                 steering = turnInputCurve.Evaluate(moveVal.x) * steerAngle;
                 // Accelerate & brake
@@ -272,6 +276,9 @@ namespace Scenes.MainGameWorld.Scripts
                 // drift = GetInput(driftInput)> 0 && rb.velocity.sqrMagnitude > 100;
                 // // Jump
                 // jumping = GetInput(jumpInput) != 0;
+            } else if (!PlayerController.InventoryOpen) {
+                throttle = 0;
+                steering = 0;
             }
 
             // Direction
