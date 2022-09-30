@@ -40,6 +40,8 @@ namespace Scenes.MainGameWorld.Scripts
 
         public GameObject thrownObject;
 
+        public bool InventoryOpen = false;
+        
         // Used to setup the current component
         private void Awake()
         {
@@ -84,6 +86,7 @@ namespace Scenes.MainGameWorld.Scripts
         {
             Debug.Log("Player Interaction Action");
             _playerUI.ToggleInteractUI(); //TODO: stop player movement when inventory is open
+            InventoryOpen = !InventoryOpen;
         }
         
         void OnMenu()
@@ -155,7 +158,14 @@ namespace Scenes.MainGameWorld.Scripts
         // Inventory button event proof of concept (POC)
         private void InvEventPOC(ClickEvent evt)
         {
+            // TODO: find house and turn off 'delivered' flag
             Button button = evt.currentTarget as Button;
+            Order order = _worldEventManager.Orders.Find(o => o.OrderID == Guid.Parse(button.name));
+            if (order != null)
+            {
+                HouseTile house = _worldEventManager.houses.Find(h => h.HouseID == order.HouseID);
+                house.isDelivering = false;
+            }
             Orders.Remove(Guid.Parse(button.name));
             _playerUI.UpdateInteractUI();
             Debug.Log("Simulates order being thrown out of the window.");
