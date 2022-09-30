@@ -23,6 +23,8 @@ namespace Scenes.MainGameWorld.Scripts
         public GroupBox InventoryPageUI { get; set; }
         
         public ScrollView ShopScrollView { get; set; }
+        public ScrollView InventoryScrollView { get; set; }
+        public ScrollView HouseScrollView { get; set; }
 
         // Standard UI Components
         public Label PlayerOrdersLabel { get; set; }
@@ -44,13 +46,22 @@ namespace Scenes.MainGameWorld.Scripts
             // Set Base UI Elements
             _uiDocument = transform.GetComponent<UIDocument>();
             _rootVisualElement = _uiDocument.rootVisualElement;
-        
+
             PlayerInteractUI = _rootVisualElement.Q<GroupBox>("InteractScreen");
             PlayerInteractUI.style.display = DisplayStyle.None;
 
             ShopPageUI = _rootVisualElement.Q<GroupBox>("ShopPage");
             HousePageUI = _rootVisualElement.Q<GroupBox>("HousePage");
             InventoryPageUI = _rootVisualElement.Q<GroupBox>("InventoryPage");
+            
+            ShopScrollView = _rootVisualElement.Q<ScrollView>("ShopScrollView");
+            InventoryScrollView = _rootVisualElement.Q<ScrollView>("InventoryScrollView");
+            HouseScrollView = _rootVisualElement.Q<ScrollView>("HouseScrollView");
+
+            ShopScrollView.style.height = _rootVisualElement.layout.height;
+            InventoryScrollView.style.height = _rootVisualElement.layout.height;
+            HouseScrollView.style.height = _rootVisualElement.layout.height;
+            
             HousePageUI.style.display = DisplayStyle.None;
             InventoryPageUI.style.display = DisplayStyle.None;
         
@@ -81,7 +92,7 @@ namespace Scenes.MainGameWorld.Scripts
         // Updates the shop page of the player interact UI
         private void UpdateShopUI()
         {
-            ShopPageUI.Clear();
+            ShopScrollView.Clear();
 
             List<Guid> availableOrders = new();
             foreach (var shopCollision in CurrentShopCollisions)
@@ -89,47 +100,48 @@ namespace Scenes.MainGameWorld.Scripts
                 availableOrders.AddRange(shopCollision.transform.GetComponent<ShopTile>().Orders);
             }
             // add the order elements to the list
+            Debug.Log("Available Orders: " + availableOrders.Count);
             foreach (var order in availableOrders)
             {
                 Order o = WorldEventManager.Orders.Find(o => o.OrderID == order);
-                ShopPageUI.Add(GenOrderElement(o.Customer.getName(), o.OrderValue.ToString(CultureInfo.InvariantCulture), order.ToString()));
+                ShopScrollView.Add(GenOrderElement(o.Customer.getName(), o.OrderValue.ToString(CultureInfo.InvariantCulture), order.ToString()));
             }
         
             // makes the buttons clickable and work
-            var buttons = ShopPageUI.Query<Button>();
+            var buttons = ShopScrollView.Query<Button>();
             buttons.ForEach(button => button.RegisterCallback(ShopEventCallback));
         }
 
         // Updates the house page of the player interact UI
         private void UpdateHouseUI()
         {
-            HousePageUI.Clear();
+            HouseScrollView.Clear();
 
             // add the house elements to the list
             foreach (var houseCollision in CurrentHouseCollisions)
             {
-                HousePageUI.Add(GenHouseElement(houseCollision.transform.GetComponent<HouseTile>().HouseID.ToString()));
+                HouseScrollView.Add(GenHouseElement(houseCollision.transform.GetComponent<HouseTile>().HouseID.ToString()));
             }
         
             // makes the buttons clickable and work
-            var buttons = HousePageUI.Query<Button>();
+            var buttons = HouseScrollView.Query<Button>();
             buttons.ForEach(button => button.RegisterCallback(HouseEventCallback));
         }
         
         // Updates the inventory page of the player interact UI
         private void UpdateInventoryUI()
         {
-            InventoryPageUI.Clear();
+            InventoryScrollView.Clear();
             
             // add the order elements to the list
             foreach (var order in Orders)
             {
                 Order o = WorldEventManager.Orders.Find(o => o.OrderID == order);
-                InventoryPageUI.Add(GenOrderElement(o.Customer.getName(), o.OrderValue.ToString(CultureInfo.InvariantCulture), order.ToString()));
+                InventoryScrollView.Add(GenOrderElement(o.Customer.getName(), o.OrderValue.ToString(CultureInfo.InvariantCulture), order.ToString()));
             }
         
             // makes the buttons clickable and work
-            var buttons = InventoryPageUI.Query<Button>();
+            var buttons = InventoryScrollView.Query<Button>();
             buttons.ForEach(button => button.RegisterCallback(InventoryEventCallback));
         }
     
