@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
@@ -75,36 +76,30 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
         }
 
-        // Called based on Movement action
-        // void OnMovement(InputValue value)
-        // {
-        //     moveVal = value.Get<Vector2>();
-        // }
-
         // Called when the player presses the interact key defined by the input system
         void OnPlayerInteract(InputValue value)
         {
             Debug.Log("Player Interaction Action");
-            _playerUI.ToggleInteractUI(); //TODO: stop player movement when inventory is open
+            _playerUI.ToggleInteractUI();
             InventoryOpen = !InventoryOpen;
         }
         
         void OnMenu()
         {
             Debug.Log("Menu");
-            _worldEventManager.PlayPause();
+            SceneManager.LoadScene("MainMenu");
         }
         
         // FixedUpdate is called once per physics update (constant time irrespective of frame rate)
         void FixedUpdate()
         {
-            // Vector3 tempVect = new Vector3(moveVal.x, 0, moveVal.y);
-            // tempVect = tempVect.normalized * (speed * Time.deltaTime);
-            // _rigidbody.MovePosition(transform.position + tempVect);
-            
             // Updates the labels in the UI to the correct values. TODO: move to better place
             _playerUI.PlayerMoneyLabel.text = $"Player Balance: {Money}";
             _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
+            if (_rigidbody.transform.position.y < -10)
+            {
+                SceneManager.LoadScene("MainMenu");
+            }
         }
         
         // Called when the player enters the collider of another object
@@ -158,7 +153,6 @@ namespace Scenes.MainGameWorld.Scripts
         // Inventory button event proof of concept (POC)
         private void InvEventPOC(ClickEvent evt)
         {
-            // TODO: find house and turn off 'delivered' flag
             Button button = evt.currentTarget as Button;
             Order order = _worldEventManager.Orders.Find(o => o.OrderID == Guid.Parse(button.name));
             if (order != null)
@@ -170,7 +164,7 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.UpdateInteractUI();
             Debug.Log("Simulates order being thrown out of the window.");
             GameObject to = Instantiate(thrownObject, transform.position, transform.rotation);
-            to.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(Random.Range(0f, 2f), Random.Range(0f,2f), Random.Range(0f, 2f)) * 100);
+            to.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(Random.Range(0.1f, 2f), Random.Range(0.1f,2f), Random.Range(0.1f, 2f)) * 1000);
         }
         
         private void SelectOrderFromShop(ClickEvent evt)
