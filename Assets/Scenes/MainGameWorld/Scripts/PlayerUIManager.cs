@@ -102,7 +102,6 @@ namespace Scenes.MainGameWorld.Scripts
                 availableOrders.AddRange(shopCollision.transform.GetComponent<ShopTile>().Orders);
             }
             // add the order elements to the list
-            Debug.Log("Available Orders: " + availableOrders.Count);
             foreach (var order in availableOrders)
             {
                 Order _order = WorldEventManager.Orders.Find(o => o.OrderID == order);
@@ -217,16 +216,20 @@ namespace Scenes.MainGameWorld.Scripts
             Box orderBox = new Box();
             Label customerNameLabel = new Label();
             Label orderPriceLabel = new Label();
+            Label orderDeliveryTime = new Label();
             Button selectOrderButton = new Button();
             
             customerNameLabel.text = $"Customer: {order.Customer.getName()}";
             orderPriceLabel.text = $"Delivery Price: ${order.OrderValue}";
+            // TODO: add upgrade to player that shows time remaining for each order
+            orderDeliveryTime.text = $"Delivery Time: {WorldEventManager.ConvertTimeToString(order.PickupTime + order.TimeToDeliver)}";
             
             // sets hidden name element to orderID so that we can select the order.
             selectOrderButton.name = order.OrderID.ToString();
             selectOrderButton.text = "Ditch Order";
             orderBox.Add(customerNameLabel);
             orderBox.Add(orderPriceLabel);
+            orderBox.Add(orderDeliveryTime);
             orderBox.Add(selectOrderButton);
             return orderBox;
         }

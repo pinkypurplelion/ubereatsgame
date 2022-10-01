@@ -7,8 +7,10 @@ namespace Scenes.MainGameWorld.Scripts
     public class Order
     {
         public Guid OrderID = Guid.NewGuid();
-        public float CreationTime = Time.fixedTime;
         public bool Delivered = false;
+        public float CreationTime { get; set; }
+        public float PickupTime { get; set; }
+        public float TimeToDeliver { get; set; }
 
         public Customer Customer;
 

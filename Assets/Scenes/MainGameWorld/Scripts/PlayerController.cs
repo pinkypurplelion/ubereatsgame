@@ -46,7 +46,8 @@ namespace Scenes.MainGameWorld.Scripts
         // the number of orders the player is able to carry at any time
         public int orderLimit = 2;
 
-        public float playerRating = 0;
+        // player starts with a 5 star rating
+        public float playerRating = 5;
         
         // Used to setup the current component
         private void Awake()
@@ -131,7 +132,6 @@ namespace Scenes.MainGameWorld.Scripts
         // Called when the player enters the collider of another object
         void OnTriggerEnter(Collider other)
         {
-            Debug.Log("Collided with " + other.name);
             if (other.CompareTag("Shop") && !CurrentShopCollisions.Contains(other))
             {
                 CurrentShopCollisions.Add(other);
@@ -140,21 +140,15 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 CurrentHouseCollisions.Add(other);
             }
-            Debug.Log("CurrentShopCollisions: " + CurrentShopCollisions.Count);
-            Debug.Log("CurrentHouseCollisions: " + CurrentHouseCollisions.Count);
-            //Check collider for specific properties (Such as tag=item or has component=item)
-            
             _playerUI.UpdateInteractUI();
         }
         
         // Called when the player leaves the collider of another object
         private void OnTriggerExit(Collider other)
         {
-            Debug.Log("Left collider with " + other.name);
             CurrentShopCollisions.Remove(other);
             CurrentHouseCollisions.Remove(other);
-            Debug.Log("CurrentShopCollisions: " + CurrentShopCollisions.Count);
-            
+
             _playerUI.UpdateInteractUI();
         }
         
@@ -205,16 +199,10 @@ namespace Scenes.MainGameWorld.Scripts
             
                 // Highlights house that order must be delivered to
                 Order order = _worldEventManager.Orders.Find(o => o.OrderID == orderID);
-                if (order != null)
-                {
-                    HouseTile house = _worldEventManager.houses.Find(h => h.HouseID == order.HouseID);
-                    house.isDelivering = true;
-                }
-                else
-                {
-                    Debug.Log("Order not found");
-                }
-                
+                order.PickupTime = _worldEventManager.currentTime;
+                HouseTile house = _worldEventManager.houses.Find(h => h.HouseID == order.HouseID);
+                house.isDelivering = true;
+
                 // Removes order from shop
                 // TODO: is there a more efficient way of doing this?
                 foreach (var shopCollision in CurrentShopCollisions)
@@ -247,7 +235,21 @@ namespace Scenes.MainGameWorld.Scripts
                         tile.DeliveredOrders.Add(orderID);
                         Orders.Remove(orderID);
                         order.Delivered = true;
-                        Money += order.OrderValue;
+                        if (_worldEventManager.currentTime - order.PickupTime < order.TimeToDeliver)
+                        {
+                            Debug.Log("Order delivered on time.");
+                            Money += order.OrderValue;
+                            playerRating = Mathf.Clamp(playerRating * 1.05f, 0, 5);
+                        }
+                        else
+                        {
+                            float reduceMoney = order.OrderValue /
+                                                (1 + (_worldEventManager.currentTime - order.PickupTime - order.TimeToDeliver) * 0.1f);
+                            Money += reduceMoney;
+                            playerRating = Mathf.Clamp(playerRating * 0.95f, 0, 5);
+                            Debug.Log("Order delivered late.");
+                            Debug.Log($"Order value: {order.OrderValue}, money given: {reduceMoney}, player rating: {playerRating}");
+                        }
                         tile.isDelivering = false;
                         Debug.Log("Order delivered");
                     }

@@ -96,9 +96,16 @@ namespace Scenes.MainGameWorld.Scripts
             // Load Game Data
             Debug.Log("Loading Game Data");
             SaveData data = LoadGame();
-            playerController.LoadPlayerData(data);
-            LoadWorldData(data);
-            Debug.Log("Game Data Loaded");
+            if (data != null)
+            {
+                playerController.LoadPlayerData(data);
+                LoadWorldData(data);
+                Debug.Log("Game Data Loaded");
+            }
+            else
+            {
+                Debug.Log("No Game Data Found");
+            }
         }
         
         void FixedUpdate()
@@ -134,7 +141,9 @@ namespace Scenes.MainGameWorld.Scripts
                 ShopID = shop.ShopID,
                 HouseID = house.HouseID,
                 OrderValue = _random.Next(15, 80),
-                Customer = house.Customers[_random.Next(house.Customers.Count)]
+                Customer = house.Customers[_random.Next(house.Customers.Count)],
+                CreationTime = currentTime,
+                TimeToDeliver = _random.Next(30, 120) // Delivery timeframe between 30 and 120 seconds, TODO: upgrade for longer delivery times/dependant on reputation
             };
             Orders.Add(order);
             shop.Orders.Add(order.OrderID);
@@ -148,9 +157,14 @@ namespace Scenes.MainGameWorld.Scripts
 
         public String GenerateCurrentTimeString()
         {
-            int minutes = (int) Math.Floor(currentTime/0.25 % 60);
-            int hours = (int) (currentTime / 15) % 24;
-            int days = (int) (currentTime / 360) % 7;
+            return ConvertTimeToString(currentTime);
+        }
+
+        public static String ConvertTimeToString(float time)
+        {
+            int minutes = (int) Math.Floor(time/0.25 % 60);
+            int hours = (int) (time / 15) % 24;
+            int days = (int) (time / 360) % 7;
             return $"{days}d, {hours}h {minutes}m";
         }
 
