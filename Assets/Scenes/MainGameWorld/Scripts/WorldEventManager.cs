@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = System.Random;
@@ -143,6 +144,33 @@ namespace Scenes.MainGameWorld.Scripts
             int hours = (int) (currentTime / 15) % 24;
             int days = (int) (currentTime / 360) % 7;
             return $"{days}d, {hours}h {minutes}m";
+        }
+
+        public void SaveGame(PlayerController player)
+        {
+            Debug.Log("Attempting to Save Game...");
+            SaveData data = new SaveData
+            {
+                WorldTime = currentTime,
+                PlayerOrderLimit = player.orderLimit,
+                PlayerRating = player.playerRating,
+                PlayerMoney = player.Money
+            };
+            string jsonData = JsonUtility.ToJson(data);
+            Debug.Log($"Save Data: {jsonData}");
+            FileManager.WriteToFile("testsave.json", jsonData);
+            Debug.Log("Game Saved!");
+        }
+
+        public SaveData LoadGame()
+        {
+            if (FileManager.LoadFromFile("testsave.json", out var json))
+            {
+                Debug.Log("Load complete");
+                return JsonUtility.FromJson<SaveData>(json);
+            }
+            Debug.Log("Load failed");
+            return null;
         }
     }
 }

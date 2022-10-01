@@ -42,6 +42,11 @@ namespace Scenes.MainGameWorld.Scripts
         public GameObject thrownObject;
 
         public bool InventoryOpen = false;
+    
+        // the number of orders the player is able to carry at any time
+        public int orderLimit = 2;
+
+        public float playerRating = 0;
         
         // Used to setup the current component
         private void Awake()
@@ -88,6 +93,18 @@ namespace Scenes.MainGameWorld.Scripts
         {
             Debug.Log("Menu");
             SceneManager.LoadScene("MainMenu");
+        }
+
+        // Called when the player presses the test save key defined by the input system
+        void OnTestSave()
+        {
+            _worldEventManager.SaveGame(this);
+        }
+
+        void OnTestLoad()
+        {
+            SaveData sd = _worldEventManager.LoadGame();
+            Debug.Log(sd.WorldTime);
         }
         
         // FixedUpdate is called once per physics update (constant time irrespective of frame rate)
@@ -177,7 +194,7 @@ namespace Scenes.MainGameWorld.Scripts
         private void SelectOrderFromShop(ClickEvent evt)
         {
             Button button = evt.currentTarget as Button;
-            if (Orders.Count == 0) // TODO implement multi order collection
+            if (Orders.Count <= orderLimit) // TODO implement multi order collection
             {
                 // Adds order to player
                 Guid orderID = Guid.Parse(button.name);
@@ -205,7 +222,8 @@ namespace Scenes.MainGameWorld.Scripts
             }
             else
             {
-                Debug.Log("Can only collect one order at a time");
+                // TODO: add popup to communicate this with player
+                Debug.Log("Player has reached the order limit. Please deliver an order before collecting another.");
             }
             _playerUI.UpdateInteractUI();
         }
