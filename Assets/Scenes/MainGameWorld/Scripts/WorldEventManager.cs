@@ -42,6 +42,9 @@ namespace Scenes.MainGameWorld.Scripts
         // World Lighting
         public GameObject worldLight;
         
+        // Player Controller
+        public PlayerController playerController;
+        
         private void Awake()
         {
             // Generates the World based on the WorldDimension and BlockDimension
@@ -87,10 +90,15 @@ namespace Scenes.MainGameWorld.Scripts
             
             // Spawns player at a random road
             Vector3 randomRoad = roads[_random.Next(roads.Count)].transform.position;
-            Instantiate(playerPrefab, new Vector3(randomRoad.x, 5, randomRoad.z), Quaternion.identity);
+            GameObject player = Instantiate(playerPrefab, new Vector3(randomRoad.x, 5, randomRoad.z), Quaternion.identity);
+            playerController = player.GetComponent<PlayerController>();
 
-            Debug.Log("number of shops: " + shops.Count);
-            Debug.Log("number of houses: " + houses.Count);
+            // Load Game Data
+            Debug.Log("Loading Game Data");
+            SaveData data = LoadGame();
+            playerController.LoadPlayerData(data);
+            LoadWorldData(data);
+            Debug.Log("Game Data Loaded");
         }
         
         void FixedUpdate()
@@ -146,15 +154,15 @@ namespace Scenes.MainGameWorld.Scripts
             return $"{days}d, {hours}h {minutes}m";
         }
 
-        public void SaveGame(PlayerController player)
+        public void SaveGame()
         {
             Debug.Log("Attempting to Save Game...");
             SaveData data = new SaveData
             {
                 WorldTime = currentTime,
-                PlayerOrderLimit = player.orderLimit,
-                PlayerRating = player.playerRating,
-                PlayerMoney = player.Money
+                PlayerOrderLimit = playerController.orderLimit,
+                PlayerRating = playerController.playerRating,
+                PlayerMoney = playerController.Money
             };
             string jsonData = JsonUtility.ToJson(data);
             Debug.Log($"Save Data: {jsonData}");
@@ -171,6 +179,11 @@ namespace Scenes.MainGameWorld.Scripts
             }
             Debug.Log("Load failed");
             return null;
+        }
+
+        void LoadWorldData(SaveData data)
+        {
+            worldStartTimeAdjust = data.WorldTime;
         }
     }
 }

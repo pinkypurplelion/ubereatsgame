@@ -91,14 +91,16 @@ namespace Scenes.MainGameWorld.Scripts
         
         void OnMenu()
         {
-            Debug.Log("Menu");
+            Debug.Log("Saving Game");
+            _worldEventManager.SaveGame();
+            Debug.Log("Exiting to Menu");
             SceneManager.LoadScene("MainMenu");
         }
 
         // Called when the player presses the test save key defined by the input system
         void OnTestSave()
         {
-            _worldEventManager.SaveGame(this);
+            _worldEventManager.SaveGame();
         }
 
         void OnTestLoad()
@@ -257,6 +259,13 @@ namespace Scenes.MainGameWorld.Scripts
                     _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
                 }
             }
+        }
+
+        public void LoadPlayerData(SaveData data)
+        {
+            orderLimit = data.PlayerOrderLimit;
+            Money = data.PlayerMoney;
+            playerRating = data.PlayerRating;
         }
     }
 }
