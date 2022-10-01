@@ -89,6 +89,15 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.ToggleInteractUI();
             InventoryOpen = !InventoryOpen;
         }
+
+        // called when the player presses the player upgrade key
+        void OnTestUpgrades()
+        {
+            Debug.Log("Saving Game");
+            _worldEventManager.SaveGame();
+            Debug.Log("Switching to Upgrades Scene");
+            SceneManager.LoadScene("PlayerUpgrades");
+        }
         
         void OnMenu()
         {

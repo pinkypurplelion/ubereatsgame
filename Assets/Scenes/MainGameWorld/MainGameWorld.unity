@@ -282,6 +282,7 @@ MonoBehaviour:
   worldStartTime: 0
   currentTime: 0
   worldLight: {fileID: 1325301205}
+  playerController: {fileID: 0}
 --- !u!114 &378262722
 MonoBehaviour:
   m_ObjectHideFlags: 0

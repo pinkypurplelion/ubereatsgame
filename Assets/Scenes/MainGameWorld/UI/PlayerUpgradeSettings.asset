@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 19101, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: PlayerUIPanelSettings
+  m_Name: PlayerUpgradeSettings
   m_EditorClassIdentifier: 
   themeUss: {fileID: -4733365628477956816, guid: dca47a6fbc5a0a94ab10058ddcef6ae3, type: 3}
   m_TargetTexture: {fileID: 0}
-  m_ScaleMode: 2
+  m_ScaleMode: 1
   m_Scale: 1
   m_ReferenceDpi: 96
   m_FallbackDpi: 96
