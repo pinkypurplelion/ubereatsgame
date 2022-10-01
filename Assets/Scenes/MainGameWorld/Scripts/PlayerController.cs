@@ -54,7 +54,7 @@ namespace Scenes.MainGameWorld.Scripts
             _collider = GetComponent<BoxCollider>();
             
             _playerUI = transform.Find("PlayerUI").GetComponent<PlayerUIManager>();
-            Debug.Log(_playerUI);
+
             // Passes the objects in PlayerController through to the uiController to enable simple UI updates
             _playerUI.CurrentHouseCollisions = CurrentHouseCollisions;
             _playerUI.CurrentShopCollisions = CurrentShopCollisions;
@@ -64,7 +64,7 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.HouseEventCallback = SelectHouseToDeliver;
             _playerUI.InventoryEventCallback = InvEventPOC;
             
- }
+        }
 
         // Used to configure things that depend on other components
         void Start()
@@ -93,13 +93,20 @@ namespace Scenes.MainGameWorld.Scripts
         // FixedUpdate is called once per physics update (constant time irrespective of frame rate)
         void FixedUpdate()
         {
-            // Updates the labels in the UI to the correct values. TODO: move to better place
-            _playerUI.PlayerMoneyLabel.text = $"Player Balance: {Money}";
-            _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
+            UpdatePlayerUI();
+            
             if (_rigidbody.transform.position.y < -10)
             {
                 SceneManager.LoadScene("MainMenu");
             }
+        }
+
+        void UpdatePlayerUI()
+        {
+            // Updates the labels in the UI to the correct values.
+            _playerUI.PlayerMoneyLabel.text = $"Player Balance: {Money}";
+            _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
+            _playerUI.PlayerTimeLabel.text = $"Time: {_worldEventManager.GenerateCurrentTimeString()}";
         }
         
         // Called when the player enters the collider of another object

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = System.Random;
@@ -32,12 +33,20 @@ namespace Scenes.MainGameWorld.Scripts
         // How often orders are generated (in seconds)
         public float orderGenerationTime = 20f;
 
+        // The start time of the world (will be used to continue player progress)
+        public float worldStartTimeAdjust;
+        public float worldStartTime;
+        public float currentTime;
 
+        // World Lighting
+        public GameObject worldLight;
+        
         private void Awake()
         {
             // Generates the World based on the WorldDimension and BlockDimension
             map = new WorldMap { WorldDimension = worldDimension, BlockDimension = blockDimension };
             map.GenerateWorld();
+            worldStartTime = Time.time;
         }
 
         // Start is called before the first frame update
@@ -89,10 +98,15 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 GenerateOrder();
             }
+            
+            // World Daylight Cycle Manager
+            worldLight.transform.rotation = Quaternion.Euler(currentTime -90 % 360,0,0);
         }
 
         void Update()
         {
+            // Time Management
+            currentTime = Time.time - worldStartTime + worldStartTimeAdjust;
         }
 
         // Will pause/resume the game
@@ -121,6 +135,14 @@ namespace Scenes.MainGameWorld.Scripts
         {
             List<String> names = new() { "bob", "judy", "jane", "sarah", "adam", "spike", "erandi"};
             return names[_random.Next(names.Count)];
+        }
+
+        public String GenerateCurrentTimeString()
+        {
+            int minutes = (int) Math.Floor(currentTime/0.25 % 60);
+            int hours = (int) (currentTime / 15) % 24;
+            int days = (int) (currentTime / 360) % 7;
+            return $"{days}d, {hours}h {minutes}m";
         }
     }
 }

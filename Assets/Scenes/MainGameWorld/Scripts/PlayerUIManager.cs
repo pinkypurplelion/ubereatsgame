@@ -29,6 +29,7 @@ namespace Scenes.MainGameWorld.Scripts
         // Standard UI Components
         public Label PlayerOrdersLabel { get; set; }
         public Label PlayerMoneyLabel {get; set;}
+        public Label PlayerTimeLabel { get; set; }
         
         // PlayerController objects used for UI drawing
         public EventCallback<ClickEvent> ShopEventCallback {get; set;}
@@ -68,6 +69,7 @@ namespace Scenes.MainGameWorld.Scripts
             // Set Standard UI Components
             PlayerOrdersLabel = _rootVisualElement.Q<Label>("PlayerOrderCount");
             PlayerMoneyLabel = _rootVisualElement.Q<Label>("PlayerBankBalance");
+            PlayerTimeLabel = _rootVisualElement.Q<Label>("WorldTime");
 
             // Enable the page selector buttons in the UI
             var buttons = PlayerInteractUI.Q<GroupBox>("SelectionButtons").Query<Button>();
@@ -172,6 +174,8 @@ namespace Scenes.MainGameWorld.Scripts
         // Generates the house components used in the house GUI (each house element in the list)
         private Box GenHouseElement(string customerName)
         {
+            
+            
             Box houseBox = new Box();
             Label customerNameLabel = new Label();
             Button selectHouseButton = new Button();
