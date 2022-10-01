@@ -9838,6 +9838,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a81576a8a27c44f783b38a64688dd291, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerController: {fileID: 0}
   isPlayer: 1
   turnInputCurve:
     serializedVersion: 2
@@ -10075,6 +10076,9 @@ MonoBehaviour:
   speed: 0
   moveVal: {x: 0, y: 0}
   thrownObject: {fileID: 7143356486628525151, guid: 51cf13a55e3de2646ae27614c9e65fca, type: 3}
+  InventoryOpen: 0
+  orderLimit: 2
+  playerRating: 0
 --- !u!65 &3738444011890628523
 BoxCollider:
   m_ObjectHideFlags: 0
