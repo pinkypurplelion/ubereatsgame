@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SettingsScreen/SettingsMenu.unity
     guid: 850fb606a85aa574aa5c5fb51b5a3abd
+  - enabled: 1
+    path: Assets/Scenes/SoundScreen/SoundsMenu.unity
+    guid: 6b24162ee4160e94c8ec7e833b1a1e14
   m_configObjects: {}

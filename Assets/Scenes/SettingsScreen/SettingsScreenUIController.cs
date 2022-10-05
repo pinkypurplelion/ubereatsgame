@@ -8,6 +8,7 @@ public class SettingsScreenUIController : MonoBehaviour
 {
     public Button SettingsbackButton;
     public Button quitButton;
+    public Button soundButton;
 
     void Start()
     {
@@ -17,9 +18,16 @@ public class SettingsScreenUIController : MonoBehaviour
         // Assign buttons from UI Builder to script
         SettingsbackButton = root.Q<Button>("BackBtn");
         quitButton = root.Q<Button>("QuitBtn");
+        soundButton = root.Q<Button>("SoundBtn");
 
         SettingsbackButton.clicked += SBckBtnPressed; 
+        soundButton.clicked += SndBtnPressed;
         quitButton.clicked += Exit;       
+    }
+
+    void SndBtnPressed()
+    {
+        SceneManager.LoadScene("SoundsMenu");
     }
 
     void SBckBtnPressed()
