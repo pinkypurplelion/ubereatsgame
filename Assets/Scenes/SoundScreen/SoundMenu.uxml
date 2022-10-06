@@ -6,6 +6,6 @@
     </ui:VisualElement>
     <ui:VisualElement name="ButtonContainer" style="height: 303px; width: 313px; border-top-left-radius: 140px; border-bottom-left-radius: 140px; border-top-right-radius: 140px; border-bottom-right-radius: 140px; background-color: rgb(242, 248, 248); align-items: center; justify-content: center; position: absolute; top: 129px; left: 441px;">
         <ui:Button text="SOUND" display-tooltip-when-elided="true" name="SoundBtn" class="button-style" style="height: 39px; width: 173px; background-color: rgb(214, 146, 84); border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; border-top-left-radius: 15px; border-bottom-left-radius: 15px; border-top-right-radius: 15px; border-bottom-right-radius: 15px;" />
-        <ui:Slider value="50" high-value="100" show-input-field="false" style="height: 38px; width: 270px; border-left-color: rgba(42, 42, 42, 255); border-right-color: rgba(42, 42, 42, 255); border-top-color: rgba(42, 42, 42, 255); border-bottom-color: rgba(42, 42, 42, 255); color: rgba(188, 41, 41, 255);" />
+        <ui:Slider value="50" high-value="100" show-input-field="false" style="height: 38px; width: 270px; border-left-color: rgb(42, 42, 42); border-right-color: rgb(42, 42, 42); border-top-color: rgb(42, 42, 42); border-bottom-color: rgb(42, 42, 42); color: rgb(188, 41, 41);" />
     </ui:VisualElement>
 </ui:UXML>

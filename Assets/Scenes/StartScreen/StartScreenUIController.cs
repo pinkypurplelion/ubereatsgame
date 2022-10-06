@@ -19,10 +19,6 @@ public class StartScreenUIController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Have start screen displayed first
-        // rulesScreen.style.display = DisplayStyle.None;
-        // mainScreen.style.display = DisplayStyle.Flex;
-
         // Establish connection to document
         var root = GetComponent<UIDocument>().rootVisualElement;
         
@@ -51,20 +47,11 @@ public class StartScreenUIController : MonoBehaviour
 
     void SttingBtnPressed()
     {
-        // mainScreen.style.display = DisplayStyle.None;
-        // rulesScreen.style.display = DisplayStyle.None;
-        // settingsScreen.style.display = DisplayStyle.Flex;
-        // SettingsbackButton.clicked += SBckBtnPressed;
         SceneManager.LoadScene("SettingsMenu");
     }
 
     void RlsBtnPressed()
     {
-        // settingsScreen.style.display = DisplayStyle.None;
-        // mainScreen.style.display = DisplayStyle.None;
-        // rulesScreen.style.display = DisplayStyle.Flex;
-        // RulebackButton.clicked += RBckBtnPressed;
-        // RulebackButton.onClick.AddListener(RBckBtnPressed);
         SceneManager.LoadScene("RulesMenu");
     }
 

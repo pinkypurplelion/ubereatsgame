@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SoundsScreenUIController : MonoBehaviour
 {
-    public Button SoundsbackButton;
-
+    public UnityEngine.UIElements.Button SoundsbackButton;
+    public UnityEngine.UIElements.Slider volumeSlider;
+    public AudioSource audio;
 
     void Start()
     {
@@ -15,7 +17,9 @@ public class SoundsScreenUIController : MonoBehaviour
         var root = GetComponent<UIDocument>().rootVisualElement;
         
         // Assign buttons from UI Builder to script
-        SoundsbackButton = root.Q<Button>("BackBtn");
+        SoundsbackButton = root.Q<UnityEngine.UIElements.Button>("BackBtn");
+        volumeSlider = root.Q<UnityEngine.UIElements.Slider>("Slider");
+        volumeSlider.onValueChanged = ChangeVolume();
 
         SoundsbackButton.clicked += SoundBckBtnPressed; 
     }
@@ -24,5 +28,11 @@ public class SoundsScreenUIController : MonoBehaviour
     {
         SceneManager.LoadScene("MainMenu");
     }
+
+    void ChangeVolume()
+    {
+        audio.volume = volumeSlider.value;
+    }
+    
 
 }
