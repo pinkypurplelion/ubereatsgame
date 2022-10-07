@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Shop
   - House
+  - Music
   layers:
   - Default
   - TransparentFX

@@ -3,9 +3,9 @@
     <ui:VisualElement name="Sounds" style="display: flex; background-color: rgb(123, 208, 217); height: auto; width: auto; flex-grow: 1; justify-content: center; align-items: center; flex-direction: row;">
         <ui:Button text="BACK" display-tooltip-when-elided="true" name="BackBtn" class="small-button-style" style="position: absolute; top: 22px; left: 13px;" />
         <ui:Label text="SOUNDS" display-tooltip-when-elided="true" name="SoundsPageTitle" style="position: absolute; top: 35px; left: 450px; font-size: 60px; letter-spacing: 10px; color: rgb(60, 60, 60);" />
-    </ui:VisualElement>
-    <ui:VisualElement name="ButtonContainer" style="height: 303px; width: 313px; border-top-left-radius: 140px; border-bottom-left-radius: 140px; border-top-right-radius: 140px; border-bottom-right-radius: 140px; background-color: rgb(242, 248, 248); align-items: center; justify-content: center; position: absolute; top: 129px; left: 441px;">
-        <ui:Button text="SOUND" display-tooltip-when-elided="true" name="SoundBtn" class="button-style" style="height: 39px; width: 173px; background-color: rgb(214, 146, 84); border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; border-top-left-radius: 15px; border-bottom-left-radius: 15px; border-top-right-radius: 15px; border-bottom-right-radius: 15px;" />
-        <ui:Slider value="50" high-value="100" show-input-field="false" style="height: 38px; width: 270px; border-left-color: rgb(42, 42, 42); border-right-color: rgb(42, 42, 42); border-top-color: rgb(42, 42, 42); border-bottom-color: rgb(42, 42, 42); color: rgb(188, 41, 41);" />
+        <ui:VisualElement name="ButtonContainer" style="height: 303px; width: 313px; border-top-left-radius: 140px; border-bottom-left-radius: 140px; border-top-right-radius: 140px; border-bottom-right-radius: 140px; background-color: rgb(242, 248, 248); align-items: center; justify-content: center; position: absolute; top: 129px; left: 441px;">
+            <ui:Button text="SOUND" display-tooltip-when-elided="true" name="SoundBtn" class="button-style" style="height: 39px; width: 173px; background-color: rgb(214, 146, 84); border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; border-top-left-radius: 15px; border-bottom-left-radius: 15px; border-top-right-radius: 15px; border-bottom-right-radius: 15px;" />
+            <ui:Slider value="50" high-value="100" show-input-field="false" inverted="false" focusable="true" name="Slider" style="height: 38px; width: 270px; border-left-color: rgb(42, 42, 42); border-right-color: rgb(42, 42, 42); border-top-color: rgb(42, 42, 42); border-bottom-color: rgb(42, 42, 42); color: rgb(188, 41, 41);" />
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
