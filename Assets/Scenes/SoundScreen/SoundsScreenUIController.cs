@@ -10,34 +10,36 @@ public class SoundsScreenUIController : MonoBehaviour
     public Button SoundsbackButton;
     public Button SoundButton;
     public Slider volumeSlider;
-    public AudioSource audio;
+    private AudioSource audio;
 
     void Start()
     {
-        LoadValues();
         // Establish connection to document
         var root = GetComponent<UIDocument>().rootVisualElement;
         
         // Assign buttons from UI Builder to script
         SoundsbackButton = root.Q<Button>("BackBtn");
-        SoundButton = root.Q<Button>("SoundBtn");
-        volumeSlider = root.Q<Slider>("Slider");
-        //volumeSlider.onValueChanged = ChangeVolume();
-        volumeSlider.value = PlayerPrefs.GetFloat("Volume");
+        SoundButton = root.Q<Button>("SaveBtn");
+        volumeSlider = root.Q<Slider>("slid");
+        
         SoundsbackButton.clicked += SoundBckBtnPressed;
         SoundButton.clicked += ChangeVolume;
     }
 
+    void Update()
+    {
+        volumeSlider.label = (volumeSlider.value * 50).ToString();
+    }
 
     void SoundBckBtnPressed()
     {
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("SettingsMenu");
     }
 
     void ChangeVolume()
     {
-        //audio.volume = volumeSlider.value;
-        PlayerPrefs.SetFloat("Volume", volumeSlider.value);
+        float volumeValue = volumeSlider.value;
+        PlayerPrefs.SetFloat("Volume", volumeValue);
         PlayerPrefs.Save();
         LoadValues();
     }
