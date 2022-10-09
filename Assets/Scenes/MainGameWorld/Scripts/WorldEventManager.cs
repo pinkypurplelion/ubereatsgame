@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = System.Random;
@@ -32,12 +34,23 @@ namespace Scenes.MainGameWorld.Scripts
         // How often orders are generated (in seconds)
         public float orderGenerationTime = 20f;
 
+        // The start time of the world (will be used to continue player progress)
+        public float worldStartTimeAdjust;
+        public float worldStartTime;
+        public float currentTime;
 
+        // World Lighting
+        public GameObject worldLight;
+        
+        // Player Controller
+        public PlayerController playerController;
+        
         private void Awake()
         {
             // Generates the World based on the WorldDimension and BlockDimension
             map = new WorldMap { WorldDimension = worldDimension, BlockDimension = blockDimension };
             map.GenerateWorld();
+            worldStartTime = Time.time;
         }
 
         // Start is called before the first frame update
@@ -77,10 +90,22 @@ namespace Scenes.MainGameWorld.Scripts
             
             // Spawns player at a random road
             Vector3 randomRoad = roads[_random.Next(roads.Count)].transform.position;
-            Instantiate(playerPrefab, new Vector3(randomRoad.x, 5, randomRoad.z), Quaternion.identity);
+            GameObject player = Instantiate(playerPrefab, new Vector3(randomRoad.x, 5, randomRoad.z), Quaternion.identity);
+            playerController = player.GetComponent<PlayerController>();
 
-            Debug.Log("number of shops: " + shops.Count);
-            Debug.Log("number of houses: " + houses.Count);
+            // Load Game Data
+            Debug.Log("Loading Game Data");
+            SaveData data = LoadGame();
+            if (data != null)
+            {
+                playerController.LoadPlayerData(data);
+                LoadWorldData(data);
+                Debug.Log("Game Data Loaded");
+            }
+            else
+            {
+                Debug.Log("No Game Data Found");
+            }
         }
         
         void FixedUpdate()
@@ -89,10 +114,15 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 GenerateOrder();
             }
+            
+            // World Daylight Cycle Manager
+            worldLight.transform.rotation = Quaternion.Euler(currentTime -90 % 360,0,0);
         }
 
         void Update()
         {
+            // Time Management
+            currentTime = Time.time - worldStartTime + worldStartTimeAdjust;
         }
 
         // Will pause/resume the game
@@ -111,7 +141,9 @@ namespace Scenes.MainGameWorld.Scripts
                 ShopID = shop.ShopID,
                 HouseID = house.HouseID,
                 OrderValue = _random.Next(15, 80),
-                Customer = house.Customers[_random.Next(house.Customers.Count)]
+                Customer = house.Customers[_random.Next(house.Customers.Count)],
+                CreationTime = currentTime,
+                TimeToDeliver = _random.Next(30, 120) // Delivery timeframe between 30 and 120 seconds, TODO: upgrade for longer delivery times/dependant on reputation
             };
             Orders.Add(order);
             shop.Orders.Add(order.OrderID);
@@ -121,6 +153,51 @@ namespace Scenes.MainGameWorld.Scripts
         {
             List<String> names = new() { "bob", "judy", "jane", "sarah", "adam", "spike", "erandi"};
             return names[_random.Next(names.Count)];
+        }
+
+        public String GenerateCurrentTimeString()
+        {
+            return ConvertTimeToString(currentTime);
+        }
+
+        public static String ConvertTimeToString(float time)
+        {
+            int minutes = (int) Math.Floor(time/0.25 % 60);
+            int hours = (int) (time / 15) % 24;
+            int days = (int) (time / 360) % 7;
+            return $"{days}d, {hours}h {minutes}m";
+        }
+
+        public void SaveGame()
+        {
+            Debug.Log("Attempting to Save Game...");
+            SaveData data = new SaveData
+            {
+                WorldTime = currentTime,
+                PlayerOrderLimit = playerController.orderLimit,
+                PlayerRating = playerController.playerRating,
+                PlayerMoney = playerController.Money
+            };
+            string jsonData = JsonUtility.ToJson(data);
+            Debug.Log($"Save Data: {jsonData}");
+            FileManager.WriteToFile("testsave.json", jsonData);
+            Debug.Log("Game Saved!");
+        }
+
+        public SaveData LoadGame()
+        {
+            if (FileManager.LoadFromFile("testsave.json", out var json))
+            {
+                Debug.Log("Load complete");
+                return JsonUtility.FromJson<SaveData>(json);
+            }
+            Debug.Log("Load failed");
+            return null;
+        }
+
+        void LoadWorldData(SaveData data)
+        {
+            worldStartTimeAdjust = data.WorldTime;
         }
     }
 }

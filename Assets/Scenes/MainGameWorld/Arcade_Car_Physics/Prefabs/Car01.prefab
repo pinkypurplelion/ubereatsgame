@@ -10076,6 +10076,8 @@ MonoBehaviour:
   speed: 0
   moveVal: {x: 0, y: 0}
   thrownObject: {fileID: 7143356486628525151, guid: 51cf13a55e3de2646ae27614c9e65fca, type: 3}
+  orderLimit: 2
+  playerRating: 0
   InventoryOpen: 0
 --- !u!65 &3738444011890628523
 BoxCollider:

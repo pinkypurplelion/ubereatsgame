@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SoundScreen/SoundsMenu.unity
     guid: 6b24162ee4160e94c8ec7e833b1a1e14
+  - enabled: 1
+    path: Assets/Scenes/MainGameWorld/PlayerUpgrades.unity
+    guid: 593de52f3ee479a4fb5c48b47c29aa18
   m_configObjects: {}

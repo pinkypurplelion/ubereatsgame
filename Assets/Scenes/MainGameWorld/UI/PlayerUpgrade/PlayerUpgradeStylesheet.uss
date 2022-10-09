@@ -1,0 +1,20 @@
+.title {
+    font-size: 30px;
+    -unity-text-align: upper-center;
+    -unity-font-style: bold;
+}
+
+.player-info {
+    align-items: stretch;
+    justify-content: space-around;
+    flex-direction: row;
+    font-size: 20px;
+}
+
+.info-label {
+}
+
+.sub-title {
+    font-size: 22px;
+    -unity-font-style: normal;
+}

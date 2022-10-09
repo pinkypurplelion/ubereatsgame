@@ -29,6 +29,7 @@ namespace Scenes.MainGameWorld.Scripts
         // Standard UI Components
         public Label PlayerOrdersLabel { get; set; }
         public Label PlayerMoneyLabel {get; set;}
+        public Label PlayerTimeLabel { get; set; }
         
         // PlayerController objects used for UI drawing
         public EventCallback<ClickEvent> ShopEventCallback {get; set;}
@@ -68,6 +69,7 @@ namespace Scenes.MainGameWorld.Scripts
             // Set Standard UI Components
             PlayerOrdersLabel = _rootVisualElement.Q<Label>("PlayerOrderCount");
             PlayerMoneyLabel = _rootVisualElement.Q<Label>("PlayerBankBalance");
+            PlayerTimeLabel = _rootVisualElement.Q<Label>("WorldTime");
 
             // Enable the page selector buttons in the UI
             var buttons = PlayerInteractUI.Q<GroupBox>("SelectionButtons").Query<Button>();
@@ -100,11 +102,10 @@ namespace Scenes.MainGameWorld.Scripts
                 availableOrders.AddRange(shopCollision.transform.GetComponent<ShopTile>().Orders);
             }
             // add the order elements to the list
-            Debug.Log("Available Orders: " + availableOrders.Count);
             foreach (var order in availableOrders)
             {
-                Order o = WorldEventManager.Orders.Find(o => o.OrderID == order);
-                ShopScrollView.Add(GenOrderElement(o.Customer.getName(), o.OrderValue.ToString(CultureInfo.InvariantCulture), order.ToString()));
+                Order _order = WorldEventManager.Orders.Find(o => o.OrderID == order);
+                ShopScrollView.Add(GenShopOrderElement(_order));
             }
         
             // makes the buttons clickable and work
@@ -120,7 +121,7 @@ namespace Scenes.MainGameWorld.Scripts
             // add the house elements to the list
             foreach (var houseCollision in CurrentHouseCollisions)
             {
-                HouseScrollView.Add(GenHouseElement(houseCollision.transform.GetComponent<HouseTile>().HouseID.ToString()));
+                HouseScrollView.Add(GenHouseElement(houseCollision.transform.GetComponent<HouseTile>()));
             }
         
             // makes the buttons clickable and work
@@ -136,8 +137,8 @@ namespace Scenes.MainGameWorld.Scripts
             // add the order elements to the list
             foreach (var order in Orders)
             {
-                Order o = WorldEventManager.Orders.Find(o => o.OrderID == order);
-                InventoryScrollView.Add(GenOrderElement(o.Customer.getName(), o.OrderValue.ToString(CultureInfo.InvariantCulture), order.ToString()));
+                Order _order = WorldEventManager.Orders.Find(o => o.OrderID == order);
+                InventoryScrollView.Add(GenInvOrderElement(_order));
             }
         
             // makes the buttons clickable and work
@@ -170,35 +171,65 @@ namespace Scenes.MainGameWorld.Scripts
         }
     
         // Generates the house components used in the house GUI (each house element in the list)
-        private Box GenHouseElement(string customerName)
+        private Box GenHouseElement(HouseTile house)
         {
             Box houseBox = new Box();
             Label customerNameLabel = new Label();
             Button selectHouseButton = new Button();
-            customerNameLabel.text = customerName;
-            selectHouseButton.name = customerName;
-            selectHouseButton.text = "Select House";
+
+            String customers = "";
+            foreach (var customer in house.Customers)
+            {
+                customers += customer.getName() + ", ";
+            }
+            
+            customerNameLabel.text = $"Household Members: {customers}";
+            selectHouseButton.name = house.HouseID.ToString(); // sets house ID as the name of the button
+            selectHouseButton.text = "Deliver Order to House";
             houseBox.Add(customerNameLabel);
             houseBox.Add(selectHouseButton);
             return houseBox;
         }
     
         // Generates the order components used in the shop GUI (each order element in the list)
-        private Box GenOrderElement(string customerName, string orderPrice, string orderID)
+        private Box GenShopOrderElement(Order order)
         {
             Box orderBox = new Box();
             Label customerNameLabel = new Label();
             Label orderPriceLabel = new Label();
             Button selectOrderButton = new Button();
             
-            customerNameLabel.text = $"Customer: {customerName}";
-            orderPriceLabel.text = $"Delivery Price: ${orderPrice}";
+            customerNameLabel.text = $"Customer: {order.Customer.getName()}";
+            orderPriceLabel.text = $"Delivery Price: ${order.OrderValue}";
             
             // sets hidden name element to orderID so that we can select the order.
-            selectOrderButton.name = orderID;
-            selectOrderButton.text = "Select Order";
+            selectOrderButton.name = order.OrderID.ToString();
+            selectOrderButton.text = "Pickup Order";
             orderBox.Add(customerNameLabel);
             orderBox.Add(orderPriceLabel);
+            orderBox.Add(selectOrderButton);
+            return orderBox;
+        }
+
+        private Box GenInvOrderElement(Order order)
+        {
+            Box orderBox = new Box();
+            Label customerNameLabel = new Label();
+            Label orderPriceLabel = new Label();
+            Label orderDeliveryTime = new Label();
+            Button selectOrderButton = new Button();
+            
+            customerNameLabel.text = $"Customer: {order.Customer.getName()}";
+            orderPriceLabel.text = $"Delivery Price: ${order.OrderValue}";
+            // TODO: add upgrade to player that shows time remaining for each order
+            orderDeliveryTime.text = $"Delivery Time: {WorldEventManager.ConvertTimeToString(order.PickupTime + order.TimeToDeliver)}";
+            
+            // sets hidden name element to orderID so that we can select the order.
+            selectOrderButton.name = order.OrderID.ToString();
+            selectOrderButton.text = "Ditch Order";
+            orderBox.Add(customerNameLabel);
+            orderBox.Add(orderPriceLabel);
+            orderBox.Add(orderDeliveryTime);
             orderBox.Add(selectOrderButton);
             return orderBox;
         }
