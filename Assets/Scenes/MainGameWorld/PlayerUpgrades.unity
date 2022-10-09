@@ -268,3 +268,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4be0275be4b85fb4ead3dd122b1c50d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DefaultPlayerUpgrades: '[]'
+  DefaultVehicleUpgrades: '[{"cost":100.0,"isPurchased":false,"name":"Demo","vehicleID":"Demo123"},{"cost":100.0,"isPurchased":false,"name":"Demo","vehicleID":"Demo123"}]'

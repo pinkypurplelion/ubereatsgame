@@ -16,7 +16,7 @@
         </ui:GroupBox>
     </ui:GroupBox>
     <ui:GroupBox name="ExitButtonsContainer" style="flex-direction: row; justify-content: space-around; margin-left: 1px; margin-right: 1px; margin-top: 1px; margin-bottom: 1px; padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; bottom: auto; font-size: 18px; align-items: stretch;">
-        <ui:Button text="Save Changes &amp; Return to Game" display-tooltip-when-elided="true" name="ButtonCancel" />
-        <ui:Button text="Cancel &amp; Return to Game" display-tooltip-when-elided="true" name="ButtonSave" />
+        <ui:Button text="Save Changes &amp; Return to Game" display-tooltip-when-elided="true" name="ButtonSave" />
+        <ui:Button text="Cancel &amp; Return to Game" display-tooltip-when-elided="true" name="ButtonCancel" />
     </ui:GroupBox>
 </ui:UXML>

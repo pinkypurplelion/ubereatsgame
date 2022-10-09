@@ -56,7 +56,7 @@ namespace Scenes.MainGameWorld.Scripts
             Debug.Log("Data Saved!");
         }
 
-        public static T LoadData<T>(String filename) where T : new()
+        public static T LoadData<T>(String filename, T defaultData) where T : new()
         {
             if (FileManager.LoadFromFile(filename, out var json))
             {
@@ -64,7 +64,8 @@ namespace Scenes.MainGameWorld.Scripts
                 return JsonConvert.DeserializeObject<T>(json);
             }
             Debug.Log("Load failed");
-            return new T();
+            Debug.Log("Returning default data");
+            return defaultData;
         }
     }
 }

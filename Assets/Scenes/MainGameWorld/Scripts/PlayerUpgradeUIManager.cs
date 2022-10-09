@@ -9,12 +9,14 @@ namespace Scenes.MainGameWorld.Scripts
 {
     public class PlayerUpgradeUIManager : MonoBehaviour
     {
+        public String DefaultPlayerUpgrades;
+        public String DefaultVehicleUpgrades;
+        
         private UIDocument _uiDocument;
         private VisualElement _rootVisualElement;
 
         private ScrollView PlayerScroll;
         private ScrollView VehicleScroll;
-        
         
         private Button ButtonCancel;
         private Button ButtonSave;
@@ -31,15 +33,26 @@ namespace Scenes.MainGameWorld.Scripts
             
             ButtonCancel.RegisterCallback<ClickEvent>(ButtonCancelEvent);
             ButtonSave.RegisterCallback<ClickEvent>(ButtonSaveEvent);
+            
+            // Loads the upgrade information from the local save data
+            VehicleUpgrade.AllUpgrades = FileManager.LoadData<List<VehicleUpgrade>>("VehicleUpgrades.json", JsonConvert.DeserializeObject<List<VehicleUpgrade>>(DefaultVehicleUpgrades));
+            PlayerUpgrade.AllUpgrades = FileManager.LoadData<List<PlayerUpgrade>>("PlayerUpgrades.json", JsonConvert.DeserializeObject<List<PlayerUpgrade>>(DefaultPlayerUpgrades));
+
         }
            
         private void ButtonCancelEvent(ClickEvent evt)
         {
+            Debug.Log("Exiting Upgrade Screen Without Saving");
             SceneManager.LoadScene("MainGameWorld");
         }
         
         private void ButtonSaveEvent(ClickEvent evt)
         {
+            Debug.Log("Exiting Upgrade Screen and Saving");
+            // Saves the upgrade data before leaving
+            FileManager.SaveData("VehicleUpgrades.json", JsonConvert.SerializeObject(VehicleUpgrade.AllUpgrades));
+            FileManager.SaveData("PlayerUpgrades.json", JsonConvert.SerializeObject(PlayerUpgrade.AllUpgrades));
+            
             SceneManager.LoadScene("MainGameWorld");
         }
         
@@ -104,31 +117,7 @@ namespace Scenes.MainGameWorld.Scripts
         // Start is called before the first frame update
         void Start()
         {
-            VehicleUpgrade demo = new VehicleUpgrade
-            {
-                name = "Demo",
-                cost = 100f,
-                isPurchased = false,
-                vehicleID = "Demo123"
-            };
-
-            PlayerUpgrade pdemo = new PlayerUpgrade()
-            {
-                name = "demo 1",
-                cost = 50f,
-                maxLevel = 10,
-                purchasedLevel = 5,
-                upgradeID = "demo123"
-            };
-            
-            VehicleUpgrade.AllUpgrades.Add(demo);
-            
-            FileManager.SaveData("VehicleUpgrades.json", JsonConvert.SerializeObject(VehicleUpgrade.AllUpgrades));
-            VehicleUpgrade.AllUpgrades = new List<VehicleUpgrade>();
-            Debug.Log(VehicleUpgrade.AllUpgrades.Count);
-            VehicleUpgrade.AllUpgrades = FileManager.LoadData<List<VehicleUpgrade>>("VehicleUpgrades.json");;
-            Debug.Log(VehicleUpgrade.AllUpgrades.Count);
-
+            // Loads UI elements based on the upgrade data
             foreach (var upgrade in VehicleUpgrade.AllUpgrades)
             {
                 VehicleScroll.Add(GenVehicleUpgrade(upgrade));
