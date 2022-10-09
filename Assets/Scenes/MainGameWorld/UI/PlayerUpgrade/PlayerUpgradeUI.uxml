@@ -5,14 +5,14 @@
         <ui:Label text="Account Balance: $00.00" display-tooltip-when-elided="true" name="PlayerMoney" />
         <ui:Label text="Driver Rating: 0.00" display-tooltip-when-elided="true" name="PlayerReputation" />
     </ui:GroupBox>
-    <ui:GroupBox name="UpgradeContainer" style="flex-direction: row; justify-content: space-around; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;">
+    <ui:GroupBox name="UpgradeContainer" style="flex-direction: row; justify-content: space-around; height: 676px;">
         <ui:GroupBox name="VehicleUpgrade">
             <ui:Label text="Vehicle Upgrades" display-tooltip-when-elided="true" name="VehicleSubtitle" class="sub-title" />
-            <ui:ScrollView />
+            <ui:ScrollView name="VehicleScroll" />
         </ui:GroupBox>
         <ui:GroupBox name="PlayerUpgrade">
             <ui:Label text="Driver Upgrades" display-tooltip-when-elided="true" name="PlayerSubtitle" class="sub-title" />
-            <ui:ScrollView />
+            <ui:ScrollView name="PlayerScroll" />
         </ui:GroupBox>
     </ui:GroupBox>
     <ui:GroupBox name="ExitButtonsContainer" style="flex-direction: row; justify-content: space-around; margin-left: 1px; margin-right: 1px; margin-top: 1px; margin-bottom: 1px; padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; bottom: auto; font-size: 18px; align-items: stretch;">
