@@ -9,8 +9,13 @@ namespace Scenes.MainGameWorld.Scripts
         public static List<PlayerUpgrade> AllUpgrades = new List<PlayerUpgrade>();
         
         public float cost;
-        public int purchasedLevel;
-        public int maxLevel;
+        public float costStep;
+        
+        public float purchasedLevel;
+        public float maxLevel;
+        public float minLevel;
+        public float upgradeStep;
+        
         public string name;
         public string upgradeID;
     }

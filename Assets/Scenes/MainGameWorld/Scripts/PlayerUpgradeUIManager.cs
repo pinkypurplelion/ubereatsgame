@@ -20,26 +20,12 @@ namespace Scenes.MainGameWorld.Scripts
         
         private Button ButtonCancel;
         private Button ButtonSave;
-        private void Awake()
-        {
-            _uiDocument = transform.GetComponent<UIDocument>();
-            _rootVisualElement = _uiDocument.rootVisualElement;
-            
-            ButtonCancel = _rootVisualElement.Q<Button>("ButtonCancel");
-            ButtonSave = _rootVisualElement.Q<Button>("ButtonSave");
-            
-            PlayerScroll = _rootVisualElement.Q<ScrollView>("PlayerScroll");
-            VehicleScroll = _rootVisualElement.Q<ScrollView>("VehicleScroll");
-            
-            ButtonCancel.RegisterCallback<ClickEvent>(ButtonCancelEvent);
-            ButtonSave.RegisterCallback<ClickEvent>(ButtonSaveEvent);
-            
-            // Loads the upgrade information from the local save data
-            VehicleUpgrade.AllUpgrades = FileManager.LoadData<List<VehicleUpgrade>>("VehicleUpgrades.json", JsonConvert.DeserializeObject<List<VehicleUpgrade>>(DefaultVehicleUpgrades));
-            PlayerUpgrade.AllUpgrades = FileManager.LoadData<List<PlayerUpgrade>>("PlayerUpgrades.json", JsonConvert.DeserializeObject<List<PlayerUpgrade>>(DefaultPlayerUpgrades));
 
-        }
-           
+        private Label PlayerMoney;
+        private Label PlayerRating;
+
+        private SaveData gameData;
+
         private void ButtonCancelEvent(ClickEvent evt)
         {
             Debug.Log("Exiting Upgrade Screen Without Saving");
@@ -53,7 +39,21 @@ namespace Scenes.MainGameWorld.Scripts
             FileManager.SaveData("VehicleUpgrades.json", JsonConvert.SerializeObject(VehicleUpgrade.AllUpgrades));
             FileManager.SaveData("PlayerUpgrades.json", JsonConvert.SerializeObject(PlayerUpgrade.AllUpgrades));
             
+            // Give me money & rating
+            // gameData.PlayerMoney += 1000;
+            // gameData.PlayerRating = 5;
+            
+            // Saves the game data (money spent)
+            SaveGame();
+            
             SceneManager.LoadScene("MainGameWorld");
+        }
+
+        private void ButtonPurchasePlayerUpgrade(ClickEvent evt)
+        {
+            Button button = evt.currentTarget as Button;
+            Debug.Log($"Player has attempted to purchase upgrade: {button.name}");
+            
         }
         
         private void BtnEventTemplate(ClickEvent evt)
@@ -105,13 +105,62 @@ namespace Scenes.MainGameWorld.Scripts
             upgradeProgress.value = upgrade.purchasedLevel;
             
             purchaseButton.name = upgrade.upgradeID;
+            purchaseButton.text = "Purchase Upgrade";
             
             playerBox.Add(upgradeName);
             playerBox.Add(upgradeCost);
             playerBox.Add(upgradeProgress);
             playerBox.Add(purchaseButton);
             
+            purchaseButton.RegisterCallback<ClickEvent>(ButtonPurchasePlayerUpgrade);
+
             return playerBox;
+        }
+        
+        public void SaveGame()
+        {
+            Debug.Log("Attempting to Save Game...");
+            string jsonData = JsonUtility.ToJson(gameData);
+            Debug.Log($"Save Data: {jsonData}");
+            FileManager.WriteToFile("testsave.json", jsonData);
+            Debug.Log("Game Saved!");
+        }
+
+        public SaveData LoadGame()
+        {
+            if (FileManager.LoadFromFile("testsave.json", out var json))
+            {
+                Debug.Log("Load complete");
+                return JsonUtility.FromJson<SaveData>(json);
+            }
+            Debug.Log("Load failed");
+            return null;
+        }
+
+        // Awake is called on object initialisation/activation
+        private void Awake()
+        {
+            _uiDocument = transform.GetComponent<UIDocument>();
+            _rootVisualElement = _uiDocument.rootVisualElement;
+            
+            ButtonCancel = _rootVisualElement.Q<Button>("ButtonCancel");
+            ButtonSave = _rootVisualElement.Q<Button>("ButtonSave");
+            
+            PlayerScroll = _rootVisualElement.Q<ScrollView>("PlayerScroll");
+            VehicleScroll = _rootVisualElement.Q<ScrollView>("VehicleScroll");
+            
+            PlayerMoney = _rootVisualElement.Q<Label>("PlayerMoney");
+            PlayerRating = _rootVisualElement.Q<Label>("PlayerReputation");
+            
+            ButtonCancel.RegisterCallback<ClickEvent>(ButtonCancelEvent);
+            ButtonSave.RegisterCallback<ClickEvent>(ButtonSaveEvent);
+            
+            // Loads the upgrade information from the local save data
+            VehicleUpgrade.AllUpgrades = FileManager.LoadData<List<VehicleUpgrade>>("VehicleUpgrades.json", JsonConvert.DeserializeObject<List<VehicleUpgrade>>(DefaultVehicleUpgrades));
+            PlayerUpgrade.AllUpgrades = FileManager.LoadData<List<PlayerUpgrade>>("PlayerUpgrades.json", JsonConvert.DeserializeObject<List<PlayerUpgrade>>(DefaultPlayerUpgrades));
+            
+            // Loads the save data from the local save file
+            gameData = LoadGame();
         }
         
         // Start is called before the first frame update
@@ -127,7 +176,12 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 PlayerScroll.Add(GenPlayerUpgrade(upgrade));
             }
+
+            PlayerMoney.text = $"Account Balance: ${gameData.PlayerMoney}";
+            PlayerRating.text = $"Driver Rating: {gameData.PlayerRating}";
         }
+        
+        
 
         // Update is called once per frame
         void Update()

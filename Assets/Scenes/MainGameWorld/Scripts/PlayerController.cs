@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -49,6 +50,9 @@ namespace Scenes.MainGameWorld.Scripts
         // player starts with a 5 star rating
         public float playerRating = 5;
         
+        // player order delivery time multiplier
+        public float deliveryTimeMultiplier = 1f;
+
         // Used to setup the current component
         private void Awake()
         {
@@ -70,6 +74,12 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.HouseEventCallback = SelectHouseToDeliver;
             _playerUI.InventoryEventCallback = InvEventPOC;
             
+            // Loads the upgrade information from the local save data
+            VehicleUpgrade.AllUpgrades = FileManager.LoadData<List<VehicleUpgrade>>("VehicleUpgrades.json", new List<VehicleUpgrade>());
+            PlayerUpgrade.AllUpgrades = FileManager.LoadData<List<PlayerUpgrade>>("PlayerUpgrades.json", new List<PlayerUpgrade>());
+            
+            // Processes upgrade information to apply to the player
+            ProcessUpgradeInformation();
         }
 
         // Used to configure things that depend on other components
@@ -209,6 +219,7 @@ namespace Scenes.MainGameWorld.Scripts
                 // Highlights house that order must be delivered to
                 Order order = _worldEventManager.Orders.Find(o => o.OrderID == orderID);
                 order.PickupTime = _worldEventManager.currentTime;
+                order.TimeToDeliver *= deliveryTimeMultiplier;
                 HouseTile house = _worldEventManager.houses.Find(h => h.HouseID == order.HouseID);
                 house.isDelivering = true;
 
@@ -277,6 +288,27 @@ namespace Scenes.MainGameWorld.Scripts
             orderLimit = data.PlayerOrderLimit;
             Money = data.PlayerMoney;
             playerRating = data.PlayerRating;
+        }
+
+        void ProcessUpgradeInformation()
+        {
+            Debug.Log("Processing Player Upgrading Information");
+            // Player Upgrades
+            var demo = PlayerUpgrade.AllUpgrades.Find(u => u.upgradeID == "playerOrderCapacity");
+            if (demo != null)
+            {
+                orderLimit = (int) demo.purchasedLevel;
+            }
+            var demo2 = PlayerUpgrade.AllUpgrades.Find(u => u.upgradeID == "playerTimeMultiplier");
+            if (demo2 != null)
+            {
+                deliveryTimeMultiplier = demo2.purchasedLevel;
+            }
+        }
+
+        void SwitchPlayerVehicle()
+        {
+            // Selects proper vehicle
         }
     }
 }
