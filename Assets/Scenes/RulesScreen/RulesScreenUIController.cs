@@ -11,6 +11,7 @@ public class RulesScreenUIController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //GameObject.FindGameObjectWithTag("Music").GetComponent<audio>().PlayMusic();
         // Establish connection to document
         var root = GetComponent<UIDocument>().rootVisualElement;
         
