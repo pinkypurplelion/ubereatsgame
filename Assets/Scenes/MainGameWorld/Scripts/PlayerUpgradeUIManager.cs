@@ -52,8 +52,32 @@ namespace Scenes.MainGameWorld.Scripts
         private void ButtonPurchasePlayerUpgrade(ClickEvent evt)
         {
             Button button = evt.currentTarget as Button;
+            VisualElement parent = button.parent;
             Debug.Log($"Player has attempted to purchase upgrade: {button.name}");
-            
+            var upgrade = PlayerUpgrade.AllUpgrades.Find(x => x.upgradeID == button.name);
+            if (upgrade != null)
+            {
+                float upgradeCost = upgrade.cost + upgrade.costStep * upgrade.purchasedLevel;
+                if (gameData.PlayerMoney >= upgradeCost)
+                {
+                    gameData.PlayerMoney -= upgradeCost;
+                    upgrade.purchasedLevel++;
+                    PlayerMoney.text = $"Money: {gameData.PlayerMoney}";
+                    parent.Q<Label>("upgradeCost").text = (upgrade.cost + upgrade.costStep * upgrade.purchasedLevel).ToString();
+                    parent.Q<ProgressBar>("upgradeProgress").value = upgrade.purchasedLevel;
+                    if (upgrade.purchasedLevel >= upgrade.maxLevel)
+                    {
+                        button.text = "Upgrade Maxed";
+
+                    }
+                    Debug.Log($"Player has purchased upgrade: {button.name}");
+                }
+                else
+                {
+                    // TODO: add message to player on screen
+                    Debug.Log($"Player does not have enough money to purchase upgrade: {button.name}");
+                }
+            }
         }
         
         private void BtnEventTemplate(ClickEvent evt)
@@ -99,20 +123,29 @@ namespace Scenes.MainGameWorld.Scripts
             Button purchaseButton = new Button();
             
             upgradeName.text = upgrade.name;
-            upgradeCost.text = upgrade.cost.ToString();
+            upgradeCost.text = (upgrade.cost + upgrade.costStep * upgrade.purchasedLevel).ToString();
+            upgradeCost.name = "upgradeCost";
             upgradeProgress.lowValue = 0;
             upgradeProgress.highValue = upgrade.maxLevel;
             upgradeProgress.value = upgrade.purchasedLevel;
+            upgradeProgress.name = "upgradeProgress";
             
             purchaseButton.name = upgrade.upgradeID;
-            purchaseButton.text = "Purchase Upgrade";
+            if (upgrade.purchasedLevel < upgrade.maxLevel)
+            {
+                purchaseButton.text = "Purchase Upgrade";
+                purchaseButton.RegisterCallback<ClickEvent>(ButtonPurchasePlayerUpgrade);
+            }
+            else
+            {
+                purchaseButton.text = "Upgrade Maxed";
+            }
             
             playerBox.Add(upgradeName);
             playerBox.Add(upgradeCost);
             playerBox.Add(upgradeProgress);
             playerBox.Add(purchaseButton);
             
-            purchaseButton.RegisterCallback<ClickEvent>(ButtonPurchasePlayerUpgrade);
 
             return playerBox;
         }
@@ -166,6 +199,22 @@ namespace Scenes.MainGameWorld.Scripts
         // Start is called before the first frame update
         void Start()
         {
+            if (PlayerUpgrade.AllUpgrades.Count == 0)
+            {
+                PlayerUpgrade vu = new PlayerUpgrade()
+                {
+                    upgradeID = "playerOrderCapacity",
+                    name = "Order Capacity",
+                    minLevel = 1,
+                    maxLevel = 5,
+                    purchasedLevel = 1,
+                    upgradeStep = 1,
+                    cost = 50,
+                    costStep = 50
+                };
+                PlayerUpgrade.AllUpgrades.Add(vu);
+            }
+            
             // Loads UI elements based on the upgrade data
             foreach (var upgrade in VehicleUpgrade.AllUpgrades)
             {

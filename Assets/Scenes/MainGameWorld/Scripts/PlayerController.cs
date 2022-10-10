@@ -285,7 +285,6 @@ namespace Scenes.MainGameWorld.Scripts
 
         public void LoadPlayerData(SaveData data)
         {
-            orderLimit = data.PlayerOrderLimit;
             Money = data.PlayerMoney;
             playerRating = data.PlayerRating;
         }
