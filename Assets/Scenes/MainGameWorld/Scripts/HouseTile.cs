@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Scenes.MainGameWorld.Scripts
 {
@@ -27,6 +28,9 @@ namespace Scenes.MainGameWorld.Scripts
         {
             _priceText = transform.Find("Canvas").Find("text").GetComponent<TMP_Text>();
             _priceText.color = Color.white;
+
+            int house = Random.Range(0, 3);
+            transform.Find($"house{house}").gameObject.SetActive(true);
         }
 
         /// <summary>

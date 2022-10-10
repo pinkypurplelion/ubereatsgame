@@ -17,5 +17,16 @@ namespace Scenes.MainGameWorld.Scripts
         
         // World Data
         public float WorldTime;
+
+        public static SaveData Defaults()
+        {
+            return new SaveData()
+            {
+                PlayerRating = 5,
+                PlayerMoney = 0,
+                PlayerScore = 0,
+                WorldTime = 0,
+            };
+        }
     }
 }

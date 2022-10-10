@@ -1,34 +1,9 @@
 fileFormatVersion: 2
-guid: 6956148e77c0a4a45a0fbcd93742fc57
+guid: 7fd43d1fb34367d4d816e0f2dd620a8b
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: small_buildingD_ID13__defaultMat.002Mat
-    second: {fileID: -3963241562183589234, guid: 8a269636eacd14a2c843b9e37fd75698, type: 3}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: small_buildingD_ID13_border.002Mat
-    second: {fileID: -2870021472586168505, guid: 8a269636eacd14a2c843b9e37fd75698, type: 3}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: small_buildingD_ID13_door.002Mat
-    second: {fileID: 1550975326256456482, guid: 8a269636eacd14a2c843b9e37fd75698, type: 3}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: small_buildingD_ID13_roof.002Mat
-    second: {fileID: 8457432598939410078, guid: 8a269636eacd14a2c843b9e37fd75698, type: 3}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: small_buildingD_ID13_window.002Mat
-    second: {fileID: 3398073514908505954, guid: 8a269636eacd14a2c843b9e37fd75698, type: 3}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -60,7 +35,7 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 1.1
+    globalScale: 1
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -113,7 +88,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 1.1
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

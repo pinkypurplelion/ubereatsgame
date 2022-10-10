@@ -41,6 +41,9 @@ namespace Scenes.MainGameWorld.Scripts
                     transform.Find("house").gameObject.SetActive(true);
                     RotateTile();
                     break;
+                case TileType.Landscape:
+                    transform.Find("landscape").gameObject.SetActive(true);
+                    break;
             }
 
             

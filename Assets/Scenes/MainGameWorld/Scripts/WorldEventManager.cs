@@ -99,8 +99,8 @@ namespace Scenes.MainGameWorld.Scripts
 
             // Load Game Data
             Debug.Log("Loading Game Data");
-            data = FileManager.LoadDataDefault<SaveData>(SaveData.SaveName);
-            
+            data = FileManager.LoadDataDefault<SaveData>(SaveData.SaveName) ?? SaveData.Defaults();
+
             // Loads the upgrade information from the local save data
             VehicleUpgrade.AllUpgrades = FileManager.LoadData(VehicleUpgrade.SaveName, new List<VehicleUpgrade>());
             PlayerUpgrade.AllUpgrades = FileManager.LoadData(PlayerUpgrade.SaveName, new List<PlayerUpgrade>());

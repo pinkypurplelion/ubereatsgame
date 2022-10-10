@@ -1,18 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildingTile : MonoBehaviour
+namespace Scenes.MainGameWorld.Scripts
 {
-    // Start is called before the first frame update
-    void Start()
+    public class BuildingTile : MonoBehaviour
     {
-        
-    }
+        // Start is called before the first frame update
+        void Start()
+        {
+            int building = Random.Range(0, 4);
+            transform.Find($"building{building}").gameObject.SetActive(true);
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
+        // Update is called once per frame
+        void Update()
+        {
         
+        }
     }
 }
