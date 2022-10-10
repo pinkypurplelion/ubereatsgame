@@ -31,7 +31,6 @@ namespace Scenes.MainGameWorld.Scripts
         
         // UI Elements
         private PlayerUIManager _playerUI;
-        
 
         // Global Components
         private GameObject _worldEventManagerGameObject;
@@ -43,6 +42,7 @@ namespace Scenes.MainGameWorld.Scripts
         public GameObject thrownObject;
 
         public bool InventoryOpen = false;
+        public bool MenuOpen = false;
     
         // the number of orders the player is able to carry at any time
         public int orderLimit = 2;
@@ -73,7 +73,7 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.ShopEventCallback = SelectOrderFromShop;
             _playerUI.HouseEventCallback = SelectHouseToDeliver;
             _playerUI.InventoryEventCallback = InvEventPOC;
-            
+
             // Loads the upgrade information from the local save data
             VehicleUpgrade.AllUpgrades = FileManager.LoadData<List<VehicleUpgrade>>("VehicleUpgrades.json", new List<VehicleUpgrade>());
             PlayerUpgrade.AllUpgrades = FileManager.LoadData<List<PlayerUpgrade>>("PlayerUpgrades.json", new List<PlayerUpgrade>());
@@ -96,8 +96,11 @@ namespace Scenes.MainGameWorld.Scripts
         void OnPlayerInteract(InputValue value)
         {
             Debug.Log("Player Interaction Action");
-            _playerUI.ToggleInteractUI();
-            InventoryOpen = !InventoryOpen;
+            if (!MenuOpen)
+            {
+                _playerUI.ToggleInteractUI();
+                InventoryOpen = !InventoryOpen;
+            }
         }
 
         // called when the player presses the player upgrade key
@@ -111,10 +114,15 @@ namespace Scenes.MainGameWorld.Scripts
         
         void OnMenu()
         {
-            Debug.Log("Saving Game");
-            _worldEventManager.SaveGame();
-            Debug.Log("Exiting to Menu");
-            SceneManager.LoadScene("MainMenu");
+            if (!InventoryOpen)
+            {
+                MenuOpen = !MenuOpen;
+                _playerUI.ToggleMenuUI();
+            }
+            // Debug.Log("Saving Game");
+            // _worldEventManager.SaveGame();
+            // Debug.Log("Exiting to Menu");
+            // SceneManager.LoadScene("MainMenu");
         }
 
         // Called when the player presses the test save key defined by the input system

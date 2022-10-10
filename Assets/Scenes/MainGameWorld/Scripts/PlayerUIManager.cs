@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Button = UnityEngine.UIElements.Button;
@@ -13,10 +14,12 @@ namespace Scenes.MainGameWorld.Scripts
         // Base UI Elements
         private UIDocument _uiDocument;
         private VisualElement _rootVisualElement;
+        
     
         // player interact ui screen
         public GroupBox PlayerInteractUI { get; set; }
-    
+        public GroupBox MenuUI { get; set; }
+
         // pages in player interact ui screen
         public GroupBox ShopPageUI { get; set; }
         public GroupBox HousePageUI {get; set;}
@@ -50,6 +53,9 @@ namespace Scenes.MainGameWorld.Scripts
 
             PlayerInteractUI = _rootVisualElement.Q<GroupBox>("InteractScreen");
             PlayerInteractUI.style.display = DisplayStyle.None;
+            
+            MenuUI = _rootVisualElement.Q<GroupBox>("MenuScreen");
+            MenuUI.style.display = DisplayStyle.None;
 
             ShopPageUI = _rootVisualElement.Q<GroupBox>("ShopPage");
             HousePageUI = _rootVisualElement.Q<GroupBox>("HousePage");
@@ -82,7 +88,12 @@ namespace Scenes.MainGameWorld.Scripts
             PlayerInteractUI.style.display = PlayerInteractUI.style.display == DisplayStyle.None ? DisplayStyle.Flex : DisplayStyle.None;
             UpdateInteractUI();
         }
-        
+
+        public void ToggleMenuUI()
+        {
+            MenuUI.style.display = MenuUI.style.display == DisplayStyle.None ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
         // Used to update the player UpdateInteractUI
         public void UpdateInteractUI()
         {

@@ -10074,9 +10074,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0
+  PlayerUIAsset: {fileID: 9197481963319205126, guid: f08752911a1bc8f458811949cde8d7e4, type: 3}
+  MenuUIAsset: {fileID: 9197481963319205126, guid: a8ffa3795c32ab24db88f555fb4ff7a3, type: 3}
   moveVal: {x: 0, y: 0}
   thrownObject: {fileID: 7143356486628525151, guid: 51cf13a55e3de2646ae27614c9e65fca, type: 3}
   InventoryOpen: 0
+  MenuOpen: 0
   orderLimit: 2
   playerRating: 0
   deliveryTimeMultiplier: 1
@@ -20195,6 +20198,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab80997f32a0667439b9edfd429cae54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerUIAsset: {fileID: 0}
+  MenuUIAsset: {fileID: 0}
 --- !u!1 &4636209609245040624
 GameObject:
   m_ObjectHideFlags: 0
