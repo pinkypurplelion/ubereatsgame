@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
@@ -52,6 +53,8 @@ namespace Scenes.MainGameWorld.Scripts
         
         // player order delivery time multiplier
         public float deliveryTimeMultiplier = 1f;
+
+        public float score = 0f;
 
         // Used to setup the current component
         private void Awake()

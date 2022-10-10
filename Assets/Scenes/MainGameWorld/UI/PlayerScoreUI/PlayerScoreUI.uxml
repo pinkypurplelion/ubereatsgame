@@ -1,7 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:VisualElement style="width: 100%; height: 100%; align-items: center; justify-content: center;">
-        <ui:GroupBox style="width: 20%; height: 30%;">
-            <ui:Label text="Pause Menu" display-tooltip-when-elided="true" />
-        </ui:GroupBox>
+    <ui:VisualElement style="width: 100%; height: 100%; justify-content: center; align-items: center;">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="PlayerScore" style="font-size: 36px;" />
     </ui:VisualElement>
 </ui:UXML>
