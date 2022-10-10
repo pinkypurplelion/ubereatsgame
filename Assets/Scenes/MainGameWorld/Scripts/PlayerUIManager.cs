@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Button = UnityEngine.UIElements.Button;
@@ -13,10 +14,12 @@ namespace Scenes.MainGameWorld.Scripts
         // Base UI Elements
         private UIDocument _uiDocument;
         private VisualElement _rootVisualElement;
+        
     
         // player interact ui screen
         public GroupBox PlayerInteractUI { get; set; }
-    
+        public GroupBox MenuUI { get; set; }
+
         // pages in player interact ui screen
         public GroupBox ShopPageUI { get; set; }
         public GroupBox HousePageUI {get; set;}
@@ -40,6 +43,13 @@ namespace Scenes.MainGameWorld.Scripts
         public List<Guid> Orders {get; set;}
         public WorldEventManager WorldEventManager {get; set;}
         
+        // Menu Buttons
+        public Button MenuSaveButton { get; set; }
+        public Button MenuMainButton { get; set; }
+        public Button MenuExitButton { get; set; }
+        public EventCallback<ClickEvent> MenuSaveEventCallback { get; set; }
+        public EventCallback<ClickEvent> MenuMainEventCallback { get; set; }
+        public EventCallback<ClickEvent> MenuExitEventCallback { get; set; }
 
         // Used to setup the current component
         void Awake()
@@ -50,6 +60,9 @@ namespace Scenes.MainGameWorld.Scripts
 
             PlayerInteractUI = _rootVisualElement.Q<GroupBox>("InteractScreen");
             PlayerInteractUI.style.display = DisplayStyle.None;
+            
+            MenuUI = _rootVisualElement.Q<GroupBox>("MenuScreen");
+            MenuUI.style.display = DisplayStyle.None;
 
             ShopPageUI = _rootVisualElement.Q<GroupBox>("ShopPage");
             HousePageUI = _rootVisualElement.Q<GroupBox>("HousePage");
@@ -58,6 +71,13 @@ namespace Scenes.MainGameWorld.Scripts
             ShopScrollView = _rootVisualElement.Q<ScrollView>("ShopScrollView");
             InventoryScrollView = _rootVisualElement.Q<ScrollView>("InventoryScrollView");
             HouseScrollView = _rootVisualElement.Q<ScrollView>("HouseScrollView");
+            
+            MenuSaveButton = _rootVisualElement.Q<Button>("BtnMenuSave");
+            MenuSaveButton.RegisterCallback(MenuSaveEventCallback);
+            MenuMainButton = _rootVisualElement.Q<Button>("BtnMenuHome");
+            MenuMainButton.RegisterCallback(MenuMainEventCallback);
+            MenuExitButton = _rootVisualElement.Q<Button>("BtnMenuQuit");
+            MenuExitButton.RegisterCallback(MenuExitEventCallback);
 
             ShopScrollView.style.height = _rootVisualElement.layout.height;
             InventoryScrollView.style.height = _rootVisualElement.layout.height;
@@ -82,7 +102,12 @@ namespace Scenes.MainGameWorld.Scripts
             PlayerInteractUI.style.display = PlayerInteractUI.style.display == DisplayStyle.None ? DisplayStyle.Flex : DisplayStyle.None;
             UpdateInteractUI();
         }
-        
+
+        public void ToggleMenuUI()
+        {
+            MenuUI.style.display = MenuUI.style.display == DisplayStyle.None ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
         // Used to update the player UpdateInteractUI
         public void UpdateInteractUI()
         {

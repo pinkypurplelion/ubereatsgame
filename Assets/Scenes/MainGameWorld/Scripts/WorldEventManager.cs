@@ -176,7 +176,8 @@ namespace Scenes.MainGameWorld.Scripts
                 WorldTime = currentTime,
                 PlayerOrderLimit = playerController.orderLimit,
                 PlayerRating = playerController.playerRating,
-                PlayerMoney = playerController.Money
+                PlayerMoney = playerController.Money,
+                PlayerScore = playerController.score
             };
             string jsonData = JsonUtility.ToJson(data);
             Debug.Log($"Save Data: {jsonData}");

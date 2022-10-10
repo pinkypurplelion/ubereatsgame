@@ -9,6 +9,7 @@ namespace Scenes.MainGameWorld.Scripts
         public int PlayerOrderLimit;
         public float PlayerRating;
         public float PlayerMoney;
+        public float PlayerScore;
         
         // World Data
         public float WorldTime;

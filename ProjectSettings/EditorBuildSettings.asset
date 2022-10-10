@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainGameWorld/PlayerUpgrades.unity
     guid: 593de52f3ee479a4fb5c48b47c29aa18
+  - enabled: 1
+    path: Assets/Scenes/MainGameWorld/ScoreScreen.unity
+    guid: e06c514a14839455aa20e3461f4ec743
   m_configObjects: {}

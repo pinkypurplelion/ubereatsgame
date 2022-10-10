@@ -1,0 +1,32 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="justify-content: space-between; align-items: center;">
+        <ui:GroupBox name="PlayerInfo" style="align-items: stretch; flex-direction: row; justify-content: space-between; height: 25%; width: 100%;">
+            <ui:IMGUIContainer name="PlayerMinimap" style="background-image: url(&apos;project://database/Assets/Scenes/MainGameWorld/MinimapRender.renderTexture?fileID=8400000&amp;guid=2b071db4a59d7d44584a153991b52f27&amp;type=2#MinimapRender&apos;); height: 256px; width: 256px;" />
+            <ui:Label text="DD:MM:YY HH:MM" display-tooltip-when-elided="true" name="WorldTime" style="-unity-text-outline-color: rgb(255, 255, 255); -unity-text-outline-width: 1px;" />
+            <ui:Label text="Player Order Count" display-tooltip-when-elided="true" name="PlayerOrderCount" style="-unity-text-outline-color: rgb(255, 239, 239); -unity-text-outline-width: 1px;" />
+            <ui:Label text="Bank Balance: $0" display-tooltip-when-elided="true" name="PlayerBankBalance" style="-unity-text-outline-width: 1px; -unity-text-outline-color: rgb(255, 255, 255);" />
+        </ui:GroupBox>
+        <ui:GroupBox name="InteractScreen" style="visibility: visible; display: flex; align-items: stretch; flex-direction: column; justify-content: space-between; height: 70%;">
+            <ui:GroupBox name="SelectionButtons" style="align-items: stretch; justify-content: center; flex-direction: row; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-top: 0; padding-bottom: 0;">
+                <ui:Button text="Shop" display-tooltip-when-elided="true" name="SelectShop" style="padding-left: 1px; padding-right: 1px; margin-left: 1px; margin-right: 1px; font-size: 8px;" />
+                <ui:Button text="House" display-tooltip-when-elided="true" name="SelectHouse" style="margin-left: 1px; margin-right: 1px; padding-left: 1px; padding-right: 1px; font-size: 8px;" />
+                <ui:Button text="Inventory" display-tooltip-when-elided="true" name="SelectInventory" style="margin-left: 1px; margin-right: 1px; padding-left: 1px; padding-right: 1px; font-size: 8px;" />
+            </ui:GroupBox>
+            <ui:GroupBox name="ShopPage" style="display: flex; height: 300px; margin-left: 1px; margin-right: 1px; margin-top: 1px; padding-left: 1px; padding-top: 1px; padding-bottom: 1px; padding-right: 1px;">
+                <ui:ScrollView name="ShopScrollView" vertical-page-size="-1" />
+            </ui:GroupBox>
+            <ui:GroupBox name="HousePage" style="display: flex; height: 300px; margin-left: 1px; margin-right: 1px; margin-top: 1px; padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px;">
+                <ui:ScrollView name="HouseScrollView" />
+            </ui:GroupBox>
+            <ui:GroupBox name="InventoryPage" style="height: 300px; padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; margin-left: 1px; margin-right: 1px; margin-top: 1px; -unity-text-outline-width: 1px;">
+                <ui:ScrollView name="InventoryScrollView" />
+            </ui:GroupBox>
+        </ui:GroupBox>
+        <ui:GroupBox name="MenuScreen" style="width: 20%; height: 30%;">
+            <ui:Label text="Pause Menu" display-tooltip-when-elided="true" style="align-items: center; font-size: 30px; -unity-text-align: upper-center;" />
+            <ui:Button text="Save Game" display-tooltip-when-elided="true" name="BtnMenuSave" />
+            <ui:Button text="Save &amp; Return to Main Menu" display-tooltip-when-elided="true" name="BtnMenuHome" />
+            <ui:Button text="Save &amp; Quit Game" display-tooltip-when-elided="true" name="BtnMenuQuit" />
+        </ui:GroupBox>
+    </ui:VisualElement>
+</ui:UXML>

@@ -266,7 +266,7 @@ namespace Scenes.MainGameWorld.Scripts
             speed = transform.InverseTransformDirection(rb.velocity).z * 3.6f;
 
             // Get all the inputs!
-            if (isPlayer && !PlayerController.InventoryOpen) {
+            if (isPlayer && !PlayerController.InventoryOpen && !PlayerController.MenuOpen) {
                 throttle = moveVal.y;
                 steering = turnInputCurve.Evaluate(moveVal.x) * steerAngle;
                 // Accelerate & brake

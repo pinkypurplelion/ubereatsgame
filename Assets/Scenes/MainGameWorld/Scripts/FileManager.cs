@@ -2,10 +2,13 @@
  * Author: bzgeb
  *
  * From: https://github.com/UnityTechnologies/UniteNow20-Persistent-Data/blob/main/FileManager.cs
+ *
+ * Adapted By: Liam Angus
  */
 
 using System;
 using System.IO;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Scenes.MainGameWorld.Scripts
@@ -43,6 +46,26 @@ namespace Scenes.MainGameWorld.Scripts
                 result = "";
                 return false;
             }
+        }
+        
+        public static void SaveData(String filename, String jsonData)
+        {
+            Debug.Log("Attempting to Save Data...");
+            Debug.Log($"Save Data: {jsonData}");
+            WriteToFile(filename, jsonData);
+            Debug.Log("Data Saved!");
+        }
+
+        public static T LoadData<T>(String filename, T defaultData) where T : new()
+        {
+            if (FileManager.LoadFromFile(filename, out var json))
+            {
+                Debug.Log($"Load complete: {json}");
+                return JsonConvert.DeserializeObject<T>(json);
+            }
+            Debug.Log("Load failed");
+            Debug.Log("Returning default data");
+            return defaultData;
         }
     }
 }

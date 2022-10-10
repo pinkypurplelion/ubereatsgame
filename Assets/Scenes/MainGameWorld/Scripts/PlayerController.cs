@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
@@ -30,7 +32,6 @@ namespace Scenes.MainGameWorld.Scripts
         
         // UI Elements
         private PlayerUIManager _playerUI;
-        
 
         // Global Components
         private GameObject _worldEventManagerGameObject;
@@ -42,6 +43,7 @@ namespace Scenes.MainGameWorld.Scripts
         public GameObject thrownObject;
 
         public bool InventoryOpen = false;
+        public bool MenuOpen = false;
     
         // the number of orders the player is able to carry at any time
         public int orderLimit = 2;
@@ -49,6 +51,11 @@ namespace Scenes.MainGameWorld.Scripts
         // player starts with a 5 star rating
         public float playerRating = 5;
         
+        // player order delivery time multiplier
+        public float deliveryTimeMultiplier = 1f;
+
+        public float score = 0f;
+
         // Used to setup the current component
         private void Awake()
         {
@@ -69,7 +76,16 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.ShopEventCallback = SelectOrderFromShop;
             _playerUI.HouseEventCallback = SelectHouseToDeliver;
             _playerUI.InventoryEventCallback = InvEventPOC;
+            _playerUI.MenuSaveEventCallback = MenuSave;
+            _playerUI.MenuMainEventCallback = MenuSaveAndMain;
+            _playerUI.MenuExitEventCallback = MenuSaveAndQuit;
+
+            // Loads the upgrade information from the local save data
+            VehicleUpgrade.AllUpgrades = FileManager.LoadData<List<VehicleUpgrade>>("VehicleUpgrades.json", new List<VehicleUpgrade>());
+            PlayerUpgrade.AllUpgrades = FileManager.LoadData<List<PlayerUpgrade>>("PlayerUpgrades.json", new List<PlayerUpgrade>());
             
+            // Processes upgrade information to apply to the player
+            ProcessUpgradeInformation();
         }
 
         // Used to configure things that depend on other components
@@ -86,8 +102,11 @@ namespace Scenes.MainGameWorld.Scripts
         void OnPlayerInteract(InputValue value)
         {
             Debug.Log("Player Interaction Action");
-            _playerUI.ToggleInteractUI();
-            InventoryOpen = !InventoryOpen;
+            if (!MenuOpen)
+            {
+                _playerUI.ToggleInteractUI();
+                InventoryOpen = !InventoryOpen;
+            }
         }
 
         // called when the player presses the player upgrade key
@@ -101,10 +120,15 @@ namespace Scenes.MainGameWorld.Scripts
         
         void OnMenu()
         {
-            Debug.Log("Saving Game");
-            _worldEventManager.SaveGame();
-            Debug.Log("Exiting to Menu");
-            SceneManager.LoadScene("MainMenu");
+            if (!InventoryOpen)
+            {
+                MenuOpen = !MenuOpen;
+                _playerUI.ToggleMenuUI();
+            }
+            // Debug.Log("Saving Game");
+            // _worldEventManager.SaveGame();
+            // Debug.Log("Exiting to Menu");
+            // SceneManager.LoadScene("MainMenu");
         }
 
         // Called when the player presses the test save key defined by the input system
@@ -126,8 +150,25 @@ namespace Scenes.MainGameWorld.Scripts
             
             if (_rigidbody.transform.position.y < -10)
             {
-                SceneManager.LoadScene("MainMenu");
+                SceneManager.LoadScene("ScoreScreen");
             }
+        }
+        
+        void MenuSave(ClickEvent evt)
+        {
+            _worldEventManager.SaveGame();
+        }
+
+        void MenuSaveAndMain(ClickEvent evt)
+        {
+            _worldEventManager.SaveGame();
+            SceneManager.LoadScene("MainMenu");
+        }
+
+        void MenuSaveAndQuit(ClickEvent evt)
+        {
+            _worldEventManager.SaveGame();
+            Application.Quit();
         }
 
         void UpdatePlayerUI()
@@ -209,6 +250,7 @@ namespace Scenes.MainGameWorld.Scripts
                 // Highlights house that order must be delivered to
                 Order order = _worldEventManager.Orders.Find(o => o.OrderID == orderID);
                 order.PickupTime = _worldEventManager.currentTime;
+                order.TimeToDeliver *= deliveryTimeMultiplier;
                 HouseTile house = _worldEventManager.houses.Find(h => h.HouseID == order.HouseID);
                 house.isDelivering = true;
 
@@ -260,6 +302,7 @@ namespace Scenes.MainGameWorld.Scripts
                             Debug.Log($"Order value: {order.OrderValue}, money given: {reduceMoney}, player rating: {playerRating}");
                         }
                         tile.isDelivering = false;
+                        score += 10; //TODO: implement better score system
                         Debug.Log("Order delivered");
                     }
                     else
@@ -274,9 +317,30 @@ namespace Scenes.MainGameWorld.Scripts
 
         public void LoadPlayerData(SaveData data)
         {
-            orderLimit = data.PlayerOrderLimit;
             Money = data.PlayerMoney;
             playerRating = data.PlayerRating;
+            score = data.PlayerScore;
+        }
+
+        void ProcessUpgradeInformation()
+        {
+            Debug.Log("Processing Player Upgrading Information");
+            // Player Upgrades
+            var demo = PlayerUpgrade.AllUpgrades.Find(u => u.upgradeID == "playerOrderCapacity");
+            if (demo != null)
+            {
+                orderLimit = (int) demo.purchasedLevel;
+            }
+            var demo2 = PlayerUpgrade.AllUpgrades.Find(u => u.upgradeID == "playerTimeMultiplier");
+            if (demo2 != null)
+            {
+                deliveryTimeMultiplier = demo2.purchasedLevel;
+            }
+        }
+
+        void SwitchPlayerVehicle()
+        {
+            // Selects proper vehicle
         }
     }
 }
