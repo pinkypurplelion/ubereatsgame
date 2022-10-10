@@ -53,8 +53,8 @@ WheelCollider:
   m_Mass: 20
   m_WheelDampingRate: 1
   m_ForwardFriction:
-    m_ExtremumSlip: 0.4
-    m_ExtremumValue: 1
+    m_ExtremumSlip: 0.2
+    m_ExtremumValue: 0.1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
     m_Stiffness: 1
@@ -10076,9 +10076,10 @@ MonoBehaviour:
   speed: 0
   moveVal: {x: 0, y: 0}
   thrownObject: {fileID: 7143356486628525151, guid: 51cf13a55e3de2646ae27614c9e65fca, type: 3}
+  InventoryOpen: 0
   orderLimit: 2
   playerRating: 0
-  InventoryOpen: 0
+  deliveryTimeMultiplier: 1
 --- !u!65 &3738444011890628523
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14993,8 +14994,8 @@ WheelCollider:
   m_Mass: 20
   m_WheelDampingRate: 1
   m_ForwardFriction:
-    m_ExtremumSlip: 0.4
-    m_ExtremumValue: 1
+    m_ExtremumSlip: 0.2
+    m_ExtremumValue: 0.1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
     m_Stiffness: 1
@@ -19954,8 +19955,8 @@ WheelCollider:
   m_Mass: 20
   m_WheelDampingRate: 1
   m_ForwardFriction:
-    m_ExtremumSlip: 0.4
-    m_ExtremumValue: 1
+    m_ExtremumSlip: 0.2
+    m_ExtremumValue: 0.1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
     m_Stiffness: 1
@@ -20054,8 +20055,8 @@ WheelCollider:
   m_Mass: 20
   m_WheelDampingRate: 1
   m_ForwardFriction:
-    m_ExtremumSlip: 0.4
-    m_ExtremumValue: 1
+    m_ExtremumSlip: 0.2
+    m_ExtremumValue: 0.1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
     m_Stiffness: 1
