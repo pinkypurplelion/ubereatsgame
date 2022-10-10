@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -19,7 +20,7 @@ namespace Scenes.MainGameWorld.Scripts
         private void Start()
         {
             TileType = Tile.Type;
-            
+
             switch (Tile.Type)
             {
                 case TileType.Road:
@@ -30,13 +31,41 @@ namespace Scenes.MainGameWorld.Scripts
                     break;
                 case TileType.Building:
                     transform.Find("building").gameObject.SetActive(true);
+                    RotateTile();
                     break;
                 case TileType.Shop:
                     transform.Find("shop").gameObject.SetActive(true);
+                    RotateTile();
                     break;
                 case TileType.House:
                     transform.Find("house").gameObject.SetActive(true);
+                    RotateTile();
                     break;
+            }
+
+            
+        }
+
+        void RotateTile()
+        {
+            var connected = Tile.Connections.Find(connection => connection.ConnectedTile.Type == TileType.Road);
+            var x = connected.ConnectedTile.X;
+            var y = connected.ConnectedTile.Y;
+            if (Tile.X == x && Tile.Y > y)
+            {
+                transform.Rotate(0, 0, 0);
+            } 
+            else if (Tile.X == x && Tile.Y < y)
+            {
+                transform.Rotate(0, 180, 0);
+            }
+            else if (Tile.X > x && Tile.Y == y)
+            {
+                transform.Rotate(0, 90, 0);
+            }
+            else if (Tile.X < x && Tile.Y == y)
+            {
+                transform.Rotate(0, 270, 0);
             }
         }
     }
