@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:VisualElement style="justify-content: center; align-items: center;">
+    <ui:VisualElement style="justify-content: space-between; align-items: center;">
         <ui:GroupBox name="PlayerInfo" style="align-items: stretch; flex-direction: row; justify-content: space-between; height: 25%; width: 100%;">
             <ui:IMGUIContainer name="PlayerMinimap" style="background-image: url(&apos;project://database/Assets/Scenes/MainGameWorld/MinimapRender.renderTexture?fileID=8400000&amp;guid=2b071db4a59d7d44584a153991b52f27&amp;type=2#MinimapRender&apos;); height: 256px; width: 256px;" />
             <ui:Label text="DD:MM:YY HH:MM" display-tooltip-when-elided="true" name="WorldTime" style="-unity-text-outline-color: rgb(255, 255, 255); -unity-text-outline-width: 1px;" />

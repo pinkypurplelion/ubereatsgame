@@ -73,6 +73,9 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.ShopEventCallback = SelectOrderFromShop;
             _playerUI.HouseEventCallback = SelectHouseToDeliver;
             _playerUI.InventoryEventCallback = InvEventPOC;
+            _playerUI.MenuSaveEventCallback = MenuSave;
+            _playerUI.MenuMainEventCallback = MenuSaveAndMain;
+            _playerUI.MenuExitEventCallback = MenuSaveAndQuit;
 
             // Loads the upgrade information from the local save data
             VehicleUpgrade.AllUpgrades = FileManager.LoadData<List<VehicleUpgrade>>("VehicleUpgrades.json", new List<VehicleUpgrade>());
@@ -146,6 +149,23 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 SceneManager.LoadScene("MainMenu");
             }
+        }
+        
+        void MenuSave(ClickEvent evt)
+        {
+            _worldEventManager.SaveGame();
+        }
+
+        void MenuSaveAndMain(ClickEvent evt)
+        {
+            _worldEventManager.SaveGame();
+            SceneManager.LoadScene("MainMenu");
+        }
+
+        void MenuSaveAndQuit(ClickEvent evt)
+        {
+            _worldEventManager.SaveGame();
+            Application.Quit();
         }
 
         void UpdatePlayerUI()

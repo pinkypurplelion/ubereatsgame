@@ -43,6 +43,13 @@ namespace Scenes.MainGameWorld.Scripts
         public List<Guid> Orders {get; set;}
         public WorldEventManager WorldEventManager {get; set;}
         
+        // Menu Buttons
+        public Button MenuSaveButton { get; set; }
+        public Button MenuMainButton { get; set; }
+        public Button MenuExitButton { get; set; }
+        public EventCallback<ClickEvent> MenuSaveEventCallback { get; set; }
+        public EventCallback<ClickEvent> MenuMainEventCallback { get; set; }
+        public EventCallback<ClickEvent> MenuExitEventCallback { get; set; }
 
         // Used to setup the current component
         void Awake()
@@ -64,6 +71,13 @@ namespace Scenes.MainGameWorld.Scripts
             ShopScrollView = _rootVisualElement.Q<ScrollView>("ShopScrollView");
             InventoryScrollView = _rootVisualElement.Q<ScrollView>("InventoryScrollView");
             HouseScrollView = _rootVisualElement.Q<ScrollView>("HouseScrollView");
+            
+            MenuSaveButton = _rootVisualElement.Q<Button>("BtnMenuSave");
+            MenuSaveButton.RegisterCallback(MenuSaveEventCallback);
+            MenuMainButton = _rootVisualElement.Q<Button>("BtnMenuHome");
+            MenuMainButton.RegisterCallback(MenuMainEventCallback);
+            MenuExitButton = _rootVisualElement.Q<Button>("BtnMenuQuit");
+            MenuExitButton.RegisterCallback(MenuExitEventCallback);
 
             ShopScrollView.style.height = _rootVisualElement.layout.height;
             InventoryScrollView.style.height = _rootVisualElement.layout.height;
