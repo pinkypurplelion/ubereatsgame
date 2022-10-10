@@ -5,6 +5,9 @@
             <ui:Label text="DD:MM:YY HH:MM" display-tooltip-when-elided="true" name="WorldTime" style="-unity-text-outline-color: rgb(255, 255, 255); -unity-text-outline-width: 1px; font-size: 20px; -unity-text-align: middle-center;" />
             <ui:Label text="Player Order Count" display-tooltip-when-elided="true" name="PlayerOrderCount" style="-unity-text-outline-color: rgb(255, 239, 239); -unity-text-outline-width: 1px; font-size: 20px; -unity-text-align: middle-center;" />
             <ui:Label text="Bank Balance: $0" display-tooltip-when-elided="true" name="PlayerBankBalance" style="-unity-text-outline-width: 1px; -unity-text-outline-color: rgb(255, 255, 255); font-size: 20px; -unity-text-align: middle-center;" />
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="PlayerRating" style="font-size: 20px; -unity-text-align: middle-center;" />
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="PlayerScore" style="font-size: 20px; -unity-text-align: middle-center;" />
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="PlayerChain" style="font-size: 20px; -unity-text-align: middle-center;" />
         </ui:GroupBox>
         <ui:GroupBox name="InteractScreen" style="visibility: visible; display: flex; align-items: stretch; flex-direction: column; justify-content: space-between; height: 70%; width: 60%;">
             <ui:GroupBox name="SelectionButtons" style="align-items: stretch; justify-content: center; flex-direction: row; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-top: 0; padding-bottom: 0; font-size: 20px;">

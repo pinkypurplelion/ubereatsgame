@@ -156,6 +156,9 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.PlayerMoneyLabel.text = $"Player Balance: {_worldEventManager.data.PlayerMoney}";
             _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
             _playerUI.PlayerTimeLabel.text = $"Time: {_worldEventManager.GenerateCurrentTimeString()}";
+            _playerUI.PlayerScoreLabel.text = $"Score: {_worldEventManager.data.PlayerScore}";
+            _playerUI.PlayerChainLabel.text = $"Multiplier: {orderMultiplier}";
+            _playerUI.PlayerRatingLabel.text = $"Rating: {_worldEventManager.data.PlayerRating}";
         }
         
         /// <summary>
@@ -295,7 +298,7 @@ namespace Scenes.MainGameWorld.Scripts
                         orderMultiplier = Mathf.Clamp(orderMultiplier += 1, 1, maxMultiplier);
                         
                         // Increases Player Score
-                        _worldEventManager.data.PlayerScore += 75 * scoreMultiplier;
+                        _worldEventManager.data.PlayerScore += 75 * scoreMultiplier * orderMultiplier;
                         
                         Debug.Log($"Player Order Multiplier Increased to {orderMultiplier}");
                     }
@@ -323,8 +326,6 @@ namespace Scenes.MainGameWorld.Scripts
                 {
                     Debug.Log("Order not for this house");
                 }
-                _playerUI.PlayerMoneyLabel.text = $"Player Balance: {_worldEventManager.data.PlayerMoney}";
-                _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
             }
         }
 

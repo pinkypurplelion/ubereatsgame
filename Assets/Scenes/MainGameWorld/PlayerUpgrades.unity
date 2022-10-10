@@ -270,5 +270,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DefaultPlayerUpgrades: '[{"cost":50.0,"costStep":50.0,"purchasedLevel":1.0,"maxLevel":5.0,"minLevel":1.0,"upgradeStep":1.0,"name":"Order
     Capacity","upgradeID":"playerOrderCapacity"},{"cost":100.0,"costStep":75.0,"purchasedLevel":1.0,"maxLevel":3.0,"minLevel":1.0,"upgradeStep":0.25,"name":"Order
-    Delivery Time Multiplier","upgradeID":"playerTimeMultiplier"}]'
+    Delivery Time Multiplier","upgradeID":"playerTimeMultiplier"},{"cost":100.0,"costStep":75.0,"purchasedLevel":1.0,"maxLevel":5.0,"minLevel":1.0,"upgradeStep":1,"name":"Maximum
+    Order Chain","upgradeID":"playerMaxMultiplier"},{"cost":100.0,"costStep":75.0,"purchasedLevel":1.0,"maxLevel":4.0,"minLevel":1.0,"upgradeStep":0.25,"name":"Player
+    Score Multiplier","upgradeID":"playerScoreMultiplier"}]'
   DefaultVehicleUpgrades: '[{"cost":100.0,"isPurchased":false,"name":"Demo","vehicleID":"Demo123"},{"cost":100.0,"isPurchased":false,"name":"Demo","vehicleID":"Demo123"}]'

@@ -25,6 +25,9 @@ namespace Scenes.MainGameWorld.Scripts
         public Label PlayerOrdersLabel { get; set; }
         public Label PlayerMoneyLabel {get; set;}
         public Label PlayerTimeLabel { get; set; }
+        public Label PlayerRatingLabel { get; set; }
+        public Label PlayerScoreLabel { get; set; }
+        public Label PlayerChainLabel { get; set; }
         
         // PlayerController objects used for UI drawing
         public EventCallback<ClickEvent> ShopEventCallback {get; set;}
@@ -80,6 +83,10 @@ namespace Scenes.MainGameWorld.Scripts
             PlayerOrdersLabel = RootVisualElement.Q<Label>("PlayerOrderCount");
             PlayerMoneyLabel = RootVisualElement.Q<Label>("PlayerBankBalance");
             PlayerTimeLabel = RootVisualElement.Q<Label>("WorldTime");
+            
+            PlayerChainLabel = RootVisualElement.Q<Label>("PlayerChain");
+            PlayerRatingLabel = RootVisualElement.Q<Label>("PlayerRating");
+            PlayerScoreLabel = RootVisualElement.Q<Label>("PlayerScore");
 
             // Enable the page selector buttons in the UI
             var buttons = PlayerInteractUI.Q<GroupBox>("SelectionButtons").Query<Button>();
