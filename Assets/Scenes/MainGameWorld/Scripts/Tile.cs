@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Scenes.MainGameWorld.Scripts
 {
-    /**
-     * Holds the information about the Tile. This class is referenced as the Node in the WorldMap graph.
-     *
-     * Attached to the instantiated GameObjects at runtime.
-     */
+    /// <summary>
+    /// Holds the information about the Tile. This class is referenced as the Node in the WorldMap graph.
+    /// Attached to the instantiated GameObjects at runtime.
+    /// </summary>
     public class Tile
     {
         public Guid TileID = Guid.NewGuid();

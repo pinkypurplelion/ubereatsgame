@@ -5,9 +5,13 @@ using UnityEngine;
 
 namespace Scenes.MainGameWorld.Scripts
 {
+    /// <summary>
+    /// Responsible for managing visual elements of the HouseTiles to identify order delivery locations
+    /// </summary>
+    /// <author>Liam Angus</author>
     public class HouseTile : MonoBehaviour
     {
-        public List<Customer> Customers = new();
+        public readonly List<Customer> Customers = new();
 
         public Guid HouseID = Guid.NewGuid();
 
@@ -16,31 +20,22 @@ namespace Scenes.MainGameWorld.Scripts
         
         private TMP_Text _priceText;
         
+        /// <summary>
+        /// Called when the tiles are initialised into the world
+        /// </summary>
         void Awake()
         {
             _priceText = transform.Find("Canvas").Find("text").GetComponent<TMP_Text>();
             _priceText.color = Color.white;
         }
 
-        void Start()
-        {
-            // purely for testing
-
-        }
-        
-
-        // Update is called once per frame
+        /// <summary>
+        /// Called once per physics update
+        /// </summary>
         void FixedUpdate()
         {
-            if (isDelivering)
-            {
-                _priceText.text = "X";
-                // _orderText.text = "DELIVERING ORDER";
-            }
-            else
-            {
-                _priceText.text = "";
-            }
+            // Will show an 'X' on the minimap if there is a customer waiting for an order
+            _priceText.text = isDelivering ? "X" : "";
         }
     }
 }

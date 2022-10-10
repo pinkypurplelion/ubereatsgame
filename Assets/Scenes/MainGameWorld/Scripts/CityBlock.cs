@@ -4,15 +4,18 @@ using Random = System.Random;
 
 namespace Scenes.MainGameWorld.Scripts
 {
+    /// <summary>
+    /// An object holding a 'city blocks' worth of tiles, used as a grouping effect to make city generation more
+    /// modular and efficient.
+    /// </summary>
     public class CityBlock
     {
-        public List<Tile> Tiles { get; } = new ();
-        
+        public List<Tile> Tiles { get; } = new (); // The tiles held by the CityBlock object
         public int BlockDimension { get; set; } = 4; // The side length of the block
         public int BlockX { get; set; } // The X coordinate of the block in the world 
         public int BlockY { get; set; } // The Y coordinate of the block in the world
 
-        public Dictionary<string, bool> directions = new Dictionary<string, bool>(); // The directions of road pieces 
+        public Dictionary<string, bool> directions = new(); // The directions of road pieces 
         public Dictionary<string, int> ConnectionDirections { get; set; } = new(){ 
             { "top", 2 }, 
             { "bottom", 2 },
@@ -20,16 +23,15 @@ namespace Scenes.MainGameWorld.Scripts
             { "right", 2 } 
         }; // The locations of the connections to other blocks
 
-        private List<Tile> EdgeConnections { get; } = new();
-        private List<List<Tile>> ShortestPaths { get; } = new();
+        private List<Tile> EdgeConnections { get; } = new(); // Enables multiple blocks to connect together
+        private List<List<Tile>> ShortestPaths { get; } = new(); // Used to generate the road paths within the block
 
-        /**
-         * Generates a new city block with the given dimensions, and finds the paths between the edge connections.
-         *
-         * The city block is represented as a graph with Nodes representing the tiles and Edges representing
-         * neighbouring tiles, eg. if two nodes are connected then they are next to each other on the grid.
-         *
-         */
+        /// <summary>
+        /// Generates a new city block with the given dimensions, and finds the paths between the edge connections.
+        ///
+        /// The city block is represented as a graph with Nodes representing the tiles and Edges representing
+        /// neighbouring tiles, eg. if two nodes are connected then they are next to each other on the grid.
+        /// </summary>
         public void CreateMap()
         {
             Random random = new Random();
@@ -46,8 +48,8 @@ namespace Scenes.MainGameWorld.Scripts
             // Connects the nodes in the graph together based on their coordinate position. The edges are weighted.
             foreach (var tile in Tiles)
             {
-                double cost = random.NextDouble();
-                double cost_edge = 10;
+                double cost = random.NextDouble(); // Helps randomise road paths
+                const double costEdge = 10; // Ensures road tiles don't get placed along the edge
                 
                 // Deals with vertical edges
                 if (tile.X == 0)
@@ -55,7 +57,7 @@ namespace Scenes.MainGameWorld.Scripts
                     Tile below = Tiles.FirstOrDefault(t => t.X == tile.X + 1 && t.Y == tile.Y);
                     
                     if (tile.Y == 0 || tile.Y == BlockDimension - 1)
-                        cost = cost_edge;
+                        cost = costEdge;
                     Link link = new Link { ConnectedTile = below, Cost = cost};
                     tile.Connections.Add(link);
                 }
@@ -63,14 +65,14 @@ namespace Scenes.MainGameWorld.Scripts
                 {
                     Tile above = Tiles.FirstOrDefault(t => t.X == tile.X - 1 && t.Y == tile.Y);
                     if (tile.Y == 0 || tile.Y == BlockDimension - 1)
-                        cost = cost_edge;
+                        cost = costEdge;
                     Link link = new Link { ConnectedTile = above, Cost = cost};
                     tile.Connections.Add(link);
                 }
                 else
                 {
                     if (tile.Y == 0 || tile.Y == BlockDimension - 1)
-                        cost = cost_edge;
+                        cost = costEdge;
                     Tile below = Tiles.FirstOrDefault(t => t.X == tile.X + 1 && t.Y == tile.Y);
                     Link link = new Link { ConnectedTile = below, Cost = cost};
                     tile.Connections.Add(link);
@@ -84,7 +86,7 @@ namespace Scenes.MainGameWorld.Scripts
                 {
                     Tile right = Tiles.FirstOrDefault(t => t.X == tile.X && t.Y == tile.Y + 1);
                     if (tile.X == 0 || tile.X == BlockDimension - 1)
-                        cost = cost_edge;
+                        cost = costEdge;
                     Link link = new Link { ConnectedTile = right, Cost = cost};
                     tile.Connections.Add(link);
                 }
@@ -92,14 +94,14 @@ namespace Scenes.MainGameWorld.Scripts
                 {
                     Tile left = Tiles.FirstOrDefault(t => t.X == tile.X && t.Y == tile.Y - 1);
                     if (tile.X == 0 || tile.X == BlockDimension - 1)
-                        cost = cost_edge;
+                        cost = costEdge;
                     Link link = new Link { ConnectedTile = left, Cost = cost};
                     tile.Connections.Add(link);
                 }
                 else
                 {
                     if (tile.X == 0 || tile.X == BlockDimension - 1)
-                        cost = cost_edge;
+                        cost = costEdge;
                     Tile right = Tiles.FirstOrDefault(t => t.X == tile.X && t.Y == tile.Y + 1);
                     Link link = new Link { ConnectedTile = right, Cost = cost};
                     tile.Connections.Add(link);
@@ -154,9 +156,9 @@ namespace Scenes.MainGameWorld.Scripts
             }
         }
 
-        /**
-         * Changes the block type of the tile to paths instead of buildings.
-         */
+        /// <summary>
+        /// Changes the block type of the tile to paths instead of buildings.
+        /// </summary>
         void ParsePaths()
         {
             foreach (var path in ShortestPaths)
@@ -167,10 +169,10 @@ namespace Scenes.MainGameWorld.Scripts
                 }
             }
         }
-
-        /**
-         * Returns the shortest path between two tiles using Dijkstra's algorithm.
-         */
+        
+        /// <summary>
+        /// Returns the shortest path between two tiles using Dijkstra's algorithm.
+        /// </summary>
         private List<Tile> GetShortestPathDijkstra(Tile start, Tile end)
         {
             DijkstraSearch(start, end);
@@ -188,10 +190,10 @@ namespace Scenes.MainGameWorld.Scripts
             
             return shortestPath;
         }
-    
-        /**
-         * Builds the shortest path from the end tile to the start tile.
-         */
+        
+        /// <summary>
+        /// Builds the shortest path from the end tile to the start tile.
+        /// </summary>
         private void BuildShortestPath(List<Tile> list, Tile node)
         {
             if (node.NearestToStart == null)
@@ -199,12 +201,16 @@ namespace Scenes.MainGameWorld.Scripts
             list.Add(node.NearestToStart);
             BuildShortestPath(list, node.NearestToStart);
         }
-    
-        /**
-         * Performs the Dijkstra search algorithm on the graph between the start and end tiles.
-         *
-         * Implemented from this source: https://gist.github.com/DotNetCoreTutorials/08b0210616769e81034f53a6a420a6d9
-         */
+        
+        /// <summary>
+        /// Performs the Dijkstra search algorithm on the graph between the start and end tiles.
+        ///
+        /// Implemented from this source: https://gist.github.com/DotNetCoreTutorials/08b0210616769e81034f53a6a420a6d9
+        /// Original Author: DotNetCoreTutorials
+        ///
+        /// Modified By: Liam Angus
+        /// Modifications: Modified to work with Tile objects and the hidden graph structure.
+        /// </summary>
         private void DijkstraSearch(Tile start, Tile end)
         {
             start.MinCostToStart = 0;

@@ -1,21 +1,22 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = System.Random;
 
 namespace Scenes.MainGameWorld.Scripts
 {
+    /// <summary>
+    /// The main world event manager, responsible for all global events and data.
+    /// </summary>
+    /// <author>Liam Angus</author>
     public class WorldEventManager : MonoBehaviour
     {
         public GameObject tilePrefab;
         public GameObject playerPrefab;
 
-        public WorldMap map;
+        private WorldMap _map;
 
-        public List<Order> Orders = new();
+        public readonly List<Order> Orders = new();
         
         public List<ShopTile> shops = new();
         public List<HouseTile> houses = new();
@@ -48,16 +49,15 @@ namespace Scenes.MainGameWorld.Scripts
         private void Awake()
         {
             // Generates the World based on the WorldDimension and BlockDimension
-            map = new WorldMap { WorldDimension = worldDimension, BlockDimension = blockDimension };
-            map.GenerateWorld();
+            _map = new WorldMap { WorldDimension = worldDimension, BlockDimension = blockDimension };
+            _map.GenerateWorld();
             worldStartTime = Time.time;
         }
-
-        // Start is called before the first frame update
-        void Start()
+        
+        private void Start()
         {
             // Draws the World based on the WorldMap graph.
-            foreach (var block in map.CityBlocks)
+            foreach (var block in _map.CityBlocks)
             {
                 foreach (var tile in block.Tiles)
                 {
@@ -108,7 +108,7 @@ namespace Scenes.MainGameWorld.Scripts
             }
         }
         
-        void FixedUpdate()
+        private void FixedUpdate()
         {
             if (Time.fixedTime % orderGenerationTime == 0)
             {
@@ -119,7 +119,7 @@ namespace Scenes.MainGameWorld.Scripts
             worldLight.transform.rotation = Quaternion.Euler(currentTime -90 % 360,0,0);
         }
 
-        void Update()
+        private void Update()
         {
             // Time Management
             currentTime = Time.time - worldStartTime + worldStartTimeAdjust;
@@ -132,7 +132,7 @@ namespace Scenes.MainGameWorld.Scripts
         }
 
         // Used to generate a order, randomly choosing a shop and a house.
-        void GenerateOrder()
+        private void GenerateOrder()
         {
             ShopTile shop = shops[_random.Next(shops.Count)];
             HouseTile house = houses[_random.Next(houses.Count)];
@@ -149,18 +149,18 @@ namespace Scenes.MainGameWorld.Scripts
             shop.Orders.Add(order.OrderID);
         }
         
-        String TempGenerateName()
+        private string TempGenerateName()
         {
             List<String> names = new() { "bob", "judy", "jane", "sarah", "adam", "spike", "erandi"};
             return names[_random.Next(names.Count)];
         }
 
-        public String GenerateCurrentTimeString()
+        public string GenerateCurrentTimeString()
         {
             return ConvertTimeToString(currentTime);
         }
 
-        public static String ConvertTimeToString(float time)
+        public static string ConvertTimeToString(float time)
         {
             int minutes = (int) Math.Floor(time/0.25 % 60);
             int hours = (int) (time / 15) % 24;
@@ -196,7 +196,7 @@ namespace Scenes.MainGameWorld.Scripts
             return null;
         }
 
-        void LoadWorldData(SaveData data)
+        private void LoadWorldData(SaveData data)
         {
             worldStartTimeAdjust = data.WorldTime;
         }

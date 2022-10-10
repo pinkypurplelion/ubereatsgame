@@ -1,70 +1,73 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
 namespace Scenes.MainGameWorld.Scripts
 {
+    /// <summary>
+    /// Handles the main player logic and interaction with the world. Interfaces with other classes for specific functions.
+    /// </summary>
+    /// <author>Liam Angus</author>
     public class PlayerController : MonoBehaviour
     {
-        public List<Guid> Orders { get; set; } = new();
-        // List to future proof in case two shops next to each other.
-        // TODO: implement way to select between orders/shops to pick up
-        public List<Collider> CurrentShopCollisions { get; set; } = new();
+        // A list of the orders currently being delivered by the player.
+        private List<Guid> Orders { get; } = new();
         
-        // List to future proof in case two houses next to each other.
-        // TODO: implement way to select between orders/houses to drop off
-        public List<Collider> CurrentHouseCollisions { get; set; } = new();
-
-        public float speed;
+        // The shops that the player is currently next to. TODO: implement way to select between orders/shops to pick up (add shop headings in UI)
+        private List<Collider> CurrentShopCollisions { get; } = new();
+        
+        // The houses that the player is currently next to.
+        private List<Collider> CurrentHouseCollisions { get; } = new();
         
         // Player Money System
-        public float Money { get; set; }
+        public float Money { get; private set; }
 
         // Player Components
         private Rigidbody _rigidbody;
-        private BoxCollider _collider;
-        
+
         // UI Elements
         private PlayerUIManager _playerUI;
 
         // Global Components
         private GameObject _worldEventManagerGameObject;
         private WorldEventManager _worldEventManager;
-
-        // Used to move the player
-        public Vector2 moveVal;
-
+        
+        // Used to simulate orders being thrown out of the window
         public GameObject thrownObject;
 
-        public bool InventoryOpen = false;
-        public bool MenuOpen = false;
+        // Player UI Menu
+        public bool inventoryOpen;
+        public bool menuOpen;
     
-        // the number of orders the player is able to carry at any time
+        // The number of orders the player is able to carry at any time
         public int orderLimit = 2;
 
-        // player starts with a 5 star rating
+        // Player starts with a 5 star rating
         public float playerRating = 5;
         
-        // player order delivery time multiplier
+        // Player order delivery time multiplier
         public float deliveryTimeMultiplier = 1f;
 
-        public float score = 0f;
+        // The current player score
+        public float score;
 
-        // Used to setup the current component
+        /// <summary>
+        /// Used to setup the PlayerController class.
+        /// </summary>
         private void Awake()
         {
+            // Gets the WorldEventManager Object
             _worldEventManagerGameObject = GameObject.Find("WorldEventManager");
             _worldEventManager = _worldEventManagerGameObject.GetComponent<WorldEventManager>();
-
+            
             
             _rigidbody = GetComponent<Rigidbody>();
-            _collider = GetComponent<BoxCollider>();
+            GetComponent<BoxCollider>();
             
             _playerUI = transform.Find("PlayerUI").GetComponent<PlayerUIManager>();
 
@@ -73,12 +76,14 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.CurrentShopCollisions = CurrentShopCollisions;
             _playerUI.Orders = Orders;
             _playerUI.WorldEventManager = _worldEventManager;
+            
+            // Provides methods for button click events
             _playerUI.ShopEventCallback = SelectOrderFromShop;
             _playerUI.HouseEventCallback = SelectHouseToDeliver;
-            _playerUI.InventoryEventCallback = InvEventPOC;
-            _playerUI.MenuSaveEventCallback = MenuSave;
-            _playerUI.MenuMainEventCallback = MenuSaveAndMain;
-            _playerUI.MenuExitEventCallback = MenuSaveAndQuit;
+            _playerUI.InventoryEventCallback = SelectOrderInInventory;
+            _playerUI.MenuMainEventCallback = _ => { _worldEventManager.SaveGame(); SceneManager.LoadScene("MainMenu"); };
+            _playerUI.MenuExitEventCallback = _ => { _worldEventManager.SaveGame(); Application.Quit();};
+            _playerUI.MenuSaveEventCallback = _ => _worldEventManager.SaveGame();
 
             // Loads the upgrade information from the local save data
             VehicleUpgrade.AllUpgrades = FileManager.LoadData<List<VehicleUpgrade>>("VehicleUpgrades.json", new List<VehicleUpgrade>());
@@ -88,8 +93,10 @@ namespace Scenes.MainGameWorld.Scripts
             ProcessUpgradeInformation();
         }
 
-        // Used to configure things that depend on other components
-        void Start()
+        /// <summary>
+        /// Configures PlayerController based on other component & world information.
+        /// </summary>
+        private void Start()
         {
             gameObject.tag = "Player";
 
@@ -98,19 +105,22 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
         }
 
-        // Called when the player presses the interact key defined by the input system
-        void OnPlayerInteract(InputValue value)
+        /// <summary>
+        /// Called when the player presses the PlayerInteract key.
+        /// </summary>
+        /// <param name="value"></param>
+        private void OnPlayerInteract(InputValue value)
         {
-            Debug.Log("Player Interaction Action");
-            if (!MenuOpen)
-            {
-                _playerUI.ToggleInteractUI();
-                InventoryOpen = !InventoryOpen;
-            }
+            if (menuOpen) return;
+            _playerUI.ToggleInteractUI(); // Toggles the player UI
+            inventoryOpen = !inventoryOpen; // Updates the UI state
         }
-
-        // called when the player presses the player upgrade key
-        void OnTestUpgrades()
+        
+        /// <summary>
+        /// Called when the player presses the TestUpgrades key.
+        /// TODO: remove, add button to UI.
+        /// </summary>
+        private void OnTestUpgrades()
         {
             Debug.Log("Saving Game");
             _worldEventManager.SaveGame();
@@ -118,60 +128,35 @@ namespace Scenes.MainGameWorld.Scripts
             SceneManager.LoadScene("PlayerUpgrades");
         }
         
-        void OnMenu()
+        /// <summary>
+        /// Called when the player presses the Menu key.
+        /// </summary>
+        private void OnMenu()
         {
-            if (!InventoryOpen)
-            {
-                MenuOpen = !MenuOpen;
-                _playerUI.ToggleMenuUI();
-            }
-            // Debug.Log("Saving Game");
-            // _worldEventManager.SaveGame();
-            // Debug.Log("Exiting to Menu");
-            // SceneManager.LoadScene("MainMenu");
-        }
-
-        // Called when the player presses the test save key defined by the input system
-        void OnTestSave()
-        {
-            _worldEventManager.SaveGame();
-        }
-
-        void OnTestLoad()
-        {
-            SaveData sd = _worldEventManager.LoadGame();
-            Debug.Log(sd.WorldTime);
+            if (inventoryOpen) return;
+            menuOpen = !menuOpen; // Toggles the UI state
+            _playerUI.ToggleMenuUI(); // Toggles the UI
         }
         
-        // FixedUpdate is called once per physics update (constant time irrespective of frame rate)
-        void FixedUpdate()
+        /// <summary>
+        /// Called once per physics update.
+        /// </summary>
+        private void FixedUpdate()
         {
+            // Updates the information displayed in the player UI
             UpdatePlayerUI();
             
+            // If the player falls off the world, end their game.
             if (_rigidbody.transform.position.y < -10)
             {
                 SceneManager.LoadScene("ScoreScreen");
             }
         }
-        
-        void MenuSave(ClickEvent evt)
-        {
-            _worldEventManager.SaveGame();
-        }
 
-        void MenuSaveAndMain(ClickEvent evt)
-        {
-            _worldEventManager.SaveGame();
-            SceneManager.LoadScene("MainMenu");
-        }
-
-        void MenuSaveAndQuit(ClickEvent evt)
-        {
-            _worldEventManager.SaveGame();
-            Application.Quit();
-        }
-
-        void UpdatePlayerUI()
+        /// <summary>
+        /// Will update the player UI with the current information.
+        /// </summary>
+        private void UpdatePlayerUI()
         {
             // Updates the labels in the UI to the correct values.
             _playerUI.PlayerMoneyLabel.text = $"Player Balance: {Money}";
@@ -179,9 +164,13 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.PlayerTimeLabel.text = $"Time: {_worldEventManager.GenerateCurrentTimeString()}";
         }
         
-        // Called when the player enters the collider of another object
-        void OnTriggerEnter(Collider other)
+        /// <summary>
+        /// Called when the player enters another object's collider.
+        /// </summary>
+        /// <param name="other">The collider of the other object</param>
+        private void OnTriggerEnter(Collider other)
         {
+            // Will add shops and houses that are current colliders to their respective lists. Updates the UI.
             if (other.CompareTag("Shop") && !CurrentShopCollisions.Contains(other))
             {
                 CurrentShopCollisions.Add(other);
@@ -193,69 +182,84 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.UpdateInteractUI();
         }
         
-        // Called when the player leaves the collider of another object
+        /// <summary>
+        /// Called when the player exits the collider of another object.
+        /// </summary>
+        /// <param name="other">The other object's collider</param>
         private void OnTriggerExit(Collider other)
         {
+            // Removes shops & houses, then updates the UI.
             CurrentShopCollisions.Remove(other);
             CurrentHouseCollisions.Remove(other);
 
             _playerUI.UpdateInteractUI();
         }
         
+        /// <summary>
+        /// The method called when the player selects a house from the UI
+        /// </summary>
+        /// <param name="evt">The click event</param>
         private void SelectHouseToDeliver(ClickEvent evt)
         {
-            Button button = evt.currentTarget as Button;
+            if (evt.currentTarget is not Button button) return;
+            
             if (CurrentHouseCollisions.Count > 0)
             {
-                HouseTile house;
-                foreach (var houseCollision in CurrentHouseCollisions)
+                foreach (var house in from houseCollision in CurrentHouseCollisions where 
+                             houseCollision.transform.GetComponent<HouseTile>().HouseID.ToString() 
+                                == button.name select houseCollision.transform.GetComponent<HouseTile>())
                 {
-                    if (houseCollision.transform.GetComponent<HouseTile>().HouseID.ToString() == button.name)
-                    {
-                        house = houseCollision.transform.GetComponent<HouseTile>(); 
-                        DeliverOrder(house, Guid.Parse(button.name));
-                    }
+                    DeliverOrder(house);
                 }
             }
             _playerUI.UpdateInteractUI();
         }
         
-        // Inventory button event proof of concept (POC)
-        private void InvEventPOC(ClickEvent evt)
+        /// <summary>
+        /// Called when a player selects an order from the inventory.
+        /// TODO: update model & make it really fly out of the car
+        /// </summary>
+        /// <param name="evt"></param>
+        private void SelectOrderInInventory(ClickEvent evt)
         {
-            Button button = evt.currentTarget as Button;
-            Order order = _worldEventManager.Orders.Find(o => o.OrderID == Guid.Parse(button.name));
+            if (evt.currentTarget is not Button button) return;
+            
+            var order = _worldEventManager.Orders.Find(o => o.OrderID == Guid.Parse(button.name));
             if (order != null)
             {
-                HouseTile house = _worldEventManager.houses.Find(h => h.HouseID == order.HouseID);
+                var house = _worldEventManager.houses.Find(h => h.HouseID == order.HouseID);
                 house.isDelivering = false;
             }
+
             Orders.Remove(Guid.Parse(button.name));
             _playerUI.UpdateInteractUI();
-            Debug.Log("Simulates order being thrown out of the window.");
-            GameObject to = Instantiate(thrownObject, transform.position, transform.rotation);
+            var t = transform;
+            var to = Instantiate(thrownObject, t.position, t.rotation);
             to.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(Random.Range(0.1f, 2f), Random.Range(0.1f,2f), Random.Range(0.1f, 2f)) * 1000);
         }
         
+        /// <summary>
+        /// Called when the player chooses an order from the shop to pick up and add to their inventory.
+        /// </summary>
+        /// <param name="evt">The click event</param>
         private void SelectOrderFromShop(ClickEvent evt)
         {
-            Button button = evt.currentTarget as Button;
+            if (evt.currentTarget is not Button button) return;
             if (Orders.Count <= orderLimit) // TODO implement multi order collection
             {
                 // Adds order to player
-                Guid orderID = Guid.Parse(button.name);
+                var orderID = Guid.Parse(button.name);
                 Orders.Add(orderID);
                 _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
-            
+        
                 // Highlights house that order must be delivered to
-                Order order = _worldEventManager.Orders.Find(o => o.OrderID == orderID);
+                var order = _worldEventManager.Orders.Find(o => o.OrderID == orderID);
                 order.PickupTime = _worldEventManager.currentTime;
                 order.TimeToDeliver *= deliveryTimeMultiplier;
-                HouseTile house = _worldEventManager.houses.Find(h => h.HouseID == order.HouseID);
+                var house = _worldEventManager.houses.Find(h => h.HouseID == order.HouseID);
                 house.isDelivering = true;
-
+                
                 // Removes order from shop
-                // TODO: is there a more efficient way of doing this?
                 foreach (var shopCollision in CurrentShopCollisions)
                 {
                     shopCollision.transform.GetComponent<ShopTile>().Orders.Remove(Guid.Parse(button.name));
@@ -268,50 +272,50 @@ namespace Scenes.MainGameWorld.Scripts
             }
             _playerUI.UpdateInteractUI();
         }
-        
-        /**
-         * This is called when the player is in range of a house and presses the interact button.
-         */
-        void DeliverOrder(HouseTile tile, Guid houseID)
+
+        /// <summary>
+        /// The logic determining if an order is able to be delivered to a given house.
+        /// </summary>
+        /// <param name="tile">The tile of the house trying to be delivered to</param>
+        private void DeliverOrder(HouseTile tile)
         {
             Debug.Log("Attempting to deliver order");
             foreach (var orderID in Orders)
             {
-                Order order = _worldEventManager.Orders.Find(o => o.OrderID == orderID);
-                if (order != null)
+                var order = _worldEventManager.Orders.Find(o => o.OrderID == orderID);
+                if (order == null) continue;
+                
+                if (order.HouseID == tile.HouseID)
                 {
-                    if (order.HouseID == houseID)
+                    Debug.Log("Found correct order.");
+                    tile.DeliveredOrders.Add(orderID);
+                    Orders.Remove(orderID);
+                    order.Delivered = true;
+                    if (_worldEventManager.currentTime - order.PickupTime < order.TimeToDeliver)
                     {
-                        Debug.Log("Found correct order.");
-                        tile.DeliveredOrders.Add(orderID);
-                        Orders.Remove(orderID);
-                        order.Delivered = true;
-                        if (_worldEventManager.currentTime - order.PickupTime < order.TimeToDeliver)
-                        {
-                            Debug.Log("Order delivered on time.");
-                            Money += order.OrderValue;
-                            playerRating = Mathf.Clamp(playerRating * 1.05f, 0, 5);
-                        }
-                        else
-                        {
-                            float reduceMoney = order.OrderValue /
-                                                (1 + (_worldEventManager.currentTime - order.PickupTime - order.TimeToDeliver) * 0.1f);
-                            Money += reduceMoney;
-                            playerRating = Mathf.Clamp(playerRating * 0.95f, 0, 5);
-                            Debug.Log("Order delivered late.");
-                            Debug.Log($"Order value: {order.OrderValue}, money given: {reduceMoney}, player rating: {playerRating}");
-                        }
-                        tile.isDelivering = false;
-                        score += 10; //TODO: implement better score system
-                        Debug.Log("Order delivered");
+                        Debug.Log("Order delivered on time.");
+                        Money += order.OrderValue;
+                        playerRating = Mathf.Clamp(playerRating * 1.05f, 0, 5);
                     }
                     else
                     {
-                        Debug.Log("Order not for this house");
+                        var reduceMoney = order.OrderValue /
+                                            (1 + (_worldEventManager.currentTime - order.PickupTime - order.TimeToDeliver) * 0.1f);
+                        Money += reduceMoney;
+                        playerRating = Mathf.Clamp(playerRating * 0.95f, 0, 5);
+                        Debug.Log("Order delivered late.");
+                        Debug.Log($"Order value: {order.OrderValue}, money given: {reduceMoney}, player rating: {playerRating}");
                     }
-                    _playerUI.PlayerMoneyLabel.text = $"Player Balance: {Money}";
-                    _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
+                    tile.isDelivering = false;
+                    score += 10; //TODO: implement better score system
+                    Debug.Log("Order delivered");
                 }
+                else
+                {
+                    Debug.Log("Order not for this house");
+                }
+                _playerUI.PlayerMoneyLabel.text = $"Player Balance: {Money}";
+                _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
             }
         }
 
@@ -322,7 +326,7 @@ namespace Scenes.MainGameWorld.Scripts
             score = data.PlayerScore;
         }
 
-        void ProcessUpgradeInformation()
+        private void ProcessUpgradeInformation()
         {
             Debug.Log("Processing Player Upgrading Information");
             // Player Upgrades
@@ -338,7 +342,7 @@ namespace Scenes.MainGameWorld.Scripts
             }
         }
 
-        void SwitchPlayerVehicle()
+        private void SwitchPlayerVehicle()
         {
             // Selects proper vehicle
         }

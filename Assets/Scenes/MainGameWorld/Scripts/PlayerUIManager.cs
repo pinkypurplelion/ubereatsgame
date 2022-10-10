@@ -1,21 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Button = UnityEngine.UIElements.Button;
 
 namespace Scenes.MainGameWorld.Scripts
 {
-    public class PlayerUIManager : MonoBehaviour
+    public class PlayerUIManager : UIManager
     {
-        // Base UI Elements
-        private UIDocument _uiDocument;
-        private VisualElement _rootVisualElement;
-        
-    
         // player interact ui screen
         public GroupBox PlayerInteractUI { get; set; }
         public GroupBox MenuUI { get; set; }
@@ -52,44 +44,42 @@ namespace Scenes.MainGameWorld.Scripts
         public EventCallback<ClickEvent> MenuExitEventCallback { get; set; }
 
         // Used to setup the current component
-        void Awake()
+        private new void Awake()
         {
-            // Set Base UI Elements
-            _uiDocument = transform.GetComponent<UIDocument>();
-            _rootVisualElement = _uiDocument.rootVisualElement;
+            base.Awake();
 
-            PlayerInteractUI = _rootVisualElement.Q<GroupBox>("InteractScreen");
+            PlayerInteractUI = RootVisualElement.Q<GroupBox>("InteractScreen");
             PlayerInteractUI.style.display = DisplayStyle.None;
             
-            MenuUI = _rootVisualElement.Q<GroupBox>("MenuScreen");
+            MenuUI = RootVisualElement.Q<GroupBox>("MenuScreen");
             MenuUI.style.display = DisplayStyle.None;
 
-            ShopPageUI = _rootVisualElement.Q<GroupBox>("ShopPage");
-            HousePageUI = _rootVisualElement.Q<GroupBox>("HousePage");
-            InventoryPageUI = _rootVisualElement.Q<GroupBox>("InventoryPage");
+            ShopPageUI = RootVisualElement.Q<GroupBox>("ShopPage");
+            HousePageUI = RootVisualElement.Q<GroupBox>("HousePage");
+            InventoryPageUI = RootVisualElement.Q<GroupBox>("InventoryPage");
             
-            ShopScrollView = _rootVisualElement.Q<ScrollView>("ShopScrollView");
-            InventoryScrollView = _rootVisualElement.Q<ScrollView>("InventoryScrollView");
-            HouseScrollView = _rootVisualElement.Q<ScrollView>("HouseScrollView");
+            ShopScrollView = RootVisualElement.Q<ScrollView>("ShopScrollView");
+            InventoryScrollView = RootVisualElement.Q<ScrollView>("InventoryScrollView");
+            HouseScrollView = RootVisualElement.Q<ScrollView>("HouseScrollView");
             
-            MenuSaveButton = _rootVisualElement.Q<Button>("BtnMenuSave");
+            MenuSaveButton = RootVisualElement.Q<Button>("BtnMenuSave");
             MenuSaveButton.RegisterCallback(MenuSaveEventCallback);
-            MenuMainButton = _rootVisualElement.Q<Button>("BtnMenuHome");
+            MenuMainButton = RootVisualElement.Q<Button>("BtnMenuHome");
             MenuMainButton.RegisterCallback(MenuMainEventCallback);
-            MenuExitButton = _rootVisualElement.Q<Button>("BtnMenuQuit");
+            MenuExitButton = RootVisualElement.Q<Button>("BtnMenuQuit");
             MenuExitButton.RegisterCallback(MenuExitEventCallback);
 
-            ShopScrollView.style.height = _rootVisualElement.layout.height;
-            InventoryScrollView.style.height = _rootVisualElement.layout.height;
-            HouseScrollView.style.height = _rootVisualElement.layout.height;
+            ShopScrollView.style.height = RootVisualElement.layout.height;
+            InventoryScrollView.style.height = RootVisualElement.layout.height;
+            HouseScrollView.style.height = RootVisualElement.layout.height;
             
             HousePageUI.style.display = DisplayStyle.None;
             InventoryPageUI.style.display = DisplayStyle.None;
         
             // Set Standard UI Components
-            PlayerOrdersLabel = _rootVisualElement.Q<Label>("PlayerOrderCount");
-            PlayerMoneyLabel = _rootVisualElement.Q<Label>("PlayerBankBalance");
-            PlayerTimeLabel = _rootVisualElement.Q<Label>("WorldTime");
+            PlayerOrdersLabel = RootVisualElement.Q<Label>("PlayerOrderCount");
+            PlayerMoneyLabel = RootVisualElement.Q<Label>("PlayerBankBalance");
+            PlayerTimeLabel = RootVisualElement.Q<Label>("WorldTime");
 
             // Enable the page selector buttons in the UI
             var buttons = PlayerInteractUI.Q<GroupBox>("SelectionButtons").Query<Button>();
@@ -205,7 +195,7 @@ namespace Scenes.MainGameWorld.Scripts
             String customers = "";
             foreach (var customer in house.Customers)
             {
-                customers += customer.getName() + ", ";
+                customers += customer.GetName() + ", ";
             }
             
             customerNameLabel.text = $"Household Members: {customers}";
@@ -224,7 +214,7 @@ namespace Scenes.MainGameWorld.Scripts
             Label orderPriceLabel = new Label();
             Button selectOrderButton = new Button();
             
-            customerNameLabel.text = $"Customer: {order.Customer.getName()}";
+            customerNameLabel.text = $"Customer: {order.Customer.GetName()}";
             orderPriceLabel.text = $"Delivery Price: ${order.OrderValue}";
             
             // sets hidden name element to orderID so that we can select the order.
@@ -244,7 +234,7 @@ namespace Scenes.MainGameWorld.Scripts
             Label orderDeliveryTime = new Label();
             Button selectOrderButton = new Button();
             
-            customerNameLabel.text = $"Customer: {order.Customer.getName()}";
+            customerNameLabel.text = $"Customer: {order.Customer.GetName()}";
             orderPriceLabel.text = $"Delivery Price: ${order.OrderValue}";
             // TODO: add upgrade to player that shows time remaining for each order
             orderDeliveryTime.text = $"Delivery Time: {WorldEventManager.ConvertTimeToString(order.PickupTime + order.TimeToDeliver)}";

@@ -1,55 +1,43 @@
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 namespace Scenes.MainGameWorld.Scripts
 {
-    public class PlayerScoreUIManager : MonoBehaviour
+    public class PlayerScoreUIManager : UIManager
     {
-        private UIDocument _uiDocument;
-        private VisualElement _rootVisualElement;
+        private SaveData _gameData;
         
-        private SaveData gameData;
-
-        // Start is called before the first frame update
-        void Awake()
+        private new void Awake()
         {
-            _uiDocument = transform.GetComponent<UIDocument>();
-            _rootVisualElement = _uiDocument.rootVisualElement;
+            base.Awake();
             
-            gameData = LoadGame();
+            _gameData = LoadGame();
         }
 
         private void Start()
         {
-            _rootVisualElement.Q<Label>("PlayerScore").text = $"Your Final Score: {gameData.PlayerScore}";
-            _rootVisualElement.Q<Button>("ExitBtn").RegisterCallback<ClickEvent>(BtnReturnToMenuEvent);
+            RootVisualElement.Q<Label>("PlayerScore").text = $"Your Final Score: {_gameData.PlayerScore}";
+            RootVisualElement.Q<Button>("ExitBtn").RegisterCallback<ClickEvent>(BtnReturnToMenuEvent);
         }
 
         void BtnReturnToMenuEvent(ClickEvent evt)
         {
-            gameData = null;
+            _gameData = null;
             SaveGame();
             SceneManager.LoadScene("MainMenu");
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
-        
-        public void SaveGame()
+        private void SaveGame()
         {
             Debug.Log("Attempting to Save Game...");
-            string jsonData = JsonUtility.ToJson(gameData);
+            string jsonData = JsonUtility.ToJson(_gameData);
             Debug.Log($"Save Data: {jsonData}");
             FileManager.WriteToFile("testsave.json", jsonData);
             Debug.Log("Game Saved!");
         }
 
-        public SaveData LoadGame()
+        private SaveData LoadGame()
         {
             if (FileManager.LoadFromFile("testsave.json", out var json))
             {

@@ -1,22 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CollisonHandler : MonoBehaviour
+namespace Scenes.MainGameWorld.Scripts
 {
-    [SerializeField]
-    private Text popup;
-
-    // Start is called before the first frame update
-    private void OnTriggerEnter(Collider collider)
+    /// <summary>
+    /// Used to debug if players have collieded with buildings.
+    /// </summary>
+    /// <author>Alimah Muhammad</author>
+    public class CollisonHandler : MonoBehaviour
     {
-        if(collider.gameObject.tag == "Player")
+        [SerializeField]
+        private Text popup;
+
+        // Start is called before the first frame update
+        private void OnTriggerEnter(Collider collider)
         {
-            Debug.Log("Bumped into building");
-            
+            if(collider.gameObject.tag == "Player")
+            {
+                Debug.Log("Bumped into building");
+            }
         }
-    }
 
     
+    }
 }
