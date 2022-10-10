@@ -205,7 +205,7 @@ namespace Scenes.MainGameWorld.Scripts
             String customers = "";
             foreach (var customer in house.Customers)
             {
-                customers += customer.getName() + ", ";
+                customers += customer.GetName() + ", ";
             }
             
             customerNameLabel.text = $"Household Members: {customers}";
@@ -224,7 +224,7 @@ namespace Scenes.MainGameWorld.Scripts
             Label orderPriceLabel = new Label();
             Button selectOrderButton = new Button();
             
-            customerNameLabel.text = $"Customer: {order.Customer.getName()}";
+            customerNameLabel.text = $"Customer: {order.Customer.GetName()}";
             orderPriceLabel.text = $"Delivery Price: ${order.OrderValue}";
             
             // sets hidden name element to orderID so that we can select the order.
@@ -244,7 +244,7 @@ namespace Scenes.MainGameWorld.Scripts
             Label orderDeliveryTime = new Label();
             Button selectOrderButton = new Button();
             
-            customerNameLabel.text = $"Customer: {order.Customer.getName()}";
+            customerNameLabel.text = $"Customer: {order.Customer.GetName()}";
             orderPriceLabel.text = $"Delivery Price: ${order.OrderValue}";
             // TODO: add upgrade to player that shows time remaining for each order
             orderDeliveryTime.text = $"Delivery Time: {WorldEventManager.ConvertTimeToString(order.PickupTime + order.TimeToDeliver)}";
