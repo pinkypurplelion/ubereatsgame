@@ -60,7 +60,7 @@ namespace Scenes.MainGameWorld.Scripts
         {
             if (FileManager.LoadFromFile(filename, out var json))
             {
-                Debug.Log("Load complete");
+                Debug.Log($"Load complete: {json}");
                 return JsonConvert.DeserializeObject<T>(json);
             }
             Debug.Log("Load failed");
