@@ -10,6 +10,7 @@ namespace Scenes.MainGameWorld.Scripts
     public class VehicleUpgrade
     {
         public static List<VehicleUpgrade> AllUpgrades = new List<VehicleUpgrade>();
+        public static string SaveName = "PlayerUpgrades.json";
 
         public float cost;
         public bool isPurchased;

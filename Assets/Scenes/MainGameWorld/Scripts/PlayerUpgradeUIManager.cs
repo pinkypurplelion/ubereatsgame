@@ -20,7 +20,7 @@ namespace Scenes.MainGameWorld.Scripts
         private Label PlayerMoney;
         private Label PlayerRating;
 
-        private SaveData gameData;
+        private SaveData _gameData;
 
         private void ButtonCancelEvent(ClickEvent evt)
         {
@@ -40,7 +40,7 @@ namespace Scenes.MainGameWorld.Scripts
             // gameData.PlayerRating = 5;
             
             // Saves the game data (money spent)
-            SaveGame();
+            FileManager.SaveData("testsave.json", JsonConvert.SerializeObject(_gameData));
             
             SceneManager.LoadScene("MainGameWorld");
         }
@@ -54,11 +54,11 @@ namespace Scenes.MainGameWorld.Scripts
             if (upgrade != null)
             {
                 float upgradeCost = upgrade.cost + upgrade.costStep * upgrade.purchasedLevel;
-                if (gameData.PlayerMoney >= upgradeCost)
+                if (_gameData.PlayerMoney >= upgradeCost)
                 {
-                    gameData.PlayerMoney -= upgradeCost;
+                    _gameData.PlayerMoney -= upgradeCost;
                     upgrade.purchasedLevel++;
-                    PlayerMoney.text = $"Money: {gameData.PlayerMoney}";
+                    PlayerMoney.text = $"Money: {_gameData.PlayerMoney}";
                     parent.Q<Label>("upgradeCost").text = (upgrade.cost + upgrade.costStep * upgrade.purchasedLevel).ToString();
                     parent.Q<ProgressBar>("upgradeProgress").value = upgrade.purchasedLevel;
                     if (upgrade.purchasedLevel >= upgrade.maxLevel)
@@ -140,26 +140,6 @@ namespace Scenes.MainGameWorld.Scripts
 
             return playerBox;
         }
-        
-        public void SaveGame()
-        {
-            Debug.Log("Attempting to Save Game...");
-            string jsonData = JsonUtility.ToJson(gameData);
-            Debug.Log($"Save Data: {jsonData}");
-            FileManager.WriteToFile("testsave.json", jsonData);
-            Debug.Log("Game Saved!");
-        }
-
-        public SaveData LoadGame()
-        {
-            if (FileManager.LoadFromFile("testsave.json", out var json))
-            {
-                Debug.Log("Load complete");
-                return JsonUtility.FromJson<SaveData>(json);
-            }
-            Debug.Log("Load failed");
-            return null;
-        }
 
         // Awake is called on object initialisation/activation
         private new void Awake()
@@ -179,11 +159,11 @@ namespace Scenes.MainGameWorld.Scripts
             ButtonSave.RegisterCallback<ClickEvent>(ButtonSaveEvent);
             
             // Loads the upgrade information from the local save data
-            VehicleUpgrade.AllUpgrades = FileManager.LoadData<List<VehicleUpgrade>>("VehicleUpgrades.json", JsonConvert.DeserializeObject<List<VehicleUpgrade>>(DefaultVehicleUpgrades));
-            PlayerUpgrade.AllUpgrades = FileManager.LoadData<List<PlayerUpgrade>>("PlayerUpgrades.json", JsonConvert.DeserializeObject<List<PlayerUpgrade>>(DefaultPlayerUpgrades));
+            VehicleUpgrade.AllUpgrades = FileManager.LoadData(VehicleUpgrade.SaveName, new List<VehicleUpgrade>());
+            PlayerUpgrade.AllUpgrades = FileManager.LoadData(PlayerUpgrade.SaveName, new List<PlayerUpgrade>());
             
             // Loads the save data from the local save file
-            gameData = LoadGame();
+            _gameData = FileManager.LoadDataDefault<SaveData>(SaveData.SaveName);
         }
         
         // Start is called before the first frame update
@@ -216,8 +196,8 @@ namespace Scenes.MainGameWorld.Scripts
                 PlayerScroll.Add(GenPlayerUpgrade(upgrade));
             }
 
-            PlayerMoney.text = $"Account Balance: ${gameData.PlayerMoney}";
-            PlayerRating.text = $"Driver Rating: {gameData.PlayerRating}";
+            PlayerMoney.text = $"Account Balance: ${_gameData.PlayerMoney}";
+            PlayerRating.text = $"Driver Rating: {_gameData.PlayerRating}";
         }
     }
 }

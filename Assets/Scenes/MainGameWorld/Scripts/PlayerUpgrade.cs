@@ -10,6 +10,7 @@ namespace Scenes.MainGameWorld.Scripts
     public class PlayerUpgrade
     {
         public static List<PlayerUpgrade> AllUpgrades = new();
+        public static string SaveName = "PlayerUpgrades.json";
         
         public float cost;
         public float costStep;

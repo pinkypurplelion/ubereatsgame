@@ -19,7 +19,7 @@ namespace Scenes.MainGameWorld.Scripts
         /// <param name="aFileName">The file name</param>
         /// <param name="aFileContents">The file data</param>
         /// <returns>True if the file wrote successfully, False otherwise</returns>
-        public static bool WriteToFile(string aFileName, string aFileContents)
+        private static bool WriteToFile(string aFileName, string aFileContents)
         {
             var fullPath = Path.Combine(Application.persistentDataPath, aFileName);
             Debug.Log("Writing to file: " + fullPath);
@@ -41,7 +41,7 @@ namespace Scenes.MainGameWorld.Scripts
         /// <param name="aFileName">The location of the file</param>
         /// <param name="result">The file data</param>
         /// <returns>True if the file was read, False otherwise</returns>
-        public static bool LoadFromFile(string aFileName, out string result)
+        private static bool LoadFromFile(string aFileName, out string result)
         {
             var fullPath = Path.Combine(Application.persistentDataPath, aFileName);
             Debug.Log("Loading from " + fullPath);
@@ -88,6 +88,24 @@ namespace Scenes.MainGameWorld.Scripts
             Debug.Log("Load failed");
             Debug.Log("Returning default data");
             return defaultData;
+        }
+        
+        /// <summary>
+        /// Will load the JSON data from the provided file into the given object.
+        /// </summary>
+        /// <param name="filename">The location of the JSON data to be loaded</param>
+        /// <typeparam name="T">The type of the object to be returned by parsing JSON data</typeparam>
+        /// <returns>An object of given type that contains the JSON data, or empty if no data was loaded</returns>
+        public static T LoadDataDefault<T>(string filename) where T : new()
+        {
+            if (LoadFromFile(filename, out var json))
+            {
+                Debug.Log($"Load complete: {json}");
+                return JsonConvert.DeserializeObject<T>(json);
+            }
+            Debug.Log("Load failed");
+            Debug.Log("Returning null");
+            return new T();
         }
     }
 }

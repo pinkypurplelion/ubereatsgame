@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = System.Random;
 
 namespace Scenes.MainGameWorld.Scripts
@@ -36,7 +38,7 @@ namespace Scenes.MainGameWorld.Scripts
         public float orderGenerationTime = 20f;
 
         // The start time of the world (will be used to continue player progress)
-        public float worldStartTimeAdjust;
+        // public float worldStartTimeAdjust;
         public float worldStartTime;
         public float currentTime;
 
@@ -45,7 +47,9 @@ namespace Scenes.MainGameWorld.Scripts
         
         // Player Controller
         public PlayerController playerController;
-        
+
+        public SaveData data;
+
         private void Awake()
         {
             // Generates the World based on the WorldDimension and BlockDimension
@@ -95,17 +99,11 @@ namespace Scenes.MainGameWorld.Scripts
 
             // Load Game Data
             Debug.Log("Loading Game Data");
-            SaveData data = LoadGame();
-            if (data != null)
-            {
-                playerController.LoadPlayerData(data);
-                LoadWorldData(data);
-                Debug.Log("Game Data Loaded");
-            }
-            else
-            {
-                Debug.Log("No Game Data Found");
-            }
+            data = FileManager.LoadDataDefault<SaveData>(SaveData.SaveName);
+            
+            // Loads the upgrade information from the local save data
+            VehicleUpgrade.AllUpgrades = FileManager.LoadData(VehicleUpgrade.SaveName, new List<VehicleUpgrade>());
+            PlayerUpgrade.AllUpgrades = FileManager.LoadData(PlayerUpgrade.SaveName, new List<PlayerUpgrade>());
         }
         
         private void FixedUpdate()
@@ -122,7 +120,7 @@ namespace Scenes.MainGameWorld.Scripts
         private void Update()
         {
             // Time Management
-            currentTime = Time.time - worldStartTime + worldStartTimeAdjust;
+            currentTime = Time.time - worldStartTime + data.WorldTime;
         }
 
         // Will pause/resume the game
@@ -171,34 +169,8 @@ namespace Scenes.MainGameWorld.Scripts
         public void SaveGame()
         {
             Debug.Log("Attempting to Save Game...");
-            SaveData data = new SaveData
-            {
-                WorldTime = currentTime,
-                PlayerOrderLimit = playerController.orderLimit,
-                PlayerRating = playerController.playerRating,
-                PlayerMoney = playerController.Money,
-                PlayerScore = playerController.score
-            };
-            string jsonData = JsonUtility.ToJson(data);
-            Debug.Log($"Save Data: {jsonData}");
-            FileManager.WriteToFile("testsave.json", jsonData);
+            FileManager.SaveData(SaveData.SaveName, JsonConvert.SerializeObject(data));
             Debug.Log("Game Saved!");
-        }
-
-        public SaveData LoadGame()
-        {
-            if (FileManager.LoadFromFile("testsave.json", out var json))
-            {
-                Debug.Log("Load complete");
-                return JsonUtility.FromJson<SaveData>(json);
-            }
-            Debug.Log("Load failed");
-            return null;
-        }
-
-        private void LoadWorldData(SaveData data)
-        {
-            worldStartTimeAdjust = data.WorldTime;
         }
     }
 }

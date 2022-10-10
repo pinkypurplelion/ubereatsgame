@@ -23,9 +23,6 @@ namespace Scenes.MainGameWorld.Scripts
         
         // The houses that the player is currently next to.
         private List<Collider> CurrentHouseCollisions { get; } = new();
-        
-        // Player Money System
-        public float Money { get; private set; }
 
         // Player Components
         private Rigidbody _rigidbody;
@@ -43,18 +40,15 @@ namespace Scenes.MainGameWorld.Scripts
         // Player UI Menu
         public bool inventoryOpen;
         public bool menuOpen;
-    
+
+        
         // The number of orders the player is able to carry at any time
         public int orderLimit = 2;
-
-        // Player starts with a 5 star rating
-        public float playerRating = 5;
-        
         // Player order delivery time multiplier
         public float deliveryTimeMultiplier = 1f;
-
-        // The current player score
-        public float score;
+        // Player order multipler
+        public float orderMultiplier = 1f;
+        
 
         /// <summary>
         /// Used to setup the PlayerController class.
@@ -84,10 +78,6 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.MenuMainEventCallback = _ => { _worldEventManager.SaveGame(); SceneManager.LoadScene("MainMenu"); };
             _playerUI.MenuExitEventCallback = _ => { _worldEventManager.SaveGame(); Application.Quit();};
             _playerUI.MenuSaveEventCallback = _ => _worldEventManager.SaveGame();
-
-            // Loads the upgrade information from the local save data
-            VehicleUpgrade.AllUpgrades = FileManager.LoadData<List<VehicleUpgrade>>("VehicleUpgrades.json", new List<VehicleUpgrade>());
-            PlayerUpgrade.AllUpgrades = FileManager.LoadData<List<PlayerUpgrade>>("PlayerUpgrades.json", new List<PlayerUpgrade>());
             
             // Processes upgrade information to apply to the player
             ProcessUpgradeInformation();
@@ -101,7 +91,7 @@ namespace Scenes.MainGameWorld.Scripts
             gameObject.tag = "Player";
 
             // Updates the labels in the UI to the correct values.
-            _playerUI.PlayerMoneyLabel.text = $"Player Balance: {Money}";
+            _playerUI.PlayerMoneyLabel.text = $"Player Balance: {_worldEventManager.data.PlayerMoney}";
             _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
         }
 
@@ -159,7 +149,7 @@ namespace Scenes.MainGameWorld.Scripts
         private void UpdatePlayerUI()
         {
             // Updates the labels in the UI to the correct values.
-            _playerUI.PlayerMoneyLabel.text = $"Player Balance: {Money}";
+            _playerUI.PlayerMoneyLabel.text = $"Player Balance: {_worldEventManager.data.PlayerMoney}";
             _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
             _playerUI.PlayerTimeLabel.text = $"Time: {_worldEventManager.GenerateCurrentTimeString()}";
         }
@@ -294,38 +284,34 @@ namespace Scenes.MainGameWorld.Scripts
                     if (_worldEventManager.currentTime - order.PickupTime < order.TimeToDeliver)
                     {
                         Debug.Log("Order delivered on time.");
-                        Money += order.OrderValue;
-                        playerRating = Mathf.Clamp(playerRating * 1.05f, 0, 5);
+                        _worldEventManager.data.PlayerMoney += order.OrderValue;
+                        _worldEventManager.data.PlayerRating = Mathf.Clamp(_worldEventManager.data.PlayerRating * 1.05f, 0, 5);
                     }
                     else
                     {
                         var reduceMoney = order.OrderValue /
                                             (1 + (_worldEventManager.currentTime - order.PickupTime - order.TimeToDeliver) * 0.1f);
-                        Money += reduceMoney;
-                        playerRating = Mathf.Clamp(playerRating * 0.95f, 0, 5);
+                        _worldEventManager.data.PlayerMoney += reduceMoney;
+                        _worldEventManager.data.PlayerRating = Mathf.Clamp(_worldEventManager.data.PlayerRating * 0.95f, 0, 5);
                         Debug.Log("Order delivered late.");
-                        Debug.Log($"Order value: {order.OrderValue}, money given: {reduceMoney}, player rating: {playerRating}");
+                        Debug.Log($"Order value: {order.OrderValue}, money given: {reduceMoney}, player rating: {_worldEventManager.data.PlayerRating}");
                     }
                     tile.isDelivering = false;
-                    score += 10; //TODO: implement better score system
+                    _worldEventManager.data.PlayerScore += 10; //TODO: implement better score system
                     Debug.Log("Order delivered");
                 }
                 else
                 {
                     Debug.Log("Order not for this house");
                 }
-                _playerUI.PlayerMoneyLabel.text = $"Player Balance: {Money}";
+                _playerUI.PlayerMoneyLabel.text = $"Player Balance: {_worldEventManager.data.PlayerMoney}";
                 _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
             }
         }
 
-        public void LoadPlayerData(SaveData data)
-        {
-            Money = data.PlayerMoney;
-            playerRating = data.PlayerRating;
-            score = data.PlayerScore;
-        }
-
+        /// <summary>
+        /// Parses the information from the player upgrade file and applies it to the player.
+        /// </summary>
         private void ProcessUpgradeInformation()
         {
             Debug.Log("Processing Player Upgrading Information");

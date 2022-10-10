@@ -8,8 +8,9 @@ namespace Scenes.MainGameWorld.Scripts
     [Serializable]
     public class SaveData
     {
+        public static string SaveName = "testsave.json";
+        
         // Player Data
-        public int PlayerOrderLimit;
         public float PlayerRating;
         public float PlayerMoney;
         public float PlayerScore;
