@@ -150,7 +150,7 @@ namespace Scenes.MainGameWorld.Scripts
             
             if (_rigidbody.transform.position.y < -10)
             {
-                SceneManager.LoadScene("MainMenu");
+                SceneManager.LoadScene("ScoreScreen");
             }
         }
         
@@ -302,6 +302,7 @@ namespace Scenes.MainGameWorld.Scripts
                             Debug.Log($"Order value: {order.OrderValue}, money given: {reduceMoney}, player rating: {playerRating}");
                         }
                         tile.isDelivering = false;
+                        score += 10; //TODO: implement better score system
                         Debug.Log("Order delivered");
                     }
                     else
@@ -318,6 +319,7 @@ namespace Scenes.MainGameWorld.Scripts
         {
             Money = data.PlayerMoney;
             playerRating = data.PlayerRating;
+            score = data.PlayerScore;
         }
 
         void ProcessUpgradeInformation()

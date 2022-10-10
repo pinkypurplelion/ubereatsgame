@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 namespace Scenes.MainGameWorld.Scripts
@@ -23,6 +24,14 @@ namespace Scenes.MainGameWorld.Scripts
         private void Start()
         {
             _rootVisualElement.Q<Label>("PlayerScore").text = $"Your Final Score: {gameData.PlayerScore}";
+            _rootVisualElement.Q<Button>("ExitBtn").RegisterCallback<ClickEvent>(BtnReturnToMenuEvent);
+        }
+
+        void BtnReturnToMenuEvent(ClickEvent evt)
+        {
+            gameData = null;
+            SaveGame();
+            SceneManager.LoadScene("MainMenu");
         }
 
         // Update is called once per frame
