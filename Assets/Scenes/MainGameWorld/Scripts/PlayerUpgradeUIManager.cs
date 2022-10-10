@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -7,13 +6,10 @@ using UnityEngine.UIElements;
 
 namespace Scenes.MainGameWorld.Scripts
 {
-    public class PlayerUpgradeUIManager : MonoBehaviour
+    public class PlayerUpgradeUIManager : UIManager
     {
-        public String DefaultPlayerUpgrades;
-        public String DefaultVehicleUpgrades;
-        
-        private UIDocument _uiDocument;
-        private VisualElement _rootVisualElement;
+        public string DefaultPlayerUpgrades;
+        public string DefaultVehicleUpgrades;
 
         private ScrollView PlayerScroll;
         private ScrollView VehicleScroll;
@@ -78,11 +74,6 @@ namespace Scenes.MainGameWorld.Scripts
                     Debug.Log($"Player does not have enough money to purchase upgrade: {button.name}");
                 }
             }
-        }
-        
-        private void BtnEventTemplate(ClickEvent evt)
-        {
-            Button button = evt.currentTarget as Button;
         }
 
         private Box GenVehicleUpgrade(VehicleUpgrade upgrade)
@@ -171,19 +162,18 @@ namespace Scenes.MainGameWorld.Scripts
         }
 
         // Awake is called on object initialisation/activation
-        private void Awake()
+        private new void Awake()
         {
-            _uiDocument = transform.GetComponent<UIDocument>();
-            _rootVisualElement = _uiDocument.rootVisualElement;
+            base.Awake();
             
-            ButtonCancel = _rootVisualElement.Q<Button>("ButtonCancel");
-            ButtonSave = _rootVisualElement.Q<Button>("ButtonSave");
+            ButtonCancel = RootVisualElement.Q<Button>("ButtonCancel");
+            ButtonSave = RootVisualElement.Q<Button>("ButtonSave");
             
-            PlayerScroll = _rootVisualElement.Q<ScrollView>("PlayerScroll");
-            VehicleScroll = _rootVisualElement.Q<ScrollView>("VehicleScroll");
+            PlayerScroll = RootVisualElement.Q<ScrollView>("PlayerScroll");
+            VehicleScroll = RootVisualElement.Q<ScrollView>("VehicleScroll");
             
-            PlayerMoney = _rootVisualElement.Q<Label>("PlayerMoney");
-            PlayerRating = _rootVisualElement.Q<Label>("PlayerReputation");
+            PlayerMoney = RootVisualElement.Q<Label>("PlayerMoney");
+            PlayerRating = RootVisualElement.Q<Label>("PlayerReputation");
             
             ButtonCancel.RegisterCallback<ClickEvent>(ButtonCancelEvent);
             ButtonSave.RegisterCallback<ClickEvent>(ButtonSaveEvent);
@@ -228,14 +218,6 @@ namespace Scenes.MainGameWorld.Scripts
 
             PlayerMoney.text = $"Account Balance: ${gameData.PlayerMoney}";
             PlayerRating.text = $"Driver Rating: {gameData.PlayerRating}";
-        }
-        
-        
-
-        // Update is called once per frame
-        void Update()
-        {
-        
         }
     }
 }

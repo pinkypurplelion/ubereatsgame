@@ -2,6 +2,9 @@
 
 namespace Scenes.MainGameWorld.Scripts
 {
+    /// <summary>
+    /// The game save file.
+    /// </summary>
     [Serializable]
     public class SaveData
     {

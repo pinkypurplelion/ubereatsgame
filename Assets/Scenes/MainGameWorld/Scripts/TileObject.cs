@@ -5,19 +5,18 @@ using UnityEngine.Serialization;
 
 namespace Scenes.MainGameWorld.Scripts
 {
-    /**
-     * The script attached to the TileObject prefab. This currently only manages the models but will manage all
-     * game functionality of the prefab in relation to the information provided by the attached Tile script.
-     *
-     * Tile script attached at runtime by the WorldEventManager script.
-     */
+    /// <summary>
+    /// The script attached to the TileObject prefab. This currently only manages the models but will manage all
+    /// game functionality of the prefab in relation to the information provided by the attached Tile script.
+    /// Tile script attached at runtime by the WorldEventManager script.
+    /// </summary>
     public class TileObject : MonoBehaviour
     {
         public Tile Tile;
         public TileType TileType;
         private GameObject _road;
 
-        void Start()
+        private void Start()
         {
             TileType = Tile.Type;
             
@@ -28,8 +27,6 @@ namespace Scenes.MainGameWorld.Scripts
                     _road = transform.Find("road").gameObject;
                     _road.SetActive(true);
                     _road.GetComponent<RoadTile>().Tile = Tile;
-
-
                     break;
                 case TileType.Building:
                     transform.Find("building").gameObject.SetActive(true);

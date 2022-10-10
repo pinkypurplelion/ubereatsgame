@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Scenes.MainGameWorld.Scripts
 {
@@ -13,21 +12,13 @@ namespace Scenes.MainGameWorld.Scripts
         public List<Guid> Orders { get; set; } = new();
 
         private TMP_Text _priceText;
-
         
-        
-        void Awake()
+        private void Awake()
         {
             _priceText = transform.Find("Canvas").Find("text").GetComponent<TMP_Text>();
             _priceText.color = Color.white;
         }
-
-        void Start()
-        {
-            // purely for testing
-
-        }
-
+        
         private void FixedUpdate()
         {
             // Update every second
@@ -35,11 +26,6 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 _priceText.text = $"{Orders.Count.ToString()}";
             }
-        }
-
-        void Update()
-        {
-            
         }
     }
 }

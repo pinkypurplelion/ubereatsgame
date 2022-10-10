@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace Scenes.MainGameWorld.Scripts
 {
+    /// <summary>
+    /// Holds information about the vehicle upgrades
+    /// </summary>
     [Serializable]
     public class VehicleUpgrade
     {

@@ -1,9 +1,11 @@
 ﻿using System;
-using UnityEditor;
-using UnityEngine;
 
 namespace Scenes.MainGameWorld.Scripts
 {
+    /// <summary>
+    /// Holds information about orders
+    /// </summary>
+    /// <author>Liam Angus</author>
     public class Order
     {
         public Guid OrderID = Guid.NewGuid();

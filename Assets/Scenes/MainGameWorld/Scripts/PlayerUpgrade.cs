@@ -3,10 +3,13 @@ using System.Collections.Generic;
 
 namespace Scenes.MainGameWorld.Scripts
 {
+    /// <summary>
+    /// Holds data about player upgrades.
+    /// </summary>
     [Serializable]
     public class PlayerUpgrade
     {
-        public static List<PlayerUpgrade> AllUpgrades = new List<PlayerUpgrade>();
+        public static List<PlayerUpgrade> AllUpgrades = new();
         
         public float cost;
         public float costStep;

@@ -266,7 +266,7 @@ namespace Scenes.MainGameWorld.Scripts
             speed = transform.InverseTransformDirection(rb.velocity).z * 3.6f;
 
             // Get all the inputs!
-            if (isPlayer && !PlayerController.InventoryOpen && !PlayerController.MenuOpen) {
+            if (isPlayer && !PlayerController.inventoryOpen && !PlayerController.menuOpen) {
                 throttle = moveVal.y;
                 steering = turnInputCurve.Evaluate(moveVal.x) * steerAngle;
                 // Accelerate & brake
@@ -285,7 +285,7 @@ namespace Scenes.MainGameWorld.Scripts
                 // drift = GetInput(driftInput)> 0 && rb.velocity.sqrMagnitude > 100;
                 // // Jump
                 // jumping = GetInput(jumpInput) != 0;
-            } else if (!PlayerController.InventoryOpen) {
+            } else if (!PlayerController.inventoryOpen) {
                 throttle = 0;
                 steering = 0;
             }

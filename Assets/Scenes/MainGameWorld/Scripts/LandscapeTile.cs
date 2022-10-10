@@ -1,18 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class LandscapeTile : MonoBehaviour
+namespace Scenes.MainGameWorld.Scripts
 {
-    // Start is called before the first frame update
-    void Start()
+    /// <summary>
+    /// Manages functions relating to the landscape
+    /// </summary>
+    /// <author>Liam Angus</author>
+    public class LandscapeTile : MonoBehaviour
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
