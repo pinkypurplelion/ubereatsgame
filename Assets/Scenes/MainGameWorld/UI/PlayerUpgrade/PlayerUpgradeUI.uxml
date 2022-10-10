@@ -1,22 +1,24 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Scenes/MainGameWorld/UI/PlayerUpgrade/PlayerUpgradeStylesheet.uss?fileID=7433441132597879392&amp;guid=9f1a61ad2eb8db8408f071d030cbb5c6&amp;type=3#PlayerUpgradeStylesheet" />
-    <ui:Label text="Driver Upgrade Screen" display-tooltip-when-elided="true" name="UITitle" class="title" />
-    <ui:GroupBox name="PlayerInfo" class="player-info" style="margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;">
-        <ui:Label text="Account Balance: $00.00" display-tooltip-when-elided="true" name="PlayerMoney" />
-        <ui:Label text="Driver Rating: 0.00" display-tooltip-when-elided="true" name="PlayerReputation" />
-    </ui:GroupBox>
-    <ui:GroupBox name="UpgradeContainer" style="flex-direction: row; justify-content: space-around; height: 676px;">
-        <ui:GroupBox name="VehicleUpgrade">
-            <ui:Label text="Vehicle Upgrades" display-tooltip-when-elided="true" name="VehicleSubtitle" class="sub-title" />
-            <ui:ScrollView name="VehicleScroll" />
+    <ui:VisualElement style="width: 100%; height: 100%; align-items: stretch; justify-content: space-between;">
+        <ui:Label text="Driver Upgrade Screen" display-tooltip-when-elided="true" name="UITitle" class="title" style="width: 100%;" />
+        <ui:GroupBox name="PlayerInfo" class="player-info" style="margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; width: 100%;">
+            <ui:Label text="Account Balance: $00.00" display-tooltip-when-elided="true" name="PlayerMoney" />
+            <ui:Label text="Driver Rating: 0.00" display-tooltip-when-elided="true" name="PlayerReputation" />
         </ui:GroupBox>
-        <ui:GroupBox name="PlayerUpgrade">
-            <ui:Label text="Driver Upgrades" display-tooltip-when-elided="true" name="PlayerSubtitle" class="sub-title" />
-            <ui:ScrollView name="PlayerScroll" />
+        <ui:GroupBox name="UpgradeContainer" style="flex-direction: row; justify-content: space-around; height: 676px;">
+            <ui:GroupBox name="VehicleUpgrade" style="width: 30%;">
+                <ui:Label text="Vehicle Upgrades" display-tooltip-when-elided="true" name="VehicleSubtitle" class="sub-title" style="align-items: auto; -unity-text-align: upper-center;" />
+                <ui:ScrollView name="VehicleScroll" />
+            </ui:GroupBox>
+            <ui:GroupBox name="PlayerUpgrade" style="width: 30%;">
+                <ui:Label text="Driver Upgrades" display-tooltip-when-elided="true" name="PlayerSubtitle" class="sub-title" style="-unity-text-align: upper-center;" />
+                <ui:ScrollView name="PlayerScroll" />
+            </ui:GroupBox>
         </ui:GroupBox>
-    </ui:GroupBox>
-    <ui:GroupBox name="ExitButtonsContainer" style="flex-direction: row; justify-content: space-around; margin-left: 1px; margin-right: 1px; margin-top: 1px; margin-bottom: 1px; padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; bottom: auto; font-size: 18px; align-items: stretch;">
-        <ui:Button text="Save Changes &amp; Return to Game" display-tooltip-when-elided="true" name="ButtonSave" />
-        <ui:Button text="Cancel &amp; Return to Game" display-tooltip-when-elided="true" name="ButtonCancel" />
-    </ui:GroupBox>
+        <ui:GroupBox name="ExitButtonsContainer" style="flex-direction: row; justify-content: space-around; margin-left: 1px; margin-right: 1px; margin-top: 1px; margin-bottom: 1px; padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; bottom: auto; font-size: 18px; align-items: stretch;">
+            <ui:Button text="Save Changes &amp; Return to Game" display-tooltip-when-elided="true" name="ButtonSave" />
+            <ui:Button text="Cancel &amp; Return to Game" display-tooltip-when-elided="true" name="ButtonCancel" />
+        </ui:GroupBox>
+    </ui:VisualElement>
 </ui:UXML>
