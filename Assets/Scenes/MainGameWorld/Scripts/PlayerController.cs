@@ -43,12 +43,16 @@ namespace Scenes.MainGameWorld.Scripts
 
         
         // The number of orders the player is able to carry at any time
-        public int orderLimit = 2;
+        public int orderLimit = 2; // Player Upgrade
         // Player order delivery time multiplier
-        public float deliveryTimeMultiplier = 1f;
-        // Player order multipler
-        public float orderMultiplier = 1f;
+        public float deliveryTimeMultiplier = 1f; // Player Upgrade
         
+        // Player order multiplier
+        public float orderMultiplier = 1f;
+        public int maxMultiplier = 5; // Player Upgrade
+        
+        // Player final score multiplier
+        public float scoreMultiplier = 1f;
 
         /// <summary>
         /// Used to setup the PlayerController class.
@@ -284,20 +288,35 @@ namespace Scenes.MainGameWorld.Scripts
                     if (_worldEventManager.currentTime - order.PickupTime < order.TimeToDeliver)
                     {
                         Debug.Log("Order delivered on time.");
-                        _worldEventManager.data.PlayerMoney += order.OrderValue;
+                        _worldEventManager.data.PlayerMoney += order.OrderValue * orderMultiplier;
                         _worldEventManager.data.PlayerRating = Mathf.Clamp(_worldEventManager.data.PlayerRating * 1.05f, 0, 5);
+                        
+                        // Increasing Order Multiplier
+                        orderMultiplier = Mathf.Clamp(orderMultiplier += 1, 1, maxMultiplier);
+                        
+                        // Increases Player Score
+                        _worldEventManager.data.PlayerScore += 75 * scoreMultiplier;
+                        
+                        Debug.Log($"Player Order Multiplier Increased to {orderMultiplier}");
                     }
                     else
                     {
                         var reduceMoney = order.OrderValue /
                                             (1 + (_worldEventManager.currentTime - order.PickupTime - order.TimeToDeliver) * 0.1f);
+                        var reducedScore = 75/
+                                            (1 + (_worldEventManager.currentTime - order.PickupTime - order.TimeToDeliver) * 0.1f) * orderMultiplier;
+                        
                         _worldEventManager.data.PlayerMoney += reduceMoney;
                         _worldEventManager.data.PlayerRating = Mathf.Clamp(_worldEventManager.data.PlayerRating * 0.95f, 0, 5);
+                        _worldEventManager.data.PlayerScore += reducedScore;
+                        
+                        // Resets Order Multiplier
+                        orderMultiplier = 1;
                         Debug.Log("Order delivered late.");
                         Debug.Log($"Order value: {order.OrderValue}, money given: {reduceMoney}, player rating: {_worldEventManager.data.PlayerRating}");
                     }
                     tile.isDelivering = false;
-                    _worldEventManager.data.PlayerScore += 10; //TODO: implement better score system
+
                     Debug.Log("Order delivered");
                 }
                 else
@@ -316,15 +335,27 @@ namespace Scenes.MainGameWorld.Scripts
         {
             Debug.Log("Processing Player Upgrading Information");
             // Player Upgrades
-            var demo = PlayerUpgrade.AllUpgrades.Find(u => u.upgradeID == "playerOrderCapacity");
-            if (demo != null)
+            var upgradeOrderCapacity = PlayerUpgrade.AllUpgrades.Find(u => u.upgradeID == "playerOrderCapacity");
+            if (upgradeOrderCapacity != null)
             {
-                orderLimit = (int) demo.purchasedLevel;
+                orderLimit = (int) upgradeOrderCapacity.purchasedLevel;
             }
-            var demo2 = PlayerUpgrade.AllUpgrades.Find(u => u.upgradeID == "playerTimeMultiplier");
-            if (demo2 != null)
+            var upgradeDeliveryTime = PlayerUpgrade.AllUpgrades.Find(u => u.upgradeID == "playerTimeMultiplier");
+            if (upgradeDeliveryTime != null)
             {
-                deliveryTimeMultiplier = demo2.purchasedLevel;
+                deliveryTimeMultiplier = upgradeDeliveryTime.purchasedLevel;
+            }
+            
+            var upgradeMultiplier = PlayerUpgrade.AllUpgrades.Find(u => u.upgradeID == "playerMaxMultiplier");
+            if (upgradeMultiplier != null)
+            {
+                maxMultiplier = 5 + (int) upgradeMultiplier.purchasedLevel;
+            }
+            
+            var upgradeScoreMultiplier = PlayerUpgrade.AllUpgrades.Find(u => u.upgradeID == "playerScoreMultiplier");
+            if (upgradeScoreMultiplier != null)
+            {
+                scoreMultiplier = upgradeScoreMultiplier.purchasedLevel;
             }
         }
 
