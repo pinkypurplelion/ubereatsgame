@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using Random = System.Random;
 
@@ -41,7 +43,9 @@ namespace Scenes.MainGameWorld.Scripts
         // public float worldStartTimeAdjust;
         public float worldStartTime;
         public float currentTime;
-
+        public static string[] week = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
+        public static string day;
+        
         // World Lighting
         public GameObject worldLight;
         
@@ -60,6 +64,7 @@ namespace Scenes.MainGameWorld.Scripts
         
         private void Start()
         {
+            data.PlayerMoney += 500;
             // Draws the World based on the WorldMap graph.
             foreach (var block in _map.CityBlocks)
             {
@@ -121,6 +126,7 @@ namespace Scenes.MainGameWorld.Scripts
         {
             // Time Management
             currentTime = Time.time - worldStartTime + data.WorldTime;
+
         }
 
         // Will pause/resume the game
@@ -158,12 +164,21 @@ namespace Scenes.MainGameWorld.Scripts
             return ConvertTimeToString(currentTime);
         }
 
-        public static string ConvertTimeToString(float time)
+        public string ConvertTimeToString(float time)
         {
             int minutes = (int) Math.Floor(time/0.25 % 60);
             int hours = (int) (time / 15) % 24;
             int days = (int) (time / 360) % 7;
-            return $"{days}d, {hours}h {minutes}m";
+            day = week[days % 7];
+            if (day == "Monday" && hours == 0 && minutes == 00)
+            {
+                data.PlayerMoney -= 500;
+                if (data.PlayerMoney < 0)
+                {
+                    SceneManager.LoadScene("ScoreScreen");
+                }
+            }
+            return $"{day},{days}d, {hours}h {minutes}m";
         }
 
         public void SaveGame()
