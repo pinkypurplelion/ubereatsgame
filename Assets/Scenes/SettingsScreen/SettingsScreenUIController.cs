@@ -32,21 +32,43 @@ public class SettingsScreenUIController : MonoBehaviour
         quitButton = root.Q<Button>("QuitBtn");
         soundButton = root.Q<Button>("SoundBtn");
 
+        // Assign method to button click
         SettingsbackButton.clicked += SBckBtnPressed; 
         soundButton.clicked += SndBtnPressed;
         quitButton.clicked += Exit;       
     }
 
+    /// <summary>
+    /// This method is used to load the 'Sounds Menu' screen.
+    /// </summary>
+    /// <return> The method does not return anything.</return>
+    /// <param> There are no parameters.</param>
+    /// <preCondition> The player has requested to go to sounds menu.</preCondition>
+    /// <postCondition> Loads sound menu screen to allow volume value altering.</postCondition>
     void SndBtnPressed()
     {
         SceneManager.LoadScene("SoundsMenu");
     }
 
+    /// <summary>
+    /// This method is used to load the 'Main Menu' screen.
+    /// </summary>
+    /// <return> The method does not return anything.</return>
+    /// <param> There are no parameters.</param>
+    /// <preCondition> The player has requested to go to back.</preCondition>
+    /// <postCondition> Player is re-directed to main menu.</postCondition>
     void SBckBtnPressed()
     {
         SceneManager.LoadScene("MainMenu");
     }
 
+    /// <summary>
+    /// This method is used to exit the game.
+    /// </summary>
+    /// <return> The method does not return anything.</return>
+    /// <param> There are no parameters.</param>
+    /// <preCondition> The player has requested to shut the game.</preCondition>
+    /// <postCondition> Progress is saved and application is exited.</postCondition>
     void Exit()
     {
         Application.Quit();
