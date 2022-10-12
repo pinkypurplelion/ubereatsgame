@@ -173,7 +173,7 @@ namespace Scenes.MainGameWorld.Scripts
             if (day == "Monday" && hours == 0 && minutes == 00)
             {
                 data.PlayerMoney -= 500;
-                if (data.PlayerMoney < 0)
+                if (data.PlayerMoney < 0 && days > 6)
                 {
                     SceneManager.LoadScene("ScoreScreen");
                 }
