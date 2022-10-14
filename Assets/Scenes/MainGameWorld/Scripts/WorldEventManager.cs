@@ -43,8 +43,8 @@ namespace Scenes.MainGameWorld.Scripts
         // public float worldStartTimeAdjust;
         public float worldStartTime;
         public float currentTime;
-        public static string[] week = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
-        public static string day;
+        private static readonly string[] Week = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
+        private static string _day;
         
         // World Lighting
         public GameObject worldLight;
@@ -64,7 +64,6 @@ namespace Scenes.MainGameWorld.Scripts
         
         private void Start()
         {
-            data.PlayerMoney += 500;
             // Draws the World based on the WorldMap graph.
             foreach (var block in _map.CityBlocks)
             {
@@ -126,7 +125,7 @@ namespace Scenes.MainGameWorld.Scripts
         {
             // Time Management
             currentTime = Time.time - worldStartTime + data.WorldTime;
-
+            SimulateRent(currentTime);
         }
 
         // Will pause/resume the game
@@ -164,23 +163,42 @@ namespace Scenes.MainGameWorld.Scripts
             return ConvertTimeToString(currentTime);
         }
 
-        public string ConvertTimeToString(float time)
+        /// <summary>
+        /// Will convert the current world time into a string able to be displayed to the user.
+        /// Scale: 360 IRL seconds per game day.
+        /// </summary>
+        /// <param name="time">The current world time</param>
+        /// <returns>A string representation of the current world time</returns>
+        public static string ConvertTimeToString(float time)
         {
             int minutes = (int) Math.Floor(time/0.25 % 60);
             int hours = (int) (time / 15) % 24;
             int days = (int) (time / 360) % 7;
-            day = week[days % 7];
-            if (day == "Monday" && hours == 0 && minutes == 00)
+            _day = Week[days % 7];
+
+            return $"{_day},{days}d, {hours}h {minutes}m";
+        }
+
+        /// <summary>
+        /// Used to simulate the rent of the player.
+        /// </summary>
+        /// <param name="time">The current world time</param>
+        /// <author>Jayath Gunawardena</author>
+        private void SimulateRent(float time)
+        {
+            if (time % 2520 == 0 && time > 2610)
             {
                 data.PlayerMoney -= 500;
-                if (data.PlayerMoney < 0 && days > 6)
+                if (data.PlayerMoney < 0)
                 {
                     SceneManager.LoadScene("ScoreScreen");
                 }
             }
-            return $"{day},{days}d, {hours}h {minutes}m";
         }
-
+        
+        /// <summary>
+        /// Used to save the world state.
+        /// </summary>
         public void SaveGame()
         {
             Debug.Log("Attempting to Save Game...");
