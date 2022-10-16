@@ -45,6 +45,8 @@ namespace Scenes.MainGameWorld.Scripts
         public float currentTime;
         private static readonly string[] Week = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
         private static string _day;
+
+        private bool _weeklyRent;
         
         // World Lighting
         public GameObject worldLight;
@@ -139,25 +141,38 @@ namespace Scenes.MainGameWorld.Scripts
         {
             ShopTile shop = shops[_random.Next(shops.Count)];
             HouseTile house = houses[_random.Next(houses.Count)];
+            
+            int minDeliveryTime = 45;
+            int maxDeliveryTime = 240;
+            
             Order order = new Order
             {
                 ShopID = shop.ShopID,
                 HouseID = house.HouseID,
-                OrderValue = _random.Next(15, 80),
+                OrderValue = _random.Next(15, 50),
                 Customer = house.Customers[_random.Next(house.Customers.Count)],
                 CreationTime = currentTime,
-                TimeToDeliver = _random.Next(30, 120) // Delivery timeframe between 30 and 120 seconds, TODO: upgrade for longer delivery times/dependant on reputation
+                TimeToDeliver = _random.Next(minDeliveryTime, maxDeliveryTime) // Delivery timeframe between 45 and 240 seconds
             };
             Orders.Add(order);
             shop.Orders.Add(order.OrderID);
         }
         
+        /// <summary>
+        /// Used to generate the names of customers
+        /// </summary>
+        /// <returns>A customer's name</returns>
         private string TempGenerateName()
         {
-            List<String> names = new() { "bob", "judy", "jane", "sarah", "adam", "spike", "erandi"};
+            List<string> names = new() { "Bob", "Judy", "Jane", "Sarah", "Adam", 
+                "Spike", "Erandi", "Dilini", "Liam", "Ali Muha", "Jayath", "Charles", "Charlotte", "Sam", "Jiankun"};
             return names[_random.Next(names.Count)];
         }
 
+        /// <summary>
+        /// Generate the current time string
+        /// </summary>
+        /// <returns>The current time in string form</returns>
         public string GenerateCurrentTimeString()
         {
             return ConvertTimeToString(currentTime);
@@ -186,13 +201,18 @@ namespace Scenes.MainGameWorld.Scripts
         /// <author>Jayath Gunawardena</author>
         private void SimulateRent(float time)
         {
-            if (time % 2520 == 0 && time > 2610)
+            // Manage only one rent payment per week being deducted
+            if (time % 360 == 0 && time > 2610 && _weeklyRent)
             {
-                data.PlayerMoney -= 500;
-                if (data.PlayerMoney < 0)
-                {
-                    SceneManager.LoadScene("ScoreScreen");
-                }
+                _weeklyRent = false;
+            }
+            // Deducts rent payments from the player's balance
+            if (time % 2520 != 0 || !(time > 2610) || _weeklyRent) return;
+            data.PlayerMoney -= 500;
+            _weeklyRent = true;
+            if (data.PlayerMoney < 0)
+            {
+                SceneManager.LoadScene("ScoreScreen");
             }
         }
         

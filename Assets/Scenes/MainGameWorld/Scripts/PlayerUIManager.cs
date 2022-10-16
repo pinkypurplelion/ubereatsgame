@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Button = UnityEngine.UIElements.Button;
@@ -28,6 +29,7 @@ namespace Scenes.MainGameWorld.Scripts
         public Label PlayerRatingLabel { get; set; }
         public Label PlayerScoreLabel { get; set; }
         public Label PlayerChainLabel { get; set; }
+        public Label PlayerNotificationLabel { get; set; }
         
         // PlayerController objects used for UI drawing
         public EventCallback<ClickEvent> ShopEventCallback {get; set;}
@@ -45,6 +47,9 @@ namespace Scenes.MainGameWorld.Scripts
         public EventCallback<ClickEvent> MenuSaveEventCallback { get; set; }
         public EventCallback<ClickEvent> MenuMainEventCallback { get; set; }
         public EventCallback<ClickEvent> MenuExitEventCallback { get; set; }
+        
+        private static Queue<Tuple<string, int>> _notificationQueue;
+        private static bool _isNotification;
 
         // Used to setup the current component
         private new void Awake()
@@ -87,6 +92,8 @@ namespace Scenes.MainGameWorld.Scripts
             PlayerChainLabel = RootVisualElement.Q<Label>("PlayerChain");
             PlayerRatingLabel = RootVisualElement.Q<Label>("PlayerRating");
             PlayerScoreLabel = RootVisualElement.Q<Label>("PlayerScore");
+            
+            PlayerNotificationLabel = RootVisualElement.Q<Label>("PlayerNotification");
 
             // Enable the page selector buttons in the UI
             var buttons = PlayerInteractUI.Q<GroupBox>("SelectionButtons").Query<Button>();
@@ -254,6 +261,19 @@ namespace Scenes.MainGameWorld.Scripts
             orderBox.Add(orderDeliveryTime);
             orderBox.Add(selectOrderButton);
             return orderBox;
+        }
+
+        /// <summary>
+        /// Used to send notifications to the player UI from other scripts.
+        /// TODO: update to manage queue of notifications
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="seconds"></param>
+        /// <param name="immediate"></param>
+        public void NotifyPlayer(string message, int seconds, bool immediate)
+        {
+            Debug.Log($"Player Notified: {message}");
+            PlayerNotificationLabel.text = message;
         }
     }
 }

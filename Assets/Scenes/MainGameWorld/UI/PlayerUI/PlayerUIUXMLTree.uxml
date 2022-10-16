@@ -1,13 +1,22 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scenes/MainGameWorld/UI/MainUIStyle.uss?fileID=7433441132597879392&amp;guid=f0f3585f7a31da34eafbcff48e978979&amp;type=3#MainUIStyle" />
+    <Style src="project://database/Assets/Scenes/MainGameWorld/UI/PlayerUI/PlayerUIStyles.uss?fileID=7433441132597879392&amp;guid=b10fa539c8f582747bd2a6bbb92ebfb1&amp;type=3#PlayerUIStyles" />
     <ui:VisualElement style="justify-content: space-between; align-items: center;">
-        <ui:GroupBox name="PlayerInfo" style="align-items: stretch; flex-direction: row; justify-content: space-between; height: 25%; width: 100%;">
+        <ui:GroupBox name="PlayerInfo" class="ui-ve-infobox">
             <ui:IMGUIContainer name="PlayerMinimap" style="background-image: url(&apos;project://database/Assets/Scenes/MainGameWorld/Icons%20&amp;%20Images/MinimapRender.renderTexture?fileID=8400000&amp;guid=2b071db4a59d7d44584a153991b52f27&amp;type=2#MinimapRender&apos;); height: 256px; width: 256px;" />
-            <ui:Label text="DD:MM:YY HH:MM" display-tooltip-when-elided="true" name="WorldTime" style="-unity-text-outline-color: rgb(255, 255, 255); -unity-text-outline-width: 1px; font-size: 20px; -unity-text-align: middle-center;" />
-            <ui:Label text="Player Order Count" display-tooltip-when-elided="true" name="PlayerOrderCount" style="-unity-text-outline-color: rgb(255, 239, 239); -unity-text-outline-width: 1px; font-size: 20px; -unity-text-align: middle-center;" />
-            <ui:Label text="Bank Balance: $0" display-tooltip-when-elided="true" name="PlayerBankBalance" style="-unity-text-outline-width: 1px; -unity-text-outline-color: rgb(255, 255, 255); font-size: 20px; -unity-text-align: middle-center;" />
-            <ui:Label text="Label" display-tooltip-when-elided="true" name="PlayerRating" style="font-size: 20px; -unity-text-align: middle-center;" />
-            <ui:Label text="Label" display-tooltip-when-elided="true" name="PlayerScore" style="font-size: 20px; -unity-text-align: middle-center;" />
-            <ui:Label text="Label" display-tooltip-when-elided="true" name="PlayerChain" style="font-size: 20px; -unity-text-align: middle-center;" />
+            <ui:GroupBox style="flex-direction: column; width: 80%;">
+                <ui:GroupBox style="align-items: center;">
+                    <ui:Label text="Player Notififcations" display-tooltip-when-elided="true" name="PlayerNotififcation" class="ui-text-info" />
+                </ui:GroupBox>
+                <ui:GroupBox style="flex-direction: row; width: 100%; justify-content: space-around;">
+                    <ui:Label text="Bank Balance: $0" display-tooltip-when-elided="true" name="PlayerBankBalance" class="ui-text-info" />
+                    <ui:Label text="PlayeRating" display-tooltip-when-elided="true" name="PlayerRating" class="ui-text-info" />
+                    <ui:Label text="Player Score" display-tooltip-when-elided="true" name="PlayerScore" class="ui-text-info" />
+                    <ui:Label text="PlayerChain" display-tooltip-when-elided="true" name="PlayerChain" class="ui-text-info" />
+                    <ui:Label text="Player Order Count" display-tooltip-when-elided="true" name="PlayerOrderCount" class="ui-text-info" />
+                    <ui:Label text="DD:MM:YY HH:MM" display-tooltip-when-elided="true" name="WorldTime" class="ui-text-info" />
+                </ui:GroupBox>
+            </ui:GroupBox>
         </ui:GroupBox>
         <ui:GroupBox name="InteractScreen" style="visibility: visible; display: flex; align-items: stretch; flex-direction: column; justify-content: space-between; height: 70%; width: 60%;">
             <ui:GroupBox name="SelectionButtons" style="align-items: stretch; justify-content: center; flex-direction: row; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-top: 0; padding-bottom: 0; font-size: 20px;">

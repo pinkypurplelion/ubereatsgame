@@ -1,0 +1,7 @@
+.ui-ve-infobox {
+    justify-content: space-around;
+    align-items: stretch;
+    width: 100%;
+    flex-direction: row;
+    height: 20%;
+}

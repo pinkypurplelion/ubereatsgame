@@ -242,7 +242,7 @@ namespace Scenes.MainGameWorld.Scripts
         private void SelectOrderFromShop(ClickEvent evt)
         {
             if (evt.currentTarget is not Button button) return;
-            if (Orders.Count <= orderLimit) // TODO implement multi order collection
+            if (Orders.Count <= orderLimit)
             {
                 // Adds order to player
                 var orderID = Guid.Parse(button.name);
@@ -264,8 +264,7 @@ namespace Scenes.MainGameWorld.Scripts
             }
             else
             {
-                // TODO: add popup to communicate this with player
-                Debug.Log("Player has reached the order limit. Please deliver an order before collecting another.");
+                _playerUI.NotifyPlayer("Player has reached the order limit. Please deliver an order before collecting another.", 5, true);
             }
             _playerUI.UpdateInteractUI();
         }

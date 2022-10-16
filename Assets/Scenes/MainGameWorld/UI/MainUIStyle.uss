@@ -1,0 +1,4 @@
+.ui-text-info {
+    font-size: 150%;
+    -unity-text-align: middle-center;
+}
