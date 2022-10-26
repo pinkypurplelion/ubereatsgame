@@ -16,6 +16,8 @@ namespace Scenes.MainGameWorld.Scripts
         public Tile Tile;
         public TileType TileType;
         private GameObject _road;
+        private GameObject _shop;
+        private GameObject _house;
 
         private void Start()
         {
@@ -35,10 +37,14 @@ namespace Scenes.MainGameWorld.Scripts
                     break;
                 case TileType.Shop:
                     transform.Find("shop").gameObject.SetActive(true);
+                    _shop = transform.Find("shop").gameObject;
+                    _shop.GetComponent<ShopTile>().tile = Tile;
                     RotateTile();
                     break;
                 case TileType.House:
                     transform.Find("house").gameObject.SetActive(true);
+                    _house = transform.Find("house").gameObject;
+                    _house.GetComponent<HouseTile>().tile = Tile;
                     RotateTile();
                     break;
                 case TileType.Landscape:

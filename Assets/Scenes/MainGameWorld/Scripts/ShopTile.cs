@@ -13,6 +13,8 @@ namespace Scenes.MainGameWorld.Scripts
         public List<Guid> Orders { get; set; } = new();
 
         private TMP_Text _priceText;
+
+        public Tile tile;
         
         private void Awake()
         {

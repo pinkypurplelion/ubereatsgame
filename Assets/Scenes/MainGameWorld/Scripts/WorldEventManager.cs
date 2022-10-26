@@ -142,14 +142,19 @@ namespace Scenes.MainGameWorld.Scripts
             ShopTile shop = shops[_random.Next(shops.Count)];
             HouseTile house = houses[_random.Next(houses.Count)];
             
-            int minDeliveryTime = 45;
-            int maxDeliveryTime = 240;
+            int xDist = Math.Abs(shop.tile.X - house.tile.X);
+            int yDist = Math.Abs(shop.tile.Y - house.tile.Y);
+            float distance = Mathf.Sqrt(xDist * xDist + yDist * yDist);
+            Debug.Log(distance);
+            
+            int minDeliveryTime = 30;
+            int maxDeliveryTime = (int)(60 * distance/2);
             
             Order order = new Order
             {
                 ShopID = shop.ShopID,
                 HouseID = house.HouseID,
-                OrderValue = _random.Next(15, 50),
+                OrderValue = _random.Next(15, 25) * distance/2,
                 Customer = house.Customers[_random.Next(house.Customers.Count)],
                 CreationTime = currentTime,
                 TimeToDeliver = _random.Next(minDeliveryTime, maxDeliveryTime) // Delivery timeframe between 45 and 240 seconds

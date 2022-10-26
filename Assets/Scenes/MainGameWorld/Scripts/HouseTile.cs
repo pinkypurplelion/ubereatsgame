@@ -21,6 +21,9 @@ namespace Scenes.MainGameWorld.Scripts
         
         private TMP_Text _priceText;
         
+        public Tile tile;
+
+        
         /// <summary>
         /// Called when the tiles are initialised into the world
         /// </summary>
