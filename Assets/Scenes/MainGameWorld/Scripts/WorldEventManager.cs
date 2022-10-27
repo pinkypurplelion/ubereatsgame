@@ -114,6 +114,8 @@ namespace Scenes.MainGameWorld.Scripts
         
         private void FixedUpdate()
         {
+            // less orders generated during the night
+            orderGenerationTime = currentTime % 360 > 60 ? 20f : 30f;
             if (Time.fixedTime % orderGenerationTime == 0)
             {
                 GenerateOrder();
