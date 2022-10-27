@@ -145,7 +145,7 @@ namespace Scenes.MainGameWorld.Scripts
             int xDist = Math.Abs(shop.tile.X - house.tile.X);
             int yDist = Math.Abs(shop.tile.Y - house.tile.Y);
             float distance = Mathf.Sqrt(xDist * xDist + yDist * yDist);
-            Debug.Log(distance);
+            Debug.Log(distance); //TODO: use pathfinding algortihm to find actual distance, not 'plane' distance
             
             int minDeliveryTime = 30;
             int maxDeliveryTime = (int)(60 * distance/2);
