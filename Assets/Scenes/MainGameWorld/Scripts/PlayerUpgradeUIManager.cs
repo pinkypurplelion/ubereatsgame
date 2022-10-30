@@ -113,8 +113,8 @@ namespace Scenes.MainGameWorld.Scripts
             ProgressBar upgradeProgress = new ProgressBar();
             Button purchaseButton = new Button();
             
-            upgradeName.text = upgrade.name;
-            upgradeCost.text = (upgrade.cost + upgrade.costStep * upgrade.purchasedLevel).ToString();
+            upgradeName.text = $"{upgrade.name}, Level: {upgrade.purchasedLevel}";
+            upgradeCost.text = $"Cost: ${(upgrade.cost + upgrade.costStep * upgrade.purchasedLevel)}";
             upgradeCost.name = "upgradeCost";
             upgradeProgress.lowValue = 0;
             upgradeProgress.highValue = upgrade.maxLevel;
@@ -159,8 +159,8 @@ namespace Scenes.MainGameWorld.Scripts
             ButtonSave.RegisterCallback<ClickEvent>(ButtonSaveEvent);
             
             // Loads the upgrade information from the local save data
-            VehicleUpgrade.AllUpgrades = FileManager.LoadData(VehicleUpgrade.SaveName, new List<VehicleUpgrade>());
-            PlayerUpgrade.AllUpgrades = FileManager.LoadData(PlayerUpgrade.SaveName, new List<PlayerUpgrade>());
+            VehicleUpgrade.AllUpgrades = FileManager.LoadData(VehicleUpgrade.SaveName, JsonConvert.DeserializeObject<List<VehicleUpgrade>>(DefaultVehicleUpgrades));
+            PlayerUpgrade.AllUpgrades = FileManager.LoadData(PlayerUpgrade.SaveName, JsonConvert.DeserializeObject<List<PlayerUpgrade>>(DefaultPlayerUpgrades));
             
             // Loads the save data from the local save file
             _gameData = FileManager.LoadDataDefault<SaveData>(SaveData.SaveName);
