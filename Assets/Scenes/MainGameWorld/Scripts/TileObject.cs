@@ -44,7 +44,7 @@ namespace Scenes.MainGameWorld.Scripts
                 case TileType.House:
                     transform.Find("house").gameObject.SetActive(true);
                     _house = transform.Find("house").gameObject;
-                    _house.GetComponent<HouseTile>().tile = Tile;
+                    _house.GetComponent<HouseTile>().Tile = Tile;
                     RotateTile();
                     break;
                 case TileType.Landscape:

@@ -8,7 +8,7 @@
     {
         private readonly string _name;
         private readonly HouseTile _residence;
-        
+
         /// <summary>
         /// Constructor for the Customer class.
         /// </summary>
@@ -19,7 +19,7 @@
             _name = name;
             _residence = residence;
         }
-        
+
         /// <summary>
         /// Returns the customer's name.
         /// </summary>
@@ -28,7 +28,7 @@
         {
             return _name;
         }
-        
+
         /// <summary>
         /// Returns the customer's residence
         /// </summary>

@@ -1,13 +1,12 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Scenes.MainGameWorld.Scripts
 {
     public class LampManager : MonoBehaviour
     {
         public GameObject[] lamps;
-        public bool isDay = false;
-        
+        public bool isDay;
+
         private GameObject _worldEventManagerGameObject;
         private WorldEventManager _worldEventManager;
 

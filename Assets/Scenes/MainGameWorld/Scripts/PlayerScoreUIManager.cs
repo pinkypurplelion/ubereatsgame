@@ -10,6 +10,9 @@ using UnityEngine.Networking;
 
 namespace Scenes.MainGameWorld.Scripts
 {
+    /// <summary>
+    /// Used to manage the leaderboard functions on the player score page.
+    /// </summary>
     public class PlayerScoreUIManager : UIManager
     {
         private SaveData _gameData;
@@ -29,20 +32,23 @@ namespace Scenes.MainGameWorld.Scripts
         {
             _playerName = RootVisualElement.Q<TextField>("PlayerName");
             _scoreList = RootVisualElement.Q<ScrollView>("Leaderboard");
-            
+
             RootVisualElement.Q<Button>("ExitBtn").RegisterCallback<ClickEvent>(BtnReturnToMenuEvent);
             RootVisualElement.Q<Button>("SubmitExitBtn").RegisterCallback<ClickEvent>(BtnSubmitEvent);
             if (_gameData != null)
             {
                 score = _gameData.PlayerScore;
             }
+
             RootVisualElement.Q<Label>("PlayerScore").text = $"Your Score: {score}";
-        
-            StartCoroutine(GetLeaderboard(result => {
+
+            // Used to get the leaderboard data from the server.
+            StartCoroutine(GetLeaderboard(result =>
+            {
                 Debug.Log(result);
                 JObject json = JsonConvert.DeserializeObject<JObject>(result);
                 Debug.Log(json["documents"]);
-                JArray documents = (JArray) json["documents"];
+                JArray documents = (JArray)json["documents"];
                 foreach (JObject document in documents)
                 {
                     Debug.Log(document);
@@ -56,7 +62,6 @@ namespace Scenes.MainGameWorld.Scripts
                     _scoreList.Add(box);
                 }
             }));
-            
         }
 
         void BtnReturnToMenuEvent(ClickEvent evt)
@@ -69,18 +74,18 @@ namespace Scenes.MainGameWorld.Scripts
         void BtnSubmitEvent(ClickEvent evt)
         {
             Debug.Log("Data Submit");
-            StartCoroutine(PushLeaderboard(score.ToString(), _playerName.value, result => {
+            StartCoroutine(PushLeaderboard(score.ToString(), _playerName.value, result =>
+            {
                 Debug.Log(result);
                 _gameData = null;
                 FileManager.SaveData("testsave.json", JsonConvert.SerializeObject(_gameData));
                 SceneManager.LoadScene("MainMenu");
             }));
         }
-        
+
         /// <summary>
         /// Heavily adapted from a MongoDB tutorial: https://www.mongodb.com/developer/languages/csharp/sending-requesting-data-mongodb-unity-game/
         /// </summary>
-        /// <param name="id"></param>
         /// <param name="callback"></param>
         /// <returns></returns>
         IEnumerator GetLeaderboard(System.Action<string> callback = null)
@@ -90,20 +95,20 @@ namespace Scenes.MainGameWorld.Scripts
             postData.Add("database", "ubereats");
             postData.Add("dataSource", "leaderboard");
             postData.Add("filter", new Dictionary<string, object>());
-            
-            Debug.Log(JsonConvert.SerializeObject(postData)); 
+
+            Debug.Log(JsonConvert.SerializeObject(postData));
             UnityWebRequest request =
                 new UnityWebRequest("https://data.mongodb-api.com/app/data-xbwnt/endpoint/data/v1/action/find", "POST");
             // EXTREMELY BAD SECURITY PRACTICE
-            request.SetRequestHeader("api-key","FsklX9fD0JmQdSqzADkZTiAkwC34C4zqvMmxcKCTaaCe7hYFJgi4cNqEIoHvBGVy");
-            request.SetRequestHeader("Content-Type","application/json");
-            request.SetRequestHeader("Accept","application/json");
-            
+            request.SetRequestHeader("api-key", "FsklX9fD0JmQdSqzADkZTiAkwC34C4zqvMmxcKCTaaCe7hYFJgi4cNqEIoHvBGVy");
+            request.SetRequestHeader("Content-Type", "application/json");
+            request.SetRequestHeader("Accept", "application/json");
+
             byte[] bodyRaw = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(postData));
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
-            
-            
+
+
             yield return request.SendWebRequest();
 
             if (request.isNetworkError || request.isHttpError)
@@ -131,7 +136,9 @@ namespace Scenes.MainGameWorld.Scripts
         /// <returns></returns>
         IEnumerator PushLeaderboard(string score, string name, System.Action<bool> callback = null)
         {
-            using (UnityWebRequest request = new UnityWebRequest("https://data.mongodb-api.com/app/data-xbwnt/endpoint/data/v1/action/insertOne", "POST"))
+            using (UnityWebRequest request =
+                   new UnityWebRequest("https://data.mongodb-api.com/app/data-xbwnt/endpoint/data/v1/action/insertOne",
+                       "POST"))
             {
                 Dictionary<string, object> postData = new Dictionary<string, object>();
                 Dictionary<string, object> data = new Dictionary<string, object>();
@@ -141,12 +148,12 @@ namespace Scenes.MainGameWorld.Scripts
                 postData.Add("database", "ubereats");
                 postData.Add("dataSource", "leaderboard");
                 postData.Add("document", data);
-            
+
                 Debug.Log(JsonConvert.SerializeObject(postData));
                 // EXTREMELY BAD SECURITY PRACTICE
-                request.SetRequestHeader("api-key","FsklX9fD0JmQdSqzADkZTiAkwC34C4zqvMmxcKCTaaCe7hYFJgi4cNqEIoHvBGVy");
-                request.SetRequestHeader("Content-Type","application/json");
-                request.SetRequestHeader("Accept","application/json");
+                request.SetRequestHeader("api-key", "FsklX9fD0JmQdSqzADkZTiAkwC34C4zqvMmxcKCTaaCe7hYFJgi4cNqEIoHvBGVy");
+                request.SetRequestHeader("Content-Type", "application/json");
+                request.SetRequestHeader("Accept", "application/json");
 
                 byte[] bodyRaw = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(postData));
                 request.uploadHandler = new UploadHandlerRaw(bodyRaw);

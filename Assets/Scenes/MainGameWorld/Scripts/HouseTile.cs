@@ -18,12 +18,12 @@ namespace Scenes.MainGameWorld.Scripts
 
         public List<Guid> DeliveredOrders = new();
         public bool isDelivering;
-        
-        private TMP_Text _priceText;
-        
-        public Tile tile;
 
-        
+        private TMP_Text _priceText;
+
+        public Tile Tile;
+
+
         /// <summary>
         /// Called when the tiles are initialised into the world
         /// </summary>

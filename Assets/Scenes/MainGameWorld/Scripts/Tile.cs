@@ -12,9 +12,9 @@ namespace Scenes.MainGameWorld.Scripts
         public Guid TileID = Guid.NewGuid();
         public int X { get; set; }
         public int Y { get; set; }
-        
+
         public TileType Type { get; set; }
-        
+
         public List<Link> Connections { get; } = new();
 
         public double? MinCostToStart { get; set; }
@@ -23,7 +23,7 @@ namespace Scenes.MainGameWorld.Scripts
 
         public bool NextToRoad { get; set; }
     }
-    
+
     public class Link
     {
         public double Cost { get; set; }

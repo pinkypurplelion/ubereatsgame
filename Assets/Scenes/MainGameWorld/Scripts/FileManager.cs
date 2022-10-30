@@ -57,7 +57,7 @@ namespace Scenes.MainGameWorld.Scripts
                 return false;
             }
         }
-        
+
         /// <summary>
         /// Will save the given JSON data to the provided file.
         /// </summary>
@@ -85,11 +85,12 @@ namespace Scenes.MainGameWorld.Scripts
                 Debug.Log($"Load complete: {json}");
                 return JsonConvert.DeserializeObject<T>(json);
             }
+
             Debug.Log("Load failed");
             Debug.Log("Returning default data");
             return defaultData;
         }
-        
+
         /// <summary>
         /// Will load the JSON data from the provided file into the given object.
         /// </summary>
@@ -103,6 +104,7 @@ namespace Scenes.MainGameWorld.Scripts
                 Debug.Log($"Load complete: {json}");
                 return JsonConvert.DeserializeObject<T>(json);
             }
+
             Debug.Log("Load failed");
             Debug.Log("Returning null");
             return new T();

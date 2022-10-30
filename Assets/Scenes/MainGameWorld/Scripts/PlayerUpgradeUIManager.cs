@@ -13,7 +13,7 @@ namespace Scenes.MainGameWorld.Scripts
 
         private ScrollView PlayerScroll;
         private ScrollView VehicleScroll;
-        
+
         private Button ButtonCancel;
         private Button ButtonSave;
 
@@ -27,21 +27,21 @@ namespace Scenes.MainGameWorld.Scripts
             Debug.Log("Exiting Upgrade Screen Without Saving");
             SceneManager.LoadScene("MainGameWorld");
         }
-        
+
         private void ButtonSaveEvent(ClickEvent evt)
         {
             Debug.Log("Exiting Upgrade Screen and Saving");
             // Saves the upgrade data before leaving
             FileManager.SaveData("VehicleUpgrades.json", JsonConvert.SerializeObject(VehicleUpgrade.AllUpgrades));
             FileManager.SaveData("PlayerUpgrades.json", JsonConvert.SerializeObject(PlayerUpgrade.AllUpgrades));
-            
+
             // Give me money & rating
             // gameData.PlayerMoney += 1000;
             // gameData.PlayerRating = 5;
-            
+
             // Saves the game data (money spent)
             FileManager.SaveData("testsave.json", JsonConvert.SerializeObject(_gameData));
-            
+
             SceneManager.LoadScene("MainGameWorld");
         }
 
@@ -59,13 +59,14 @@ namespace Scenes.MainGameWorld.Scripts
                     _gameData.PlayerMoney -= upgradeCost;
                     upgrade.purchasedLevel++;
                     PlayerMoney.text = $"Money: {_gameData.PlayerMoney}";
-                    parent.Q<Label>("upgradeCost").text = (upgrade.cost + upgrade.costStep * upgrade.purchasedLevel).ToString();
+                    parent.Q<Label>("upgradeCost").text =
+                        (upgrade.cost + upgrade.costStep * upgrade.purchasedLevel).ToString();
                     parent.Q<ProgressBar>("upgradeProgress").value = upgrade.purchasedLevel;
                     if (upgrade.purchasedLevel >= upgrade.maxLevel)
                     {
                         button.text = "Upgrade Maxed";
-
                     }
+
                     Debug.Log($"Player has purchased upgrade: {button.name}");
                 }
                 else
@@ -79,14 +80,14 @@ namespace Scenes.MainGameWorld.Scripts
         private Box GenVehicleUpgrade(VehicleUpgrade upgrade)
         {
             Box vehicleBox = new Box();
-            
+
             Label vehicleName = new Label();
             Label vehicleCost = new Label();
             Button purchaseButton = new Button();
-            
+
             vehicleName.text = upgrade.name;
             vehicleCost.text = upgrade.cost.ToString();
-            
+
             if (upgrade.isPurchased)
             {
                 purchaseButton.text = "Select Vehicle";
@@ -95,24 +96,25 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 purchaseButton.text = "Purchase Vehicle";
             }
+
             purchaseButton.name = upgrade.vehicleID;
-            
+
             vehicleBox.Add(vehicleName);
             vehicleBox.Add(vehicleCost);
             vehicleBox.Add(purchaseButton);
-            
+
             return vehicleBox;
         }
-        
+
         private Box GenPlayerUpgrade(PlayerUpgrade upgrade)
         {
             Box playerBox = new Box();
-            
+
             Label upgradeName = new Label();
             Label upgradeCost = new Label();
             ProgressBar upgradeProgress = new ProgressBar();
             Button purchaseButton = new Button();
-            
+
             upgradeName.text = $"{upgrade.name}, Level: {upgrade.purchasedLevel}";
             upgradeCost.text = $"Cost: ${(upgrade.cost + upgrade.costStep * upgrade.purchasedLevel)}";
             upgradeCost.name = "upgradeCost";
@@ -120,7 +122,7 @@ namespace Scenes.MainGameWorld.Scripts
             upgradeProgress.highValue = upgrade.maxLevel;
             upgradeProgress.value = upgrade.purchasedLevel;
             upgradeProgress.name = "upgradeProgress";
-            
+
             purchaseButton.name = upgrade.upgradeID;
             if (upgrade.purchasedLevel < upgrade.maxLevel)
             {
@@ -131,12 +133,12 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 purchaseButton.text = "Upgrade Maxed";
             }
-            
+
             playerBox.Add(upgradeName);
             playerBox.Add(upgradeCost);
             playerBox.Add(upgradeProgress);
             playerBox.Add(purchaseButton);
-            
+
 
             return playerBox;
         }
@@ -145,27 +147,29 @@ namespace Scenes.MainGameWorld.Scripts
         private new void Awake()
         {
             base.Awake();
-            
+
             ButtonCancel = RootVisualElement.Q<Button>("ButtonCancel");
             ButtonSave = RootVisualElement.Q<Button>("ButtonSave");
-            
+
             PlayerScroll = RootVisualElement.Q<ScrollView>("PlayerScroll");
             VehicleScroll = RootVisualElement.Q<ScrollView>("VehicleScroll");
-            
+
             PlayerMoney = RootVisualElement.Q<Label>("PlayerMoney");
             PlayerRating = RootVisualElement.Q<Label>("PlayerReputation");
-            
+
             ButtonCancel.RegisterCallback<ClickEvent>(ButtonCancelEvent);
             ButtonSave.RegisterCallback<ClickEvent>(ButtonSaveEvent);
-            
+
             // Loads the upgrade information from the local save data
-            VehicleUpgrade.AllUpgrades = FileManager.LoadData(VehicleUpgrade.SaveName, JsonConvert.DeserializeObject<List<VehicleUpgrade>>(DefaultVehicleUpgrades));
-            PlayerUpgrade.AllUpgrades = FileManager.LoadData(PlayerUpgrade.SaveName, JsonConvert.DeserializeObject<List<PlayerUpgrade>>(DefaultPlayerUpgrades));
-            
+            VehicleUpgrade.AllUpgrades = FileManager.LoadData(VehicleUpgrade.SaveName,
+                JsonConvert.DeserializeObject<List<VehicleUpgrade>>(DefaultVehicleUpgrades));
+            PlayerUpgrade.AllUpgrades = FileManager.LoadData(PlayerUpgrade.SaveName,
+                JsonConvert.DeserializeObject<List<PlayerUpgrade>>(DefaultPlayerUpgrades));
+
             // Loads the save data from the local save file
             _gameData = FileManager.LoadDataDefault<SaveData>(SaveData.SaveName);
         }
-        
+
         // Start is called before the first frame update
         void Start()
         {
@@ -184,7 +188,7 @@ namespace Scenes.MainGameWorld.Scripts
                 };
                 PlayerUpgrade.AllUpgrades.Add(vu);
             }
-            
+
             // Loads UI elements based on the upgrade data
             foreach (var upgrade in VehicleUpgrade.AllUpgrades)
             {

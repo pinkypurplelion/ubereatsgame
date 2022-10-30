@@ -1,40 +1,42 @@
 /*
- * This code is part of Arcade Car Physics for Unity by Saarg (2018)
- * 
- * This is distributed under the MIT Licence (see LICENSE.md for details)
- *
- * Modified by Liam Angus.
+
  */
 
 
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
-using Random = System.Random;
 
 namespace Scenes.MainGameWorld.Scripts
 {
-    public class PlayerVehicle: MonoBehaviour
+    /// <summary>
+    /// This code is part of Arcade Car Physics for Unity by Saarg (2018)
+    /// 
+    /// This is distributed under the MIT Licence (see LICENSE.md for details)
+    /// 
+    /// Modified by Liam Angus.
+    /// </summary>
+    public class PlayerVehicle : MonoBehaviour
     {
-        public PlayerController PlayerController;
-        
+        public PlayerController playerController;
+
         // If isPlayer is false inputs are ignored
         [SerializeField] bool isPlayer = true;
-        public bool IsPlayer { get => isPlayer;
+
+        public bool IsPlayer
+        {
+            get => isPlayer;
             set => isPlayer = value;
-        } 
-        
-        
+        }
+
+
         /* 
          *  Turn input curve: x real input, y value used
          *  My advice (-1, -1) tangent x, (0, 0) tangent 0 and (1, 1) tangent x
          */
         [SerializeField] AnimationCurve turnInputCurve = AnimationCurve.Linear(-1.0f, -1.0f, 1.0f, 1.0f);
 
-        [Header("Wheels")]
-        [SerializeField] WheelCollider[] driveWheel = new WheelCollider[0];
+        [Header("Wheels")] [SerializeField] WheelCollider[] driveWheel = new WheelCollider[0];
         public WheelCollider[] DriveWheel => driveWheel;
         [SerializeField] WheelCollider[] turnWheel = new WheelCollider[0];
 
@@ -43,19 +45,25 @@ namespace Scenes.MainGameWorld.Scripts
         // This code checks if the car is grounded only when needed and the data is old enough
         bool isGrounded = false;
         int lastGroundCheck = 0;
-        public bool IsGrounded { get {
-            if (lastGroundCheck == Time.frameCount)
-                return isGrounded;
 
-            lastGroundCheck = Time.frameCount;
-            isGrounded = true;
-            foreach (WheelCollider wheel in wheels)
+        public bool IsGrounded
+        {
+            get
             {
-                if (!wheel.gameObject.activeSelf || !wheel.isGrounded)
-                    isGrounded = false;
+                if (lastGroundCheck == Time.frameCount)
+                    return isGrounded;
+
+                lastGroundCheck = Time.frameCount;
+                isGrounded = true;
+                foreach (WheelCollider wheel in wheels)
+                {
+                    if (!wheel.gameObject.activeSelf || !wheel.isGrounded)
+                        isGrounded = false;
+                }
+
+                return isGrounded;
             }
-            return isGrounded;
-        }}
+        }
 
 
         [Header("Behaviour")]
@@ -65,46 +73,61 @@ namespace Scenes.MainGameWorld.Scripts
          *  The higher the torque the faster it accelerate
          *  the longer the curve the faster it gets
          */
-        [SerializeField] AnimationCurve motorTorque = new AnimationCurve(new Keyframe(0, 200), new Keyframe(50, 300), new Keyframe(200, 0));
+        [SerializeField]
+        AnimationCurve motorTorque =
+            new AnimationCurve(new Keyframe(0, 200), new Keyframe(50, 300), new Keyframe(200, 0));
 
         // Differential gearing ratio
-        [Range(2, 16)]
-        [SerializeField] float diffGearing = 4.0f;
-        public float DiffGearing { get => diffGearing;
+        [Range(2, 16)] [SerializeField] float diffGearing = 4.0f;
+
+        public float DiffGearing
+        {
+            get => diffGearing;
             set => diffGearing = value;
         }
 
         // Basicaly how hard it brakes
         [SerializeField] float brakeForce = 1500.0f;
-        public float BrakeForce { get => brakeForce;
+
+        public float BrakeForce
+        {
+            get => brakeForce;
             set => brakeForce = value;
         }
 
         // Max steering hangle, usualy higher for drift car
-        [Range(0f, 50.0f)]
-        [SerializeField] float steerAngle = 30.0f;
-        public float SteerAngle { get => steerAngle;
+        [Range(0f, 50.0f)] [SerializeField] float steerAngle = 30.0f;
+
+        public float SteerAngle
+        {
+            get => steerAngle;
             set => steerAngle = Mathf.Clamp(value, 0.0f, 50.0f);
         }
 
         // The value used in the steering Lerp, 1 is instant (Strong power steering), and 0 is not turning at all
-        [Range(0.001f, 1.0f)]
-        [SerializeField] float steerSpeed = 0.2f;
-        public float SteerSpeed { get => steerSpeed;
+        [Range(0.001f, 1.0f)] [SerializeField] float steerSpeed = 0.2f;
+
+        public float SteerSpeed
+        {
+            get => steerSpeed;
             set => steerSpeed = Mathf.Clamp(value, 0.001f, 1.0f);
         }
 
         // How hight do you want to jump?
-        [Range(1f, 1.5f)]
-        [SerializeField] float jumpVel = 1.3f;
-        public float JumpVel { get => jumpVel;
+        [Range(1f, 1.5f)] [SerializeField] float jumpVel = 1.3f;
+
+        public float JumpVel
+        {
+            get => jumpVel;
             set => jumpVel = Mathf.Clamp(value, 1.0f, 1.5f);
         }
 
         // How hard do you want to drift?
-        [Range(0.0f, 2f)]
-        [SerializeField] float driftIntensity = 1f;
-        public float DriftIntensity { get => driftIntensity;
+        [Range(0.0f, 2f)] [SerializeField] float driftIntensity = 1f;
+
+        public float DriftIntensity
+        {
+            get => driftIntensity;
             set => driftIntensity = Mathf.Clamp(value, 0.0f, 2.0f);
         }
 
@@ -120,39 +143,50 @@ namespace Scenes.MainGameWorld.Scripts
         [SerializeField] Transform centerOfMass = null;
 
         // Force aplied downwards on the car, proportional to the car speed
-        [Range(0.5f, 10f)]
-        [SerializeField] float downforce = 1.0f;
+        [Range(0.5f, 10f)] [SerializeField] float downforce = 1.0f;
 
         public float Downforce
         {
             get => downforce;
             set => downforce = Mathf.Clamp(value, 0, 5);
-        }     
+        }
 
         // When IsPlayer is false you can use this to control the steering
         float steering;
-        public float Steering { get => steering;
+
+        public float Steering
+        {
+            get => steering;
             set => steering = Mathf.Clamp(value, -1f, 1f);
-        } 
+        }
 
         // When IsPlayer is false you can use this to control the throttle
         float throttle;
-        public float Throttle { get => throttle;
+
+        public float Throttle
+        {
+            get => throttle;
             set => throttle = Mathf.Clamp(value, -1f, 1f);
-        } 
+        }
 
         // Like your own car handbrake, if it's true the car will not move
         [SerializeField] bool handbrake;
-        public bool Handbrake { get => handbrake;
+
+        public bool Handbrake
+        {
+            get => handbrake;
             set => handbrake = value;
-        } 
-        
+        }
+
         // Use this to disable drifting
         [HideInInspector] public bool allowDrift = true;
         bool drift;
-        public bool Drift { get => drift;
+
+        public bool Drift
+        {
+            get => drift;
             set => drift = value;
-        }         
+        }
 
         // Use this to read the current car speed (you'll need this to make a speedometer)
         [SerializeField] float speed = 0.0f;
@@ -160,28 +194,38 @@ namespace Scenes.MainGameWorld.Scripts
 
         [Header("Particles")]
         // Exhaust fumes
-        [SerializeField] ParticleSystem[] gasParticles = new ParticleSystem[0];
+        [SerializeField]
+        ParticleSystem[] gasParticles = new ParticleSystem[0];
 
         [Header("Boost")]
         // Disable boost
-        [HideInInspector] public bool allowBoost = true;
+        [HideInInspector]
+        public bool allowBoost = true;
 
         // Maximum boost available
         [SerializeField] float maxBoost = 10f;
-        public float MaxBoost { get => maxBoost;
+
+        public float MaxBoost
+        {
+            get => maxBoost;
             set => maxBoost = value;
         }
 
         // Current boost available
         [SerializeField] float boost = 10f;
-        public float Boost { get => boost;
+
+        public float Boost
+        {
+            get => boost;
             set => boost = Mathf.Clamp(value, 0f, maxBoost);
         }
 
         // Regen boostRegen per second until it's back to maxBoost
-        [Range(0f, 1f)]
-        [SerializeField] float boostRegen = 0.2f;
-        public float BoostRegen { get => boostRegen;
+        [Range(0f, 1f)] [SerializeField] float boostRegen = 0.2f;
+
+        public float BoostRegen
+        {
+            get => boostRegen;
             set => boostRegen = Mathf.Clamp01(value);
         }
 
@@ -190,12 +234,16 @@ namespace Scenes.MainGameWorld.Scripts
          *  NOTE: the boost does not care if the car is grounded or not
          */
         [SerializeField] float boostForce = 5000;
-        public float BoostForce { get => boostForce;
+
+        public float BoostForce
+        {
+            get => boostForce;
             set => boostForce = value;
         }
 
         // Use this to boost when IsPlayer is set to false
         public bool boosting = false;
+
         // Use this to jump when IsPlayer is set to false
         public bool jumping = false;
 
@@ -203,18 +251,20 @@ namespace Scenes.MainGameWorld.Scripts
         [SerializeField] ParticleSystem[] boostParticles = new ParticleSystem[0];
         [SerializeField] AudioClip boostClip = default;
         [SerializeField] AudioSource boostSource = default;
-        
+
         // Private variables set at the start
         Rigidbody rb = default;
         internal WheelCollider[] wheels = new WheelCollider[0];
 
         // Init rigidbody, center of mass, wheels and more
-        void Start() {
-            if (boostClip != null) {
+        void Start()
+        {
+            if (boostClip != null)
+            {
                 boostSource.clip = boostClip;
             }
 
-		    boost = maxBoost;
+            boost = maxBoost;
 
             rb = GetComponent<Rigidbody>();
             spawnPosition = transform.position;
@@ -233,7 +283,7 @@ namespace Scenes.MainGameWorld.Scripts
                 wheel.motorTorque = 0.0001f;
             }
 
-            PlayerController = GetComponent<PlayerController>();
+            playerController = GetComponent<PlayerController>();
         }
 
         // Visual feedbacks and boost regen
@@ -243,30 +293,38 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 gasParticle.Play();
                 ParticleSystem.EmissionModule em = gasParticle.emission;
-                em.rateOverTime = handbrake ? 0 : Mathf.Lerp(em.rateOverTime.constant, Mathf.Clamp(150.0f * throttle, 30.0f, 100.0f), 0.1f);
+                em.rateOverTime = handbrake
+                    ? 0
+                    : Mathf.Lerp(em.rateOverTime.constant, Mathf.Clamp(150.0f * throttle, 30.0f, 100.0f), 0.1f);
             }
 
-            if (isPlayer && allowBoost) {
+            if (isPlayer && allowBoost)
+            {
                 boost += Time.deltaTime * boostRegen;
-                if (boost > maxBoost) { boost = maxBoost; }
+                if (boost > maxBoost)
+                {
+                    boost = maxBoost;
+                }
             }
         }
 
         // Used to move the player
         public Vector2 moveVal;
-        
+
         void OnMovement(InputValue value)
         {
             moveVal = value.Get<Vector2>();
         }
 
         // Update everything
-        void FixedUpdate () {
+        void FixedUpdate()
+        {
             // Mesure current speed
             speed = transform.InverseTransformDirection(rb.velocity).z * 3.6f;
 
             // Get all the inputs!
-            if (isPlayer && !PlayerController.inventoryOpen && !PlayerController.menuOpen) {
+            if (isPlayer && !playerController.inventoryOpen && !playerController.menuOpen)
+            {
                 throttle = moveVal.y;
                 steering = turnInputCurve.Evaluate(moveVal.x) * steerAngle;
                 // Accelerate & brake
@@ -278,14 +336,16 @@ namespace Scenes.MainGameWorld.Scripts
                 // boosting = (GetInput(boostInput) > 0.5f);
                 // // Turn
                 // steering = turnInputCurve.Evaluate(GetInput(turnInput)) * steerAngle;
-                
+
                 // maybe add in?
-                
+
                 // // Dirft
                 // drift = GetInput(driftInput)> 0 && rb.velocity.sqrMagnitude > 100;
                 // // Jump
                 // jumping = GetInput(jumpInput) != 0;
-            } else if (!PlayerController.inventoryOpen) {
+            }
+            else if (!playerController.inventoryOpen)
+            {
                 throttle = 0;
                 steering = 0;
             }
@@ -328,56 +388,70 @@ namespace Scenes.MainGameWorld.Scripts
             }
 
             // Jump
-            if (jumping && isPlayer) {
+            if (jumping && isPlayer)
+            {
                 if (!IsGrounded)
                     return;
-                
+
                 rb.velocity += transform.up * jumpVel;
             }
 
             // Boost
-            if (boosting && allowBoost && boost > 0.1f) {
+            if (boosting && allowBoost && boost > 0.1f)
+            {
                 rb.AddForce(transform.forward * boostForce);
 
                 boost -= Time.fixedDeltaTime;
-                if (boost < 0f) { boost = 0f; }
+                if (boost < 0f)
+                {
+                    boost = 0f;
+                }
 
-                if (boostParticles.Length > 0 && !boostParticles[0].isPlaying) {
-                    foreach (ParticleSystem boostParticle in boostParticles) {
+                if (boostParticles.Length > 0 && !boostParticles[0].isPlaying)
+                {
+                    foreach (ParticleSystem boostParticle in boostParticles)
+                    {
                         boostParticle.Play();
                     }
                 }
 
-                if (boostSource != null && !boostSource.isPlaying) {
+                if (boostSource != null && !boostSource.isPlaying)
+                {
                     boostSource.Play();
                 }
-            } else {
-                if (boostParticles.Length > 0 && boostParticles[0].isPlaying) {
-                    foreach (ParticleSystem boostParticle in boostParticles) {
+            }
+            else
+            {
+                if (boostParticles.Length > 0 && boostParticles[0].isPlaying)
+                {
+                    foreach (ParticleSystem boostParticle in boostParticles)
+                    {
                         boostParticle.Stop();
                     }
                 }
 
-                if (boostSource != null && boostSource.isPlaying) {
+                if (boostSource != null && boostSource.isPlaying)
+                {
                     boostSource.Stop();
                 }
             }
 
             // Drift
-            if (drift && allowDrift) {
+            if (drift && allowDrift)
+            {
                 Vector3 driftForce = -transform.right;
                 driftForce.y = 0.0f;
                 driftForce.Normalize();
 
                 if (steering != 0)
-                    driftForce *= rb.mass * speed/7f * throttle * steering/steerAngle;
-                Vector3 driftTorque = transform.up * 0.1f * steering/steerAngle;
+                    driftForce *= rb.mass * speed / 7f * throttle * steering / steerAngle;
+                Vector3 driftTorque = transform.up * 0.1f * steering / steerAngle;
 
 
                 rb.AddForce(driftForce * driftIntensity, ForceMode.Force);
-                rb.AddTorque(driftTorque * driftIntensity, ForceMode.VelocityChange);             
+                rb.AddTorque(driftTorque * driftIntensity, ForceMode.VelocityChange);
             }
-            
+
             // Downforce
             rb.AddForce(-transform.up * speed * downforce);
         }

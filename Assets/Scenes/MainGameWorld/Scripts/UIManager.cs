@@ -11,7 +11,7 @@ namespace Scenes.MainGameWorld.Scripts
         // Base UI Elements
         private UIDocument _uiDocument;
         protected VisualElement RootVisualElement;
-        
+
         protected void Awake()
         {
             _uiDocument = transform.GetComponent<UIDocument>();

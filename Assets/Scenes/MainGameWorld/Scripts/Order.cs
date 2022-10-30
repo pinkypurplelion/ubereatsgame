@@ -16,9 +16,9 @@ namespace Scenes.MainGameWorld.Scripts
 
         public Customer Customer;
 
-        public float OrderValue {get; set;}
-        
-        public Guid HouseID {get; set;}
-        public Guid ShopID {get; set;}
+        public float OrderValue { get; set; }
+
+        public Guid HouseID { get; set; }
+        public Guid ShopID { get; set; }
     }
 }

@@ -21,7 +21,7 @@ namespace Scenes.MainGameWorld.Scripts
         private WorldMap _map;
 
         public readonly List<Order> Orders = new();
-        
+
         public List<ShopTile> shops = new();
         public List<HouseTile> houses = new();
         public List<RoadTile> roads = new();
@@ -43,14 +43,17 @@ namespace Scenes.MainGameWorld.Scripts
         // public float worldStartTimeAdjust;
         public float worldStartTime;
         public float currentTime;
-        private static readonly string[] Week = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
+
+        private static readonly string[] Week =
+            { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+
         private static string _day;
 
         private bool _weeklyRent;
-        
+
         // World Lighting
         public GameObject worldLight;
-        
+
         // Player Controller
         public PlayerController playerController;
 
@@ -63,7 +66,7 @@ namespace Scenes.MainGameWorld.Scripts
             _map.GenerateWorld();
             worldStartTime = Time.time;
         }
-        
+
         private void Start()
         {
             // Draws the World based on the WorldMap graph.
@@ -76,7 +79,7 @@ namespace Scenes.MainGameWorld.Scripts
                         2,
                         block.BlockY * blockDimension * TileSize + tile.Y * TileSize), Quaternion.identity);
                     tileObject.GetComponent<TileObject>().Tile = tile;
-                    
+
                     if (tile.Type == TileType.Shop)
                     {
                         shops.Add(tileObject.transform.Find("shop").GetComponent<ShopTile>());
@@ -84,23 +87,26 @@ namespace Scenes.MainGameWorld.Scripts
                     else if (tile.Type == TileType.House)
                     {
                         HouseTile h = tileObject.transform.Find("house").GetComponent<HouseTile>();
-                        for (int i = 0; i < _random.Next(1,3); i++)
+                        for (int i = 0; i < _random.Next(1, 3); i++)
                         {
                             Customer c = new Customer(TempGenerateName(), h);
                             customers.Add(c);
                             h.Customers.Add(c);
                         }
+
                         houses.Add(h);
-                    } else if (tile.Type == TileType.Road)
+                    }
+                    else if (tile.Type == TileType.Road)
                     {
                         roads.Add(tileObject.transform.Find("road").GetComponent<RoadTile>());
                     }
                 }
             }
-            
+
             // Spawns player at a random road
             Vector3 randomRoad = roads[_random.Next(roads.Count)].transform.position;
-            GameObject player = Instantiate(playerPrefab, new Vector3(randomRoad.x, 5, randomRoad.z), Quaternion.identity);
+            GameObject player = Instantiate(playerPrefab, new Vector3(randomRoad.x, 5, randomRoad.z),
+                Quaternion.identity);
             playerController = player.GetComponent<PlayerController>();
 
             // Load Game Data
@@ -111,7 +117,7 @@ namespace Scenes.MainGameWorld.Scripts
             VehicleUpgrade.AllUpgrades = FileManager.LoadData(VehicleUpgrade.SaveName, new List<VehicleUpgrade>());
             PlayerUpgrade.AllUpgrades = FileManager.LoadData(PlayerUpgrade.SaveName, new List<PlayerUpgrade>());
         }
-        
+
         private void FixedUpdate()
         {
             // less orders generated during the night
@@ -120,9 +126,9 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 GenerateOrder();
             }
-            
+
             // World Daylight Cycle Manager
-            worldLight.transform.rotation = Quaternion.Euler(currentTime -90 % 360,0,0);
+            worldLight.transform.rotation = Quaternion.Euler(currentTime - 90 % 360, 0, 0);
         }
 
         private void Update()
@@ -143,36 +149,40 @@ namespace Scenes.MainGameWorld.Scripts
         {
             ShopTile shop = shops[_random.Next(shops.Count)];
             HouseTile house = houses[_random.Next(houses.Count)];
-            
-            int xDist = Math.Abs(shop.tile.X - house.tile.X);
-            int yDist = Math.Abs(shop.tile.Y - house.tile.Y);
+
+            int xDist = Math.Abs(shop.tile.X - house.Tile.X);
+            int yDist = Math.Abs(shop.tile.Y - house.Tile.Y);
             float distance = Mathf.Sqrt(xDist * xDist + yDist * yDist);
             Debug.Log(distance); //TODO: use pathfinding algortihm to find actual distance, not 'plane' distance
-            
+
             int minDeliveryTime = 30;
-            int maxDeliveryTime = (int)(60 * distance/2);
-            
+            int maxDeliveryTime = (int)(60 * distance / 2);
+
             Order order = new Order
             {
                 ShopID = shop.ShopID,
                 HouseID = house.HouseID,
-                OrderValue = _random.Next(15, 25) * distance/2,
+                OrderValue = _random.Next(15, 25) * distance / 2,
                 Customer = house.Customers[_random.Next(house.Customers.Count)],
                 CreationTime = currentTime,
-                TimeToDeliver = _random.Next(minDeliveryTime, maxDeliveryTime) // Delivery timeframe between 45 and 240 seconds
+                TimeToDeliver =
+                    _random.Next(minDeliveryTime, maxDeliveryTime) // Delivery timeframe between 45 and 240 seconds
             };
             Orders.Add(order);
             shop.Orders.Add(order.OrderID);
         }
-        
+
         /// <summary>
         /// Used to generate the names of customers
         /// </summary>
         /// <returns>A customer's name</returns>
         private string TempGenerateName()
         {
-            List<string> names = new() { "Bob", "Judy", "Jane", "Sarah", "Adam", 
-                "Spike", "Erandi", "Dilini", "Liam", "Ali Muha", "Jayath", "Charles", "Charlotte", "Sam", "Jiankun"};
+            List<string> names = new()
+            {
+                "Bob", "Judy", "Jane", "Sarah", "Adam",
+                "Spike", "Erandi", "Dilini", "Liam", "Ali Muha", "Jayath", "Charles", "Charlotte", "Sam", "Jiankun"
+            };
             return names[_random.Next(names.Count)];
         }
 
@@ -193,9 +203,9 @@ namespace Scenes.MainGameWorld.Scripts
         /// <returns>A string representation of the current world time</returns>
         public static string ConvertTimeToString(float time)
         {
-            int minutes = (int) Math.Floor(time/0.25 % 60);
-            int hours = (int) (time / 15) % 24;
-            int days = (int) (time / 360) % 7;
+            int minutes = (int)Math.Floor(time / 0.25 % 60);
+            int hours = (int)(time / 15) % 24;
+            int days = (int)(time / 360) % 7;
             _day = Week[days % 7];
 
             return $"{_day},{days}d, {hours}h {minutes}m";
@@ -213,6 +223,7 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 _weeklyRent = false;
             }
+
             // Deducts rent payments from the player's balance
             if (time % 2520 != 0 || !(time > 2610) || _weeklyRent) return;
             data.PlayerMoney -= 500;
@@ -222,7 +233,7 @@ namespace Scenes.MainGameWorld.Scripts
                 SceneManager.LoadScene("ScoreScreen");
             }
         }
-        
+
         /// <summary>
         /// Used to save the world state.
         /// </summary>
@@ -234,4 +245,3 @@ namespace Scenes.MainGameWorld.Scripts
         }
     }
 }
-

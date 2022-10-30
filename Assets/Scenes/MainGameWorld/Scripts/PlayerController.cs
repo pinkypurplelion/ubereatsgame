@@ -17,10 +17,10 @@ namespace Scenes.MainGameWorld.Scripts
     {
         // A list of the orders currently being delivered by the player.
         private List<Guid> Orders { get; } = new();
-        
+
         // The shops that the player is currently next to. TODO: implement way to select between orders/shops to pick up (add shop headings in UI)
         private List<Collider> CurrentShopCollisions { get; } = new();
-        
+
         // The houses that the player is currently next to.
         private List<Collider> CurrentHouseCollisions { get; } = new();
 
@@ -33,7 +33,7 @@ namespace Scenes.MainGameWorld.Scripts
         // Global Components
         private GameObject _worldEventManagerGameObject;
         private WorldEventManager _worldEventManager;
-        
+
         // Used to simulate orders being thrown out of the window
         public GameObject thrownObject;
 
@@ -41,16 +41,17 @@ namespace Scenes.MainGameWorld.Scripts
         public bool inventoryOpen;
         public bool menuOpen;
 
-        
+
         // The number of orders the player is able to carry at any time
         public int orderLimit = 2; // Player Upgrade
+
         // Player order delivery time multiplier
         public float deliveryTimeMultiplier = 1f; // Player Upgrade
-        
+
         // Player order multiplier
         public float orderMultiplier = 1f;
         public int maxMultiplier = 5; // Player Upgrade
-        
+
         // Player final score multiplier
         public float scoreMultiplier = 1f;
 
@@ -62,11 +63,11 @@ namespace Scenes.MainGameWorld.Scripts
             // Gets the WorldEventManager Object
             _worldEventManagerGameObject = GameObject.Find("WorldEventManager");
             _worldEventManager = _worldEventManagerGameObject.GetComponent<WorldEventManager>();
-            
-            
+
+
             _rigidbody = GetComponent<Rigidbody>();
             GetComponent<BoxCollider>();
-            
+
             _playerUI = transform.Find("PlayerUI").GetComponent<PlayerUIManager>();
 
             // Passes the objects in PlayerController through to the uiController to enable simple UI updates
@@ -74,15 +75,23 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.CurrentShopCollisions = CurrentShopCollisions;
             _playerUI.Orders = Orders;
             _playerUI.WorldEventManager = _worldEventManager;
-            
+
             // Provides methods for button click events
             _playerUI.ShopEventCallback = SelectOrderFromShop;
             _playerUI.HouseEventCallback = SelectHouseToDeliver;
             _playerUI.InventoryEventCallback = SelectOrderInInventory;
-            _playerUI.MenuMainEventCallback = _ => { _worldEventManager.SaveGame(); SceneManager.LoadScene("MainMenu"); };
-            _playerUI.MenuExitEventCallback = _ => { _worldEventManager.SaveGame(); Application.Quit();};
+            _playerUI.MenuMainEventCallback = _ =>
+            {
+                _worldEventManager.SaveGame();
+                SceneManager.LoadScene("MainMenu");
+            };
+            _playerUI.MenuExitEventCallback = _ =>
+            {
+                _worldEventManager.SaveGame();
+                Application.Quit();
+            };
             _playerUI.MenuSaveEventCallback = _ => _worldEventManager.SaveGame();
-            
+
             // Processes upgrade information to apply to the player
             ProcessUpgradeInformation();
         }
@@ -109,7 +118,7 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.ToggleInteractUI(); // Toggles the player UI
             inventoryOpen = !inventoryOpen; // Updates the UI state
         }
-        
+
         /// <summary>
         /// Called when the player presses the TestUpgrades key.
         /// TODO: remove, add button to UI.
@@ -121,7 +130,7 @@ namespace Scenes.MainGameWorld.Scripts
             Debug.Log("Switching to Upgrades Scene");
             SceneManager.LoadScene("PlayerUpgrades");
         }
-        
+
         /// <summary>
         /// Called when the player presses the Menu key.
         /// </summary>
@@ -131,7 +140,7 @@ namespace Scenes.MainGameWorld.Scripts
             menuOpen = !menuOpen; // Toggles the UI state
             _playerUI.ToggleMenuUI(); // Toggles the UI
         }
-        
+
         /// <summary>
         /// Called once per physics update.
         /// </summary>
@@ -139,7 +148,7 @@ namespace Scenes.MainGameWorld.Scripts
         {
             // Updates the information displayed in the player UI
             UpdatePlayerUI();
-            
+
             // If the player falls off the world, end their game.
             if (_rigidbody.transform.position.y < -10)
             {
@@ -160,7 +169,7 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.PlayerChainLabel.text = $"Multiplier: {orderMultiplier}";
             _playerUI.PlayerRatingLabel.text = $"Rating: {_worldEventManager.data.PlayerRating}";
         }
-        
+
         /// <summary>
         /// Called when the player enters another object's collider.
         /// </summary>
@@ -176,9 +185,10 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 CurrentHouseCollisions.Add(other);
             }
+
             _playerUI.UpdateInteractUI();
         }
-        
+
         /// <summary>
         /// Called when the player exits the collider of another object.
         /// </summary>
@@ -191,7 +201,7 @@ namespace Scenes.MainGameWorld.Scripts
 
             _playerUI.UpdateInteractUI();
         }
-        
+
         /// <summary>
         /// The method called when the player selects a house from the UI
         /// </summary>
@@ -199,19 +209,22 @@ namespace Scenes.MainGameWorld.Scripts
         private void SelectHouseToDeliver(ClickEvent evt)
         {
             if (evt.currentTarget is not Button button) return;
-            
+
             if (CurrentHouseCollisions.Count > 0)
             {
-                foreach (var house in from houseCollision in CurrentHouseCollisions where 
-                             houseCollision.transform.GetComponent<HouseTile>().HouseID.ToString() 
-                                == button.name select houseCollision.transform.GetComponent<HouseTile>())
+                foreach (var house in from houseCollision in CurrentHouseCollisions
+                         where
+                             houseCollision.transform.GetComponent<HouseTile>().HouseID.ToString()
+                             == button.name
+                         select houseCollision.transform.GetComponent<HouseTile>())
                 {
                     DeliverOrder(house);
                 }
             }
+
             _playerUI.UpdateInteractUI();
         }
-        
+
         /// <summary>
         /// Called when a player selects an order from the inventory.
         /// TODO: update model & make it really fly out of the car
@@ -220,7 +233,7 @@ namespace Scenes.MainGameWorld.Scripts
         private void SelectOrderInInventory(ClickEvent evt)
         {
             if (evt.currentTarget is not Button button) return;
-            
+
             var order = _worldEventManager.Orders.Find(o => o.OrderID == Guid.Parse(button.name));
             if (order != null)
             {
@@ -232,9 +245,11 @@ namespace Scenes.MainGameWorld.Scripts
             _playerUI.UpdateInteractUI();
             var t = transform;
             var to = Instantiate(thrownObject, t.position, t.rotation);
-            to.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(Random.Range(0.1f, 2f), Random.Range(0.1f,2f), Random.Range(0.1f, 2f)) * 1000);
+            to.GetComponent<Rigidbody>()
+                .AddRelativeForce(new Vector3(Random.Range(0.1f, 2f), Random.Range(0.1f, 2f), Random.Range(0.1f, 2f)) *
+                                  1000);
         }
-        
+
         /// <summary>
         /// Called when the player chooses an order from the shop to pick up and add to their inventory.
         /// </summary>
@@ -248,14 +263,14 @@ namespace Scenes.MainGameWorld.Scripts
                 var orderID = Guid.Parse(button.name);
                 Orders.Add(orderID);
                 _playerUI.PlayerOrdersLabel.text = $"Player Orders: {Orders.Count}";
-        
+
                 // Highlights house that order must be delivered to
                 var order = _worldEventManager.Orders.Find(o => o.OrderID == orderID);
                 order.PickupTime = _worldEventManager.currentTime;
                 order.TimeToDeliver *= deliveryTimeMultiplier;
                 var house = _worldEventManager.houses.Find(h => h.HouseID == order.HouseID);
                 house.isDelivering = true;
-                
+
                 // Removes order from shop
                 foreach (var shopCollision in CurrentShopCollisions)
                 {
@@ -264,8 +279,10 @@ namespace Scenes.MainGameWorld.Scripts
             }
             else
             {
-                _playerUI.NotifyPlayer("Player has reached the order limit. Please deliver an order before collecting another.", 5, true);
+                _playerUI.NotifyPlayer(
+                    "Player has reached the order limit. Please deliver an order before collecting another.", 5, true);
             }
+
             _playerUI.UpdateInteractUI();
         }
 
@@ -280,7 +297,7 @@ namespace Scenes.MainGameWorld.Scripts
             {
                 var order = _worldEventManager.Orders.Find(o => o.OrderID == orderID);
                 if (order == null) continue;
-                
+
                 if (order.HouseID == tile.HouseID)
                 {
                     Debug.Log("Found correct order.");
@@ -291,32 +308,39 @@ namespace Scenes.MainGameWorld.Scripts
                     {
                         Debug.Log("Order delivered on time.");
                         _worldEventManager.data.PlayerMoney += order.OrderValue * orderMultiplier;
-                        _worldEventManager.data.PlayerRating = Mathf.Clamp(_worldEventManager.data.PlayerRating * 1.05f, 0, 5);
-                        
+                        _worldEventManager.data.PlayerRating =
+                            Mathf.Clamp(_worldEventManager.data.PlayerRating * 1.05f, 0, 5);
+
                         // Increasing Order Multiplier
                         orderMultiplier = Mathf.Clamp(orderMultiplier += 1, 1, maxMultiplier);
-                        
+
                         // Increases Player Score
                         _worldEventManager.data.PlayerScore += 75 * scoreMultiplier * orderMultiplier;
-                        
+
                         Debug.Log($"Player Order Multiplier Increased to {orderMultiplier}");
                     }
                     else
                     {
                         var reduceMoney = order.OrderValue /
-                                            (1 + (_worldEventManager.currentTime - order.PickupTime - order.TimeToDeliver) * 0.1f);
-                        var reducedScore = 75/
-                                            (1 + (_worldEventManager.currentTime - order.PickupTime - order.TimeToDeliver) * 0.1f) * orderMultiplier;
-                        
+                                          (1 + (_worldEventManager.currentTime - order.PickupTime -
+                                                order.TimeToDeliver) * 0.1f);
+                        var reducedScore = 75 /
+                                           (1 + (_worldEventManager.currentTime - order.PickupTime -
+                                                 order.TimeToDeliver) * 0.1f) *
+                                           orderMultiplier;
+
                         _worldEventManager.data.PlayerMoney += reduceMoney;
-                        _worldEventManager.data.PlayerRating = Mathf.Clamp(_worldEventManager.data.PlayerRating * 0.95f, 0, 5);
+                        _worldEventManager.data.PlayerRating =
+                            Mathf.Clamp(_worldEventManager.data.PlayerRating * 0.95f, 0, 5);
                         _worldEventManager.data.PlayerScore += reducedScore;
-                        
+
                         // Resets Order Multiplier
                         orderMultiplier = 1;
                         Debug.Log("Order delivered late.");
-                        Debug.Log($"Order value: {order.OrderValue}, money given: {reduceMoney}, player rating: {_worldEventManager.data.PlayerRating}");
+                        Debug.Log(
+                            $"Order value: {order.OrderValue}, money given: {reduceMoney}, player rating: {_worldEventManager.data.PlayerRating}");
                     }
+
                     tile.isDelivering = false;
 
                     Debug.Log("Order delivered");
@@ -338,20 +362,21 @@ namespace Scenes.MainGameWorld.Scripts
             var upgradeOrderCapacity = PlayerUpgrade.AllUpgrades.Find(u => u.upgradeID == "playerOrderCapacity");
             if (upgradeOrderCapacity != null)
             {
-                orderLimit = (int) upgradeOrderCapacity.purchasedLevel;
+                orderLimit = (int)upgradeOrderCapacity.purchasedLevel;
             }
+
             var upgradeDeliveryTime = PlayerUpgrade.AllUpgrades.Find(u => u.upgradeID == "playerTimeMultiplier");
             if (upgradeDeliveryTime != null)
             {
                 deliveryTimeMultiplier = upgradeDeliveryTime.purchasedLevel;
             }
-            
+
             var upgradeMultiplier = PlayerUpgrade.AllUpgrades.Find(u => u.upgradeID == "playerMaxMultiplier");
             if (upgradeMultiplier != null)
             {
-                maxMultiplier = 5 + (int) upgradeMultiplier.purchasedLevel;
+                maxMultiplier = 5 + (int)upgradeMultiplier.purchasedLevel;
             }
-            
+
             var upgradeScoreMultiplier = PlayerUpgrade.AllUpgrades.Find(u => u.upgradeID == "playerScoreMultiplier");
             if (upgradeScoreMultiplier != null)
             {

@@ -14,10 +14,11 @@ namespace Scenes.MainGameWorld.Scripts
         public Tile Tile;
 
         private readonly Dictionary<string, bool> _directions = new();
-        
+
         private void Start()
         {
-            foreach (var connection in Tile.Connections.Where(connection => connection.ConnectedTile.Type == TileType.Road))
+            foreach (var connection in Tile.Connections.Where(connection =>
+                         connection.ConnectedTile.Type == TileType.Road))
             {
                 if (connection.ConnectedTile.X == Tile.X)
                 {
@@ -44,6 +45,7 @@ namespace Scenes.MainGameWorld.Scripts
                     {
                         transform.Find("RoadObject").Rotate(0, 90f, 0, Space.Self);
                     }
+
                     break;
                 case 2:
                     //Return either of the 2 way blocks
@@ -60,7 +62,8 @@ namespace Scenes.MainGameWorld.Scripts
                             break;
                         }
 
-                        if (_directions.ContainsKey("east")) {
+                        if (_directions.ContainsKey("east"))
+                        {
                             transform.Find("curvedRoad2").gameObject.SetActive(true);
                             transform.Find("curvedRoad2").Rotate(0, 270f, 0, Space.Self);
                             break;
@@ -85,6 +88,7 @@ namespace Scenes.MainGameWorld.Scripts
                         transform.Find("curvedRoad2").gameObject.SetActive(true);
                         transform.Find("curvedRoad2").Rotate(0, 90f, 0, Space.Self);
                     }
+
                     break;
                 case 3:
                     //Return the 3 way block
@@ -115,8 +119,8 @@ namespace Scenes.MainGameWorld.Scripts
                     else
                     {
                         transform.Find("3wayIntersection").gameObject.SetActive(true);
-
                     }
+
                     break;
                 case 4:
                     //Return the 4 way intersection block
@@ -127,7 +131,5 @@ namespace Scenes.MainGameWorld.Scripts
                     break;
             }
         }
-
-
     }
 }

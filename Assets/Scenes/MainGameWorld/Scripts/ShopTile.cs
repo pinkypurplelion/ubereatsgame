@@ -15,16 +15,16 @@ namespace Scenes.MainGameWorld.Scripts
         private TMP_Text _priceText;
 
         public Tile tile;
-        
+
         private void Awake()
         {
             _priceText = transform.Find("Canvas").Find("text").GetComponent<TMP_Text>();
             _priceText.color = Color.white;
-            
+
             int shop = Random.Range(0, 3);
             transform.Find($"shop{shop}").gameObject.SetActive(true);
         }
-        
+
         private void FixedUpdate()
         {
             // Update every second
